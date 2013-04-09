@@ -15,8 +15,9 @@ using namespace glm;
 
 #include "common/shader.hpp"
 #include "common/texture.hpp"
-#include "common/controls.hpp"
+#include "common/SceneControl.hpp"
 #include "common/shapes.hpp"
+#include "CommonWall.h"
 
 int main( void )
 {
@@ -49,8 +50,9 @@ int main( void )
 
 	glfwSetWindowTitle( "<- - ->" );
 
-	SceneControls* controls;
-	controls = new SceneControls( INTER_MOUSENONE_KEYROTATE );
+	SceneControl* sceneControl;
+	sceneControl = SceneControl::getInstance();
+	sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
@@ -72,40 +74,42 @@ int main( void )
 	glBindVertexArray(VertexArrayID);
 
 	// Shape drawer object
-	Shapes* shapeDrawer = ShapeDispatcher::getShapes();
+	//Shapes* shapeDrawer = ShapeDispatcher::getShapes(); // Deprecated
+	// Common Wall
+	CommonWall wall;
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	sceneControl->loadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	//GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 
 	// Get a handle for our "MVP" uniform
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	//GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
-	GLuint Texture = loadDDS("uvtemplate.DDS");
+	sceneControl->loadTextureDDS( "uvtemplate.DDS" );
+	//GLuint Texture = loadDDS("uvtemplate.DDS");
 	
 	// Get a handle for our "myTextureSampler" uniform
-	GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
+	//GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 
 	do
 	{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Use our shader
-		glUseProgram(programID);
-
 		// Compute the MVP matrix from keyboard and mouse input
-		controls->computeMatricesFromInputs();
-		glm::mat4 ProjectionMatrix = controls->getProjectionMatrix();
-		glm::mat4 ViewMatrix = controls->getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		sceneControl->computeMatricesFromInputs();
+		//glm::mat4 ProjectionMatrix = controls->getProjectionMatrix();
+		//glm::mat4 ViewMatrix = controls->getViewMatrix();
+		//glm::mat4 ModelMatrix = glm::mat4(1.0);
+		//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;  // Do this step inside the shader
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-		shapeDrawer->drawCube( Texture, TextureID );
+		//shapeDrawer->drawCube( Texture, TextureID ); // Deprecated
+		wall.drawWall();
 
 		// Swap buffers
 		glfwSwapBuffers();
@@ -115,12 +119,14 @@ int main( void )
 		   glfwGetWindowParam( GLFW_OPENED ) );
 
 	// Cleanup VBO and shader
-	glDeleteProgram(programID);
-	glDeleteTextures(1, &TextureID);
+	//glDeleteProgram(programID);
+	//glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
+
+	SceneControl::deleteInstance();
 
 	return 0;
 }
