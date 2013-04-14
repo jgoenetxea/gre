@@ -10,6 +10,11 @@
 #include "CommonWall.h"
 #include "common/shapes.hpp"
 #include "common/SceneControl.hpp"
+#include "common/texture.hpp"
+
+#include "common/objloader.hpp"
+
+using namespace std;
 
 CommonWall::CommonWall()
 {
@@ -24,6 +29,8 @@ CommonWall::CommonWall()
 	m_shapeBuilder = new Shapes();
 
 	m_sceneControl = SceneControl::getInstance();
+
+	m_wallModel = NULL;
 }
 
 CommonWall::~CommonWall()
@@ -31,7 +38,7 @@ CommonWall::~CommonWall()
 	// TODO Auto-generated destructor stub
 }
 
-void CommonWall::drawWall()
+void CommonWall::drawCube()
 {
 	glm::mat4 ProjectionMatrix = m_sceneControl->getProjectionMatrix();
 	glm::mat4 ViewMatrix = m_sceneControl->getViewMatrix();
@@ -48,9 +55,32 @@ void CommonWall::drawWall()
 	m_shapeBuilder->drawCube(m_sceneControl->getTexture(), m_sceneControl->getTextureID());
 }
 
+void CommonWall::drawObjModel()
+{
+	glm::mat4 ProjectionMatrix = m_sceneControl->getProjectionMatrix();
+	glm::mat4 ViewMatrix = m_sceneControl->getViewMatrix();
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+	m_wallModel->setMVP(MVP);
+	m_wallModel->draw();
+}
+
 void CommonWall::setTexture( unsigned int txtId )
 {
 	m_commonTexture = txtId;
+	if( m_wallModel != NULL )
+	{
+		m_wallModel->setTexture( txtId );
+	}
+}
+
+void CommonWall::setObj( string filename, string vertexShaderFilename, string fragmentShaderFilename )
+{
+	// Load the obj file
+	m_wallModel = ObjFactory::getInstance()->loadOBJ( filename );
+	m_wallModel->setTexture( loadDDS( "uvtemplate.DDS" ) );
+	m_wallModel->setShaders( vertexShaderFilename, fragmentShaderFilename );
 }
 
 unsigned int CommonWall::getTexture()

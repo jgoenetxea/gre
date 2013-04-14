@@ -8,10 +8,13 @@
 #ifndef COMMONWALL_H_
 #define COMMONWALL_H_
 
+#include <string>
+
 #include <glm/glm.hpp>
 
 class Shapes;
 class SceneControl;
+class Obj;
 
 class CommonWall
 {
@@ -31,7 +34,10 @@ public:
 	void setOrientation( int ori );
 	int getOrientation();
 
-	void drawWall();
+	void drawCube();
+
+	void drawObjModel();
+	void setObj( std::string filename, std::string vertexShaderFilename, std::string fragmentShaderFilename );
 
 private:
 	// location
@@ -45,6 +51,9 @@ private:
 	// Other
 	Shapes* m_shapeBuilder;
 	SceneControl* m_sceneControl;
+
+	// Obj model
+	Obj* m_wallModel;
 };
 
 #endif /* COMMONWALL_H_ */

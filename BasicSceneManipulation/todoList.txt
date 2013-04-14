@@ -1,0 +1,9 @@
+// TODO:
+-- Obj loader
+* Cargar ficheros .mtl en el cargador
+* Corregir la definicion de la textura
+* Hacer callback-s configurables para la carga de los uniforms y los atributos
+
+-- scena
+* hacer detección de colisiones
+

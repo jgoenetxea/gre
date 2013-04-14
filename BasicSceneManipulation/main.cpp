@@ -13,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include "common/objloader.hpp"
 #include "common/shader.hpp"
 #include "common/texture.hpp"
 #include "common/SceneControl.hpp"
@@ -92,6 +93,7 @@ int main( void )
 	// Get a handle for our "myTextureSampler" uniform
 	//GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 
+	wall.setObj( "cube.obj", "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 	do
 	{
 		// Clear the screen
@@ -109,7 +111,8 @@ int main( void )
 		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 		//shapeDrawer->drawCube( Texture, TextureID ); // Deprecated
-		wall.drawWall();
+		//wall.drawCube();
+		wall.drawObjModel();
 
 		// Swap buffers
 		glfwSwapBuffers();
