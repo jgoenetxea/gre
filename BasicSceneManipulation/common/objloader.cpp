@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <cstring>
+#include <iostream>
 
 #include <GL/glew.h>
 
@@ -11,17 +12,23 @@ using namespace std;
 
 Obj::Obj()
 {
-	m_vertexBuffer = 0;
-	m_uvBuffer = 0;
-	m_normalBuffer = 0;
-
 	m_texture = 0;
 	m_textureUniformLocator = 0;
 	m_matrixUniformLocator = 0;
 	m_program = 0;
 }
 
-Obj::~Obj(){}
+Obj::~Obj()
+{
+	if( m_meshList.size() > 0 )
+	{
+		for(int i=0, n=m_meshList.size() ; i<n ; ++i)
+		{
+			delete m_meshList[i];
+		}
+		m_meshList.clear();
+	}
+}
 
 Obj* ObjFactory::loadOBJ( string filename )
 {
@@ -40,6 +47,11 @@ Obj* ObjFactory::loadOBJ( string filename )
 		return false;
 	}
 
+	std::cout << "Loadeding file " << filename << std::endl;
+
+
+	Mesh* mesh = NULL;
+	Obj* outObj = new Obj();
 	while( 1 )
 	{
 		char lineHeader[128];
@@ -49,6 +61,34 @@ Obj* ObjFactory::loadOBJ( string filename )
 			break; // EOF = End Of File. Quit the loop.
 
 		// else : parse lineHeader
+		if ( strcmp( lineHeader, "o" ) == 0 )
+		{
+			if( mesh != NULL )
+			{
+				// For each vertex of each triangle
+				for( unsigned int i=0; i<vertexIndices.size(); i++ )
+				{
+					// Get the indices of its attributes
+					unsigned int vertexIndex = vertexIndices[i];
+					unsigned int uvIndex = uvIndices[i];
+					unsigned int normalIndex = normalIndices[i];
+
+					// Get the attributes thanks to the index
+					glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
+					glm::vec2 uv = temp_uvs[ uvIndex-1 ];
+					glm::vec3 normal = temp_normals[ normalIndex-1 ];
+
+					// Put the attributes in buffers
+					mesh->m_vertices.push_back(vertex);
+					mesh->m_uvs.push_back(uv);
+					mesh->m_normals.push_back(normal);
+
+				}
+			}
+			// Add new mesh to the list
+			mesh = new Mesh();
+			outObj->m_meshList.push_back( mesh );
+		}
 		
 		if ( strcmp( lineHeader, "v" ) == 0 )
 		{
@@ -111,26 +151,29 @@ Obj* ObjFactory::loadOBJ( string filename )
 
 	}
 
-	Obj* outObj = new Obj();
 	// For each vertex of each triangle
-	for( unsigned int i=0; i<vertexIndices.size(); i++ )
+	if( mesh != NULL )
 	{
-		// Get the indices of its attributes
-		unsigned int vertexIndex = vertexIndices[i];
-		unsigned int uvIndex = uvIndices[i];
-		unsigned int normalIndex = normalIndices[i];
-		
-		// Get the attributes thanks to the index
-		glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
-		glm::vec2 uv = temp_uvs[ uvIndex-1 ];
-		glm::vec3 normal = temp_normals[ normalIndex-1 ];
-		
-		// Put the attributes in buffers
-		outObj->m_vertices.push_back(vertex);
-		outObj->m_uvs.push_back(uv);
-		outObj->m_normals.push_back(normal);
-	
+		for( unsigned int i=0; i<vertexIndices.size(); i++ )
+		{
+			// Get the indices of its attributes
+			unsigned int vertexIndex = vertexIndices[i];
+			unsigned int uvIndex = uvIndices[i];
+			unsigned int normalIndex = normalIndices[i];
+
+			// Get the attributes thanks to the index
+			glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
+			glm::vec2 uv = temp_uvs[ uvIndex-1 ];
+			glm::vec3 normal = temp_normals[ normalIndex-1 ];
+
+			// Put the attributes in buffers
+			mesh->m_vertices.push_back(vertex);
+			mesh->m_uvs.push_back(uv);
+			mesh->m_normals.push_back(normal);
+		}
 	}
+
+	std::cout << "Loaded file with " << outObj->m_meshList.size() << " meshes" << std::endl;
 
 	return outObj;
 }
@@ -158,6 +201,34 @@ void Obj::draw()
 
 	glUniformMatrix4fv( m_matrixUniformLocator, 1, GL_FALSE, &m_mvp[0][0] );
 
+	// Bind our texture in Texture Unit 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	// Set our "myTextureSampler" sampler to user Texture Unit 0
+	glUniform1i(m_textureUniformLocator, 0);
+
+	for( int mesh=0, nMesh=m_meshList.size() ; mesh<nMesh ; ++mesh )
+	{
+		m_meshList[ mesh ]->draw();
+	}
+
+}
+
+/******************************************************************************/
+/****  					Mesh object									***********/
+/******************************************************************************/
+
+Mesh::Mesh()
+{
+	m_vertexBuffer = 0;
+	m_uvBuffer = 0;
+	m_normalBuffer = 0;
+}
+
+Mesh::~Mesh(){}
+
+void Mesh::draw()
+{
 	if( m_vertexBuffer == 0 )
 	{
 		glGenBuffers(1, &m_vertexBuffer);
@@ -178,12 +249,6 @@ void Obj::draw()
 		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
 		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(glm::vec3), &m_normals[0], GL_STATIC_DRAW);
 	}
-
-	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	glUniform1i(m_textureUniformLocator, 0);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -234,6 +299,13 @@ void Obj::draw()
 	if( m_uvBuffer != 0 ) 	 glDisableVertexAttribArray(1);
 	if( m_normalBuffer != 0 ) glDisableVertexAttribArray(2);
 }
+
+
+
+
+/******************************************************************************/
+/**						Object Factory 									*******/
+/******************************************************************************/
 
 ObjFactory::ObjFactory(){}
 

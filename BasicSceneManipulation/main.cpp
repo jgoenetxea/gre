@@ -74,24 +74,14 @@ int main( void )
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	// Shape drawer object
-	//Shapes* shapeDrawer = ShapeDispatcher::getShapes(); // Deprecated
 	// Common Wall
 	CommonWall wall;
 
 	// Create and compile our GLSL program from the shaders
 	sceneControl->loadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
-	//GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
-
-	// Get a handle for our "MVP" uniform
-	//GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
 	sceneControl->loadTextureDDS( "uvtemplate.DDS" );
-	//GLuint Texture = loadDDS("uvtemplate.DDS");
-	
-	// Get a handle for our "myTextureSampler" uniform
-	//GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 
 	wall.setObj( "cube.obj", "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 	do
@@ -101,17 +91,7 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		sceneControl->computeMatricesFromInputs();
-		//glm::mat4 ProjectionMatrix = controls->getProjectionMatrix();
-		//glm::mat4 ViewMatrix = controls->getViewMatrix();
-		//glm::mat4 ModelMatrix = glm::mat4(1.0);
-		//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;  // Do this step inside the shader
 
-		// Send our transformation to the currently bound shader, 
-		// in the "MVP" uniform
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-		//shapeDrawer->drawCube( Texture, TextureID ); // Deprecated
-		//wall.drawCube();
 		wall.drawObjModel();
 
 		// Swap buffers
