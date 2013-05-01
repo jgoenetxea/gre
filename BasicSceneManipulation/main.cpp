@@ -53,7 +53,8 @@ int main( void )
 
 	SceneControl* sceneControl;
 	sceneControl = SceneControl::getInstance();
-	sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
+	//sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
+	sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
