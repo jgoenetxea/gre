@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+
 // Include GLFW
 #include <GL/glfw.h>
 
@@ -6,31 +8,61 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "controls.hpp"
+#include "SceneControl.hpp"
 
-glm::mat4 SceneControls::getViewMatrix(){
+#include "shader.hpp"
+#include "texture.hpp"
+
+SceneControl* SceneControl::sceneControlInstance = NULL;
+
+SceneControl* SceneControl::getInstance()
+{
+	if( sceneControlInstance == NULL )
+	{
+		sceneControlInstance = new SceneControl();
+	}
+	return sceneControlInstance;
+}
+
+void SceneControl::deleteInstance()
+{
+	if( sceneControlInstance != NULL )
+	{
+		delete sceneControlInstance;
+	}
+}
+
+glm::mat4 SceneControl::getViewMatrix()
+{
 	return ViewMatrix;
 }
-glm::mat4 SceneControls::getProjectionMatrix(){
+glm::mat4 SceneControl::getProjectionMatrix()
+{
 	return ProjectionMatrix;
 }
 
-SceneControls::SceneControls()
+SceneControl::SceneControl()
 {
 	init();
 	setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
 }
 
-SceneControls::SceneControls( InteractionType itype )
+SceneControl::SceneControl( InteractionType itype )
 {
 	init();
 	setControlType( itype );
 }
 
-SceneControls::~SceneControls()
-{}
+SceneControl::~SceneControl()
+{
+	if( m_programID != 0 )
+		glDeleteProgram(m_programID);
 
-void SceneControls::init()
+	if( m_textureID != 0 )
+		glDeleteTextures(1, &m_textureID);
+}
+
+void SceneControl::init()
 {
 	// Initial position : on +Z
 	position = glm::vec3( 0, 0, 5 );
@@ -44,20 +76,55 @@ void SceneControls::init()
 	transSpeed = 3.0f; // 3 units / second
 	rotSpeed = 1.0f;
 	mouseSpeed = 0.005f;
+
+	m_programID = 0;
+	m_textureID = 0;
 }
 
-void SceneControls::setControlType( InteractionType itype )
+void SceneControl::loadShaders( std::string vertexFileName, std::string fragmentFileName )
+{
+	m_programID = LoadShaders( vertexFileName.c_str(), fragmentFileName.c_str() );
+	m_matrixID = glGetUniformLocation(m_programID, "MVP");
+	m_textureID  = glGetUniformLocation(m_programID, "uSampler");
+}
+
+unsigned int SceneControl::getProgram()
+{
+	return m_programID;
+}
+
+void SceneControl::loadTextureDDS( std::string textureFileName )
+{
+	m_texture = loadDDS(textureFileName.c_str());
+}
+
+unsigned int SceneControl::getTexture()
+{
+	return m_texture;
+}
+
+unsigned int SceneControl::getTextureID()
+{
+	return m_textureID;
+}
+
+unsigned int SceneControl::getMatrixID()
+{
+	return m_matrixID;
+}
+
+void SceneControl::setControlType( InteractionType itype )
 {
 	interactionType = itype;
 }
 
-InteractionType SceneControls::getControlType()
+InteractionType SceneControl::getControlType()
 {
 	return interactionType;
 }
 
 
-void SceneControls::computeMatricesFromInputs()
+void SceneControl::computeMatricesFromInputs()
 {
 	switch( interactionType )
 	{
@@ -74,7 +141,7 @@ void SceneControls::computeMatricesFromInputs()
 	}
 }
 
-void SceneControls::computeMatricesMouseLookKeyRotate()
+void SceneControl::computeMatricesMouseLookKeyRotate()
 {
 	// glfwGetTime is called only once, the first time this function is called
 	static double lastTime = glfwGetTime();
@@ -143,7 +210,7 @@ void SceneControls::computeMatricesMouseLookKeyRotate()
 	lastTime = currentTime;
 }
 
-void SceneControls::computeMatricesMouseNoneKeyRotate()
+void SceneControl::computeMatricesMouseNoneKeyRotate()
 {
 	// glfwGetTime is called only once, the first time this function is called
 	static double lastTime = glfwGetTime();

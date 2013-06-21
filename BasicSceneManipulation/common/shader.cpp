@@ -27,7 +27,9 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 		while(getline(VertexShaderStream, Line))
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
-	}else{
+	}
+	else
+	{
 		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
 		return 0;
 	}
@@ -40,6 +42,11 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 		while(getline(FragmentShaderStream, Line))
 			FragmentShaderCode += "\n" + Line;
 		FragmentShaderStream.close();
+	}
+	else
+	{
+		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
+		return 0;
 	}
 
 

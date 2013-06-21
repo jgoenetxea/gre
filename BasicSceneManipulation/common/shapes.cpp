@@ -22,7 +22,7 @@ Shapes::~Shapes()
 	// TODO Auto-generated destructor stub
 }
 
-void Shapes::drawCube( unsigned int textureFileRef = 0, unsigned int textureUniformLocator = 0 )
+void Shapes::drawCube( unsigned int textureFileRef, unsigned int textureUniformLocator )
 {
 	if( m_cubeVertexBuffer == 0 )
 	{

@@ -1,6 +1,8 @@
 #ifndef CONTROLS_HPP
 #define CONTROLS_HPP
 
+#include <string>
+
 // Define which interaction is used
 enum InteractionType
 {
@@ -9,12 +11,17 @@ enum InteractionType
 	INTER_MOUSENONE_KEYROTATE
 };
 
-class SceneControls
+class SceneControl
 {
 public:
-	SceneControls();
-	SceneControls(  InteractionType itype  );
-	~SceneControls();
+	SceneControl();
+	SceneControl(  InteractionType itype  );
+	~SceneControl();
+
+	// Singleton functions
+	static SceneControl* getInstance();
+	static void deleteInstance();
+
 	void computeMatricesFromInputs();
 
 	glm::mat4 getViewMatrix();
@@ -22,7 +29,17 @@ public:
 
 	void setControlType( InteractionType itype );
 	InteractionType getControlType();
+
+	void loadShaders( std::string vertexFileName, std::string fragmentFileName );
+	unsigned int getProgram();
+	void loadTextureDDS( std::string textureFileName );
+	unsigned int getTexture();
+	unsigned int getTextureID();
+	unsigned int getMatrixID();
+
 private:
+	static SceneControl* sceneControlInstance;
+
 	// Active interaction type
 	InteractionType interactionType;
 
@@ -42,9 +59,20 @@ private:
 	float rotSpeed;
 	float mouseSpeed;
 
+	// Scene modificators
+	// Create and compile our GLSL program from the shaders
+	unsigned int m_programID;
+	// Get a handle for our "MVP" uniform
+	unsigned int m_matrixID;
+	// Load the texture
+	unsigned int m_texture;
+	// Get a handle for our "uSampler" uniform
+	unsigned int m_textureID;
+
 	void init();
 
 	void computeMatricesMouseLookKeyRotate();
 	void computeMatricesMouseNoneKeyRotate();
 };
+
 #endif
