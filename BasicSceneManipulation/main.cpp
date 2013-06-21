@@ -20,6 +20,18 @@ using namespace glm;
 #include "common/shapes.hpp"
 #include "CommonWall.h"
 
+#ifdef _WIN32
+	string vShader = "../TransformVertexShader.vertexshader";
+	string fShader = "../TextureFragmentShader.fragmentshader";
+	string uvtemplate = "../uvtemplate.DDS";
+	string modelFile = "../cube.obj";
+#else
+	string vShader = "TransformVertexShader.vertexshader";
+	string fShader = "TextureFragmentShader.fragmentshader";
+	string uvtemplate = "uvtemplate.DDS";
+	string modelFile = "cube.obj";
+#endif
+
 int main( void )
 {
 	// Initialise GLFW
@@ -79,12 +91,12 @@ int main( void )
 	CommonWall wall;
 
 	// Create and compile our GLSL program from the shaders
-	sceneControl->loadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	sceneControl->loadShaders( vShader, fShader );
 
 	// Load the texture
-	sceneControl->loadTextureDDS( "uvtemplate.DDS" );
+	sceneControl->loadTextureDDS( uvtemplate );
 
-	wall.setObj( "cube.obj", "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	wall.setObj( modelFile, vShader, fShader );
 	do
 	{
 		// Clear the screen

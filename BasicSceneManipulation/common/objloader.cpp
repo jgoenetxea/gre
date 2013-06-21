@@ -107,7 +107,7 @@ int ObjFactory::isEqualStored( 	std::vector<unsigned short>& vertexIndices,
 		unsigned short normalIndexToBeFound = normalIndices[currentIndex];
 		unsigned short uvIndexToBeFound = uvIndices[currentIndex];
 
-		cout << currentIndex << " => " << vertexIndexToBeFound+1 << " " << uvIndexToBeFound+1 << " " << normalIndexToBeFound+1;
+		//cout << currentIndex << " => " << vertexIndexToBeFound+1 << " " << uvIndexToBeFound+1 << " " << normalIndexToBeFound+1;
 
 		bool valueFound = false;
 		for( unsigned int i=0 ; i<currentIndex && !valueFound ; ++i )

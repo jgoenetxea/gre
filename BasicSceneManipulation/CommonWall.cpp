@@ -79,7 +79,7 @@ void CommonWall::setObj( string filename, string vertexShaderFilename, string fr
 {
 	// Load the obj file
 	m_wallModel = ObjFactory::getInstance()->loadOBJ( filename );
-	m_wallModel->setTexture( loadDDS( "uvtemplate.DDS" ) );
+	m_wallModel->setTexture( loadDDS( "uvtemplate.DDS" ) );// This line must be replaced by a mtl file read process
 	m_wallModel->setShaders( vertexShaderFilename, fragmentShaderFilename );
 }
 
