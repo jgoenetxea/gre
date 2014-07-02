@@ -7,7 +7,7 @@
 
 #include <GL/glew.h>
 
-#include "shader.hpp"
+#include "shaderProgram.hpp"
 
 using namespace std;
 
@@ -152,7 +152,7 @@ Obj* ObjFactory::loadOBJ( string filename )
 	if( file == NULL )
 	{
 		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		return false;
+        return NULL;
 	}
 
 	std::cout << "Loadeding file " << filename << std::endl;
@@ -379,7 +379,7 @@ void Obj::setTexture( unsigned int textureFileRef )
 
 void Obj::setShaders( string vertexShaderFilename, string fragmentShaderFilename )
 {
-	m_program = LoadShaders( vertexShaderFilename.c_str(), fragmentShaderFilename.c_str() );
+    m_program = ProgramGenerator::makeProgramUsingFiles( vertexShaderFilename, fragmentShaderFilename );
 	m_matrixUniformLocator = glGetUniformLocation(m_program, "MVP");
 	m_textureUniformLocator  = glGetUniformLocation(m_program, "uSampler");
 }

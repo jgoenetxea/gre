@@ -29,7 +29,7 @@ set( LAB_SRCS
 	CommonWall.cpp
 	common/objloader.cpp
 	common/SceneControl.cpp
-	common/shader.cpp
+        common/shaderProgram.cpp
 	common/shapes.cpp
 	common/texture.cpp
 )
@@ -38,7 +38,7 @@ set( LAB_HEADERS
 	CommonWall.h
 	common/objloader.hpp
 	common/SceneControl.hpp
-	common/shader.hpp
+        common/shaderProgram.hpp
 	common/shapes.hpp
 	common/texture.hpp
 )

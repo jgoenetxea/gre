@@ -14,7 +14,7 @@
 using namespace glm;
 
 #include "common/objloader.hpp"
-#include "common/shader.hpp"
+#include "common/shaderProgram.hpp"
 #include "common/texture.hpp"
 #include "common/SceneControl.hpp"
 #include "common/shapes.hpp"
@@ -26,10 +26,10 @@ using namespace glm;
 	string uvtemplate = "../uvtemplate.DDS";
 	string modelFile = "../cube.obj";
 #else
-	string vShader = "TransformVertexShader.vertexshader";
-	string fShader = "TextureFragmentShader.fragmentshader";
-	string uvtemplate = "uvtemplate.DDS";
-	string modelFile = "cube.obj";
+    string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
+    string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
+    string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
+    string modelFile = "../BasicSceneManipulation/cube.obj";
 #endif
 
 int main( void )
@@ -59,7 +59,7 @@ int main( void )
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		return -1;
-	}
+    }
 
 	glfwSetWindowTitle( "<- - ->" );
 
@@ -81,7 +81,7 @@ int main( void )
 	glDepthFunc(GL_LESS); 
 
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
@@ -91,28 +91,28 @@ int main( void )
 	CommonWall wall;
 
 	// Create and compile our GLSL program from the shaders
-	sceneControl->loadShaders( vShader, fShader );
+    sceneControl->loadShaders( vShader, fShader );
 
 	// Load the texture
 	sceneControl->loadTextureDDS( uvtemplate );
 
 	wall.setObj( modelFile, vShader, fShader );
-	do
-	{
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    do
+    {
+        // Clear the screen
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Compute the MVP matrix from keyboard and mouse input
-		sceneControl->computeMatricesFromInputs();
+        // Compute the MVP matrix from keyboard and mouse input
+        sceneControl->computeMatricesFromInputs();
 
-		wall.drawObjModel();
+        wall.drawObjModel();
 
-		// Swap buffers
-		glfwSwapBuffers();
+        // Swap buffers
+        glfwSwapBuffers();
 
-	} // Check if the ESC key was pressed or the window was closed
-	while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
-		   glfwGetWindowParam( GLFW_OPENED ) );
+    } // Check if the ESC key was pressed or the window was closed
+    while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
+           glfwGetWindowParam( GLFW_OPENED ) );
 
 	// Cleanup VBO and shader
 	//glDeleteProgram(programID);

@@ -10,7 +10,7 @@ using namespace glm;
 
 #include "SceneControl.hpp"
 
-#include "shader.hpp"
+#include "shaderProgram.hpp"
 #include "texture.hpp"
 
 SceneControl* SceneControl::sceneControlInstance = NULL;
@@ -83,7 +83,7 @@ void SceneControl::init()
 
 void SceneControl::loadShaders( std::string vertexFileName, std::string fragmentFileName )
 {
-	m_programID = LoadShaders( vertexFileName.c_str(), fragmentFileName.c_str() );
+    m_programID = ProgramGenerator::makeProgramUsingFiles( vertexFileName, fragmentFileName );
 	m_matrixID = glGetUniformLocation(m_programID, "MVP");
 	m_textureID  = glGetUniformLocation(m_programID, "uSampler");
 }
