@@ -22,6 +22,93 @@ Shapes::~Shapes()
 	// TODO Auto-generated destructor stub
 }
 
+Obj* Shapes::getCube()
+{
+    Obj* obj = new Obj();
+
+    std::vector<glm::vec3> temp_vertices;
+    std::vector<glm::vec2> temp_uv;
+
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f,-1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+    temp_vertices.push_back(glm::vec3( 1.0f,-1.0f, 1.0f));
+
+    temp_uv.push_back(glm::vec2(0.000059f, 0.000004f));
+    temp_uv.push_back(glm::vec2(0.000103f, 0.336048f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(1.000023f, 0.000013f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.999958f, 0.336064f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.336024f, 0.671877f));
+    temp_uv.push_back(glm::vec2(0.667969f, 0.671889f));
+    temp_uv.push_back(glm::vec2(1.000023f, 0.000013f));
+    temp_uv.push_back(glm::vec2(0.668104f, 0.000013f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.000059f, 0.000004f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(0.336098f, 0.000071f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(0.336024f, 0.671877f));
+    temp_uv.push_back(glm::vec2(1.000004f, 0.671847f));
+    temp_uv.push_back(glm::vec2(0.999958f, 0.336064f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.668104f, 0.000013f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(0.668104f, 0.000013f));
+    temp_uv.push_back(glm::vec2(0.336098f, 0.000071f));
+    temp_uv.push_back(glm::vec2(0.000103f, 0.336048f));
+    temp_uv.push_back(glm::vec2(0.000004f, 0.671870f));
+    temp_uv.push_back(glm::vec2(0.336024f, 0.671877f));
+    temp_uv.push_back(glm::vec2(0.000103f, 0.336048f));
+    temp_uv.push_back(glm::vec2(0.336024f, 0.671877f));
+    temp_uv.push_back(glm::vec2(0.335973f, 0.335903f));
+    temp_uv.push_back(glm::vec2(0.667969f, 0.671889f));
+    temp_uv.push_back(glm::vec2(1.000004f, 0.671847f));
+    temp_uv.push_back(glm::vec2(0.667979f, 0.335851f));
+
+    obj->m_vertices = temp_vertices;
+    obj->m_uvs = temp_uv;
+
+    return obj;
+}
+
 void Shapes::drawCube( unsigned int textureFileRef, unsigned int textureUniformLocator )
 {
 	if( m_cubeVertexBuffer == 0 )

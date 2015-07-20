@@ -14,11 +14,9 @@
 using namespace glm;
 
 #include "common/objloader.hpp"
-#include "common/shaderProgram.hpp"
-#include "common/texture.hpp"
-#include "common/SceneControl.hpp"
 #include "common/shapes.hpp"
-#include "CommonWall.h"
+
+#include "common/scene.hpp"
 
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
@@ -63,10 +61,11 @@ int main( void )
 
 	glfwSetWindowTitle( "<- - ->" );
 
-	SceneControl* sceneControl;
-	sceneControl = SceneControl::getInstance();
-	//sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
-	sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
+    //SceneControl* sceneControl;
+    //sceneControl = SceneControl::getInstance();
+    //sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
+    //sceneControl->setControlType( INTER_MOUSELOOK_KEYROTATE );
+    //sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
@@ -78,7 +77,7 @@ int main( void )
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS); 
+	glDepthFunc(GL_LESS);
 
 	// Cull triangles which normal is not towards the camera
     glEnable(GL_CULL_FACE);
@@ -88,24 +87,59 @@ int main( void )
 	glBindVertexArray(VertexArrayID);
 
 	// Common Wall
-	CommonWall wall;
+    //CommonWall wall;
 
 	// Create and compile our GLSL program from the shaders
-    sceneControl->loadShaders( vShader, fShader );
+    //sceneControl->loadShaders( vShader, fShader );
 
 	// Load the texture
-	sceneControl->loadTextureDDS( uvtemplate );
+    //sceneControl->loadTextureDDS( uvtemplate );
 
-	wall.setObj( modelFile, vShader, fShader );
+	//wall.setObj( modelFile, vShader, fShader );
+    Obj* m_obj = ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_obj->setShaders( vShader, fShader );
+    m_obj->setTexture( uvtemplate );
+
+
+    // Generate scene
+    Scene scene;
+    scene.addChild(m_obj);
+
+    // Initial position : on +Z
+    glm::vec3 position = glm::vec3( 0, 0, 5 );
+    glm::vec3 up = glm::vec3( 0,1,0 );
+    float fov = 60.0;
+    double lastTime = glfwGetTime();
+    float horizontalAngle = 0.f;
+    int rotSpeed = 20;
     do
     {
+        // time control
+        double currentTime = glfwGetTime();
+        float deltaTime = float(currentTime - lastTime);
+        lastTime = currentTime;
+
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Compute the MVP matrix from keyboard and mouse input
-        sceneControl->computeMatricesFromInputs();
+        // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+        glm::mat4 ProjectionMatrix = glm::perspective(fov, 4.0f / 3.0f, 0.1f, 100.0f);
+        // Camera matrix
+        glm::mat4 ViewMatrix       = glm::lookAt(
+                                    position,           // Camera is here
+                                    glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
+                                    up                  // Head is up (set to 0,-1,0 to look upside-down)
+                               );
 
-        wall.drawObjModel();
+        horizontalAngle += deltaTime * rotSpeed;
+        glm::mat4 ModelMatrix = glm::mat4(1.0);
+        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        //glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+        //m_obj->setMVP(MVP);
+        m_obj->setMVP(ModelMatrix, ViewMatrix, ProjectionMatrix);
+
+        scene.draw();
 
         // Swap buffers
         glfwSwapBuffers();
@@ -122,8 +156,7 @@ int main( void )
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
 
-	SceneControl::deleteInstance();
+    //SceneControl::deleteInstance();
 
 	return 0;
 }
-

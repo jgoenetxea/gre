@@ -8,6 +8,8 @@
 #ifndef SHAPES_HPP_
 #define SHAPES_HPP_
 
+#include"obj.hpp"
+
 static const float SHAPE_CUBE_VERTEX[] =
 {
 	-1.0f,-1.0f,-1.0f,
@@ -96,6 +98,8 @@ public:
 	virtual ~Shapes();
 
 	void drawCube( unsigned int textureFileRef=0, unsigned int textureUniformLocator=0 );
+
+    Obj* getCube();
 
 	// TODO: Generate a skybox cube generation function
 

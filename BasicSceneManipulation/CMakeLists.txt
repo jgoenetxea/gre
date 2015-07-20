@@ -26,18 +26,26 @@ find_package( GLM REQUIRED )
 # List source files in a variable so we can use it later more conveniently
 set( LAB_SRCS
 	main.cpp
-	CommonWall.cpp
+        #CommonWall.cpp
+        common/camera.cpp
+        common/node.cpp
+        common/scene.cpp
+        common/obj.cpp
 	common/objloader.cpp
-	common/SceneControl.cpp
+        #common/SceneControl.cpp
         common/shaderProgram.cpp
 	common/shapes.cpp
 	common/texture.cpp
 )
 
 set( LAB_HEADERS
-	CommonWall.h
+        #CommonWall.h
+        common/camera.hpp
+        common/node.hpp
+        common/scene.hpp
+        common/obj.hpp
 	common/objloader.hpp
-	common/SceneControl.hpp
+        #common/SceneControl.hpp
         common/shaderProgram.hpp
 	common/shapes.hpp
 	common/texture.hpp
@@ -56,7 +64,6 @@ set( CMAKE_DEBUG_POSTFIX _d )
 add_executable( labirinth ${LAB_HEADERS} ${LAB_SRCS} )
 
 target_link_libraries( labirinth ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
-#${GLFW_LIBRARIES} ${GLEW_LIBRARY}
 
 #---------------------------------------------------#
 #               Project Documentation               #
