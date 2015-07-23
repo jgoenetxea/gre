@@ -13,14 +13,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "common/objloader.hpp"
-#include "common/shapes.hpp"
+#include "../gre/objloader.hpp"
+#include "../gre/shapes.hpp"
 
-#include "common/scene.hpp"
-#include "common/translation.hpp"
+#include "../gre/scene.hpp"
+#include "../gre/translation.hpp"
 
-#include "common/renderer.hpp"
-#include "common/projectiveCamera.hpp"
+#include "../gre/renderer.hpp"
+#include "../gre/projectiveCamera.hpp"
 
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
@@ -64,12 +64,6 @@ int main( void )
     }
 
 	glfwSetWindowTitle( "<- - ->" );
-
-    //SceneControl* sceneControl;
-    //sceneControl = SceneControl::getInstance();
-    //sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
-    //sceneControl->setControlType( INTER_MOUSELOOK_KEYROTATE );
-    //sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
@@ -144,13 +138,7 @@ int main( void )
         ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
         ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
-        //m_obj->setLocalTranslation(ModelMatrix);
         m_trans.setLocalTranslation(ModelMatrix);
-        //glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
-        //m_obj->setMVP(MVP);
-        //m_obj->setMVP(ModelMatrix, ViewMatrix, ProjectionMatrix);
-        //m_obj->setVP(ViewMatrix, ProjectionMatrix);
 
         //scene.draw();
         m_renderer->renderScene(&m_scene);

@@ -25,37 +25,36 @@ find_package( GLM REQUIRED )
 #---------------------------------------------------#
 # List source files in a variable so we can use it later more conveniently
 set( LAB_SRCS
-	main.cpp
-        #CommonWall.cpp
-        common/camera.cpp
-        common/projectiveCamera.cpp
-        common/node.cpp
-        common/scene.cpp
-        common/obj.cpp
-        common/renderer.cpp
-        common/translation.cpp
-	common/objloader.cpp
-        #common/SceneControl.cpp
-        common/shaderProgram.cpp
-	common/shapes.cpp
-	common/texture.cpp
+    gre/camera.cpp
+    gre/projectiveCamera.cpp
+    gre/node.cpp
+    gre/scene.cpp
+    gre/obj.cpp
+    gre/renderer.cpp
+    gre/translation.cpp
+    gre/objloader.cpp
+    gre/shaderProgram.cpp
+    gre/shapes.cpp
+    gre/texture.cpp
 )
 
 set( LAB_HEADERS
-        #CommonWall.h
-        common/camera.hpp
-        common/projectiveCamera.hpp
-        common/node.hpp
-        common/scene.hpp
-        common/obj.hpp
-        common/renderer.hpp
-        common/translation.hpp
-	common/objloader.hpp
-        #common/SceneControl.hpp
-        common/shaderProgram.hpp
-	common/shapes.hpp
-	common/texture.hpp
+    gre/camera.hpp
+    gre/projectiveCamera.hpp
+    gre/node.hpp
+    gre/scene.hpp
+    gre/obj.hpp
+    gre/renderer.hpp
+    gre/translation.hpp
+    gre/objloader.hpp
+    gre/shaderProgram.hpp
+    gre/shapes.hpp
+    gre/texture.hpp
 )
+
+set( TESTING_BASE_APP basic/main.cpp )
+
+set( MULTY_SCENE_APP sceneSwitcher/main.cpp )
 
 #---------------------------------------------------#
 #               Project Configuration               #
@@ -67,9 +66,12 @@ link_directories( ${CMAKE_BINARY_DIR}/bin ${GLFW_LIBRARY_DIRS})
 # Add _d to the library in debug
 set( CMAKE_DEBUG_POSTFIX _d )
 
-add_executable( labirinth ${LAB_HEADERS} ${LAB_SRCS} )
+add_executable( basicCubeMoving ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_APP} )
+target_link_libraries( basicCubeMoving ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-target_link_libraries( labirinth ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+add_executable( multyScene ${LAB_HEADERS} ${LAB_SRCS} ${MULTY_SCENE_APP} )
+target_link_libraries( multyScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
 
 #---------------------------------------------------#
 #               Project Documentation               #
