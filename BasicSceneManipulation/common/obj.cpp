@@ -63,6 +63,11 @@ void Obj::setMVP( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
     m_mvp = perspective * view * model;
 }
 
+void Obj::setVP( glm::mat4& view, glm::mat4& perspective )
+{
+    m_mvp = perspective * view * m_globalTranslation;
+}
+
 void Obj::draw()
 {
 	glUseProgram( m_program );

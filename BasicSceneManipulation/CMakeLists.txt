@@ -31,6 +31,7 @@ set( LAB_SRCS
         common/node.cpp
         common/scene.cpp
         common/obj.cpp
+        common/translation.cpp
 	common/objloader.cpp
         #common/SceneControl.cpp
         common/shaderProgram.cpp
@@ -44,6 +45,7 @@ set( LAB_HEADERS
         common/node.hpp
         common/scene.hpp
         common/obj.hpp
+        common/translation.hpp
 	common/objloader.hpp
         #common/SceneControl.hpp
         common/shaderProgram.hpp

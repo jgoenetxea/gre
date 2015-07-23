@@ -17,6 +17,7 @@ using namespace glm;
 #include "common/shapes.hpp"
 
 #include "common/scene.hpp"
+#include "common/translation.hpp"
 
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
@@ -86,24 +87,18 @@ int main( void )
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	// Common Wall
-    //CommonWall wall;
-
-	// Create and compile our GLSL program from the shaders
-    //sceneControl->loadShaders( vShader, fShader );
-
-	// Load the texture
-    //sceneControl->loadTextureDDS( uvtemplate );
-
-	//wall.setObj( modelFile, vShader, fShader );
+    // Generate the main model
     Obj* m_obj = ObjFactory::getInstance()->loadOBJ( modelFile );
     m_obj->setShaders( vShader, fShader );
     m_obj->setTexture( uvtemplate );
 
+    // Generate translation node
+    Translation m_trans;
 
     // Generate scene
     Scene scene;
-    scene.addChild(m_obj);
+    scene.addChild(&m_trans);
+    m_trans.addChild(m_obj);
 
     // Initial position : on +Z
     glm::vec3 position = glm::vec3( 0, 0, 5 );
@@ -111,7 +106,9 @@ int main( void )
     float fov = 60.0;
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
-    int rotSpeed = 20;
+    float translateValue = 0.f;
+    int rotSpeed = 80;
+    int transSpeed = 14;
     do
     {
         // time control
@@ -132,12 +129,19 @@ int main( void )
                                );
 
         horizontalAngle += deltaTime * rotSpeed;
+        translateValue += deltaTime * transSpeed;
+
         glm::mat4 ModelMatrix = glm::mat4(1.0);
         ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+
+        //m_obj->setLocalTranslation(ModelMatrix);
+        m_trans.setLocalTranslation(ModelMatrix);
         //glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
         //m_obj->setMVP(MVP);
-        m_obj->setMVP(ModelMatrix, ViewMatrix, ProjectionMatrix);
+        //m_obj->setMVP(ModelMatrix, ViewMatrix, ProjectionMatrix);
+        m_obj->setVP(ViewMatrix, ProjectionMatrix);
 
         scene.draw();
 

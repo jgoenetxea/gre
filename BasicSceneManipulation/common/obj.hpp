@@ -40,6 +40,7 @@ public:
 	void setShaders( string vertexShaderFilename, string fragmentShaderFilename );
 	void setMVP( glm::mat4& MVP );
     void setMVP( glm::mat4& model, glm::mat4& view, glm::mat4& perspective );
+    void setVP( glm::mat4& view, glm::mat4& perspective );
 
 	// TODO: Hacer que esto sea configurable para cada obj
 	glm::mat4 m_mvp;
