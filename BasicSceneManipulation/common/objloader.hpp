@@ -8,6 +8,9 @@
 
 #include <glm/glm.hpp>
 
+namespace gre
+{
+
 class ObjFactory
 {
 public:
@@ -24,5 +27,7 @@ public:
 									unsigned int currentIndex
 									);
 };
+
+}
 
 #endif

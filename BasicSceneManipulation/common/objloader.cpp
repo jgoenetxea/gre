@@ -4,6 +4,7 @@
 #include <string.h>
 
 using namespace std;
+using namespace gre;
 
 int ObjFactory::isEqualStored( 	std::vector<unsigned short>& vertexIndices,
                                     std::vector<unsigned short>& uvIndices,

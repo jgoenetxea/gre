@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace gre;
+
 Node::Node()
 {
     m_globalTranslation = glm::mat4(1);

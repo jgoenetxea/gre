@@ -11,6 +11,7 @@
 #include "texture.hpp"
 
 using namespace std;
+using namespace gre;
 
 Obj::Obj()
 {

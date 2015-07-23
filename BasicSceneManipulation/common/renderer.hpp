@@ -11,6 +11,9 @@
 
 using namespace std;
 
+namespace gre
+{
+
 class Renderer
 {
 public:
@@ -32,5 +35,7 @@ private:
 
     void renderNode( Node* node, glm::mat4 currentGlobalMatrix );
 };
+
+}
 
 #endif

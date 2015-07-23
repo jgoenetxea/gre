@@ -1,5 +1,7 @@
 #include "scene.hpp"
 
+using namespace gre;
+
 Scene::Scene():m_currentCamera(-1)
 {
 

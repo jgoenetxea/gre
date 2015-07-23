@@ -9,6 +9,9 @@
 
 using namespace std;
 
+namespace gre
+{
+
 class Scene : public Node
 {
 public:
@@ -24,5 +27,7 @@ private:
     std::vector<Camera*> m_cameraList;
     int m_currentCamera;
 };
+
+}
 
 #endif

@@ -10,6 +10,9 @@
 
 using namespace std;
 
+namespace gre
+{
+
 class Translation : public Node
 {
 public:
@@ -17,5 +20,7 @@ public:
     ~Translation();
 
 };
+
+}
 
 #endif

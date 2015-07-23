@@ -10,6 +10,9 @@
 
 using namespace std;
 
+namespace gre
+{
+
 class Mesh
 {
 public:
@@ -57,5 +60,7 @@ private:
 
 	void buildObject();
 };
+
+}
 
 #endif

@@ -10,6 +10,9 @@
 
 #include"obj.hpp"
 
+namespace gre
+{
+
 static const float SHAPE_CUBE_VERTEX[] =
 {
 	-1.0f,-1.0f,-1.0f,
@@ -134,5 +137,5 @@ namespace ShapeDispatcher
 	}
 };
 
-
+}
 #endif /* SHAPES_HPP_ */

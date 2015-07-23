@@ -10,6 +10,8 @@
 // Include GLEW
 #include <GL/glew.h>
 
+using namespace gre;
+
 Shapes::Shapes()
 {
 	// TODO Auto-generated constructor stub

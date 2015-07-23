@@ -91,22 +91,22 @@ int main( void )
 	glBindVertexArray(VertexArrayID);
 
     // get renderer instance
-    Renderer* m_renderer = Renderer::getInstance();
+    gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    Obj* m_obj = ObjFactory::getInstance()->loadOBJ( modelFile );
+    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
     m_obj->setShaders( vShader, fShader );
     m_obj->setTexture( uvtemplate );
 
     // Generate translation node
-    Translation m_trans;
+    gre::Translation m_trans;
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
     float fov = 60.0;
 
-    ProjectiveCamera m_camera;
+    gre::ProjectiveCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
     // View matrix
@@ -116,7 +116,7 @@ int main( void )
                           );
 
     // Generate scene
-    Scene m_scene;
+    gre::Scene m_scene;
     m_scene.addCamera(m_camera);
     m_scene.addChild(&m_trans);
     m_trans.addChild(m_obj);

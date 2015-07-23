@@ -5,9 +5,6 @@
 #include <fstream>
 #include <algorithm>
 
-
-using namespace std;
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -15,6 +12,8 @@ using namespace std;
 
 #include "shaderProgram.hpp"
 
+using namespace std;
+using namespace gre;
 
 GLuint ProgramGenerator::makeProgramUsingFiles( std::string& vertex_file_path, std::string& fragment_file_path )
 {

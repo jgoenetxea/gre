@@ -4,6 +4,8 @@
 #include "camera.hpp"
 
 #include <glm/glm.hpp>
+namespace gre
+{
 
 class ProjectiveCamera : public Camera
 {
@@ -17,5 +19,7 @@ public:
                       const glm::vec3& up);
 
 };
+
+}
 
 #endif

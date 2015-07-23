@@ -8,6 +8,9 @@
 
 using namespace std;
 
+namespace gre
+{
+
 class Node
 {
 public:
@@ -36,5 +39,7 @@ protected:
     glm::mat4 m_localTranslation;
     glm::mat4 m_globalTranslation;
 };
+
+}
 
 #endif

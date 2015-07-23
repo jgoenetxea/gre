@@ -5,6 +5,9 @@
 
 #include <glm/glm.hpp>
 
+namespace gre
+{
+
 class Camera : public Node
 {
 public:
@@ -24,5 +27,7 @@ protected:
 
     glm::vec3 m_up;
 };
+
+}
 
 #endif
