@@ -53,24 +53,26 @@ void Obj::setShaders( string vertexShaderFilename, string fragmentShaderFilename
     m_textureUniformLocator  = glGetUniformLocation(m_program, "uSampler");
 }
 
-void Obj::setMVP( glm::mat4& MVP )
-{
-	m_mvp = MVP;
-}
+//void Obj::setMVP( glm::mat4& MVP )
+//{
+//	m_mvp = MVP;
+//}
 
-void Obj::setMVP( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
-{
-    m_mvp = perspective * view * model;
-}
+//void Obj::setMVP( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
+//{
+//    m_mvp = perspective * view * model;
+//}
 
-void Obj::setVP( glm::mat4& view, glm::mat4& perspective )
-{
-    m_mvp = perspective * view * m_globalTranslation;
-}
+//void Obj::setVP( glm::mat4& view, glm::mat4& perspective )
+//{
+//    m_mvp = perspective * view * m_globalTranslation;
+//}
 
-void Obj::draw()
+void Obj::draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
 {
 	glUseProgram( m_program );
+
+    m_mvp = perspective * view * model;
 
 	glUniformMatrix4fv( m_matrixUniformLocator, 1, GL_FALSE, &m_mvp[0][0] );
 

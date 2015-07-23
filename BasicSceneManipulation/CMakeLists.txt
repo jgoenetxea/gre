@@ -28,9 +28,11 @@ set( LAB_SRCS
 	main.cpp
         #CommonWall.cpp
         common/camera.cpp
+        common/projectiveCamera.cpp
         common/node.cpp
         common/scene.cpp
         common/obj.cpp
+        common/renderer.cpp
         common/translation.cpp
 	common/objloader.cpp
         #common/SceneControl.cpp
@@ -42,9 +44,11 @@ set( LAB_SRCS
 set( LAB_HEADERS
         #CommonWall.h
         common/camera.hpp
+        common/projectiveCamera.hpp
         common/node.hpp
         common/scene.hpp
         common/obj.hpp
+        common/renderer.hpp
         common/translation.hpp
 	common/objloader.hpp
         #common/SceneControl.hpp

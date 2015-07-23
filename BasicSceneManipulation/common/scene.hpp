@@ -18,6 +18,7 @@ public:
     unsigned int addCamera( Camera& c );
     void setCurrentCamera( const unsigned int id );
     Camera* getCamera( const unsigned int id );
+    Camera* getCurrentCamera();
 
 private:
     std::vector<Camera*> m_cameraList;

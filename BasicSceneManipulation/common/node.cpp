@@ -17,12 +17,12 @@ Node::~Node()
     }
 }
 
-void Node::draw()
+void Node::draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
 {
-    for(std::vector<Node*>::iterator it=m_children.begin() ; it!=m_children.end() ; ++it)
+    /*for(std::vector<Node*>::iterator it=m_children.begin() ; it!=m_children.end() ; ++it)
     {
         (*it)->draw();
-    }
+    }*/
 }
 
 void Node::addChild( Node* c )
@@ -43,8 +43,6 @@ Node* Node::getChild( const unsigned int id )
 void Node::setPhader( Node* p )
 {
     m_phader = p;
-
-    updateGlobalTranslation();
 }
 
 void Node::setGlobalTranslation( glm::mat4 translation )
@@ -61,14 +59,5 @@ void Node::setLocalTranslation( glm::mat4 translation )
 {
     m_localTranslation = translation;
     m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
-
-    for(std::vector<Node*>::iterator it=m_children.begin() ; it!=m_children.end() ; ++it)
-    {
-        (*it)->updateChildrenTranslation();
-    }
 }
 
-void Node::updateChildrenTranslation()
-{
-    m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
-}

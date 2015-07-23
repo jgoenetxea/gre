@@ -34,3 +34,12 @@ Camera* Scene::getCamera( const unsigned int id )
     }
     return NULL;
 }
+
+Camera* Scene::getCurrentCamera()
+{
+    if( static_cast<unsigned int>( m_cameraList.size() ) >= 0 )
+    {
+        return m_cameraList[m_currentCamera];
+    }
+    return NULL;
+}

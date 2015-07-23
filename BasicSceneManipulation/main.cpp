@@ -19,6 +19,9 @@ using namespace glm;
 #include "common/scene.hpp"
 #include "common/translation.hpp"
 
+#include "common/renderer.hpp"
+#include "common/projectiveCamera.hpp"
+
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
 	string fShader = "../TextureFragmentShader.fragmentshader";
@@ -87,6 +90,9 @@ int main( void )
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
+    // get renderer instance
+    Renderer* m_renderer = Renderer::getInstance();
+
     // Generate the main model
     Obj* m_obj = ObjFactory::getInstance()->loadOBJ( modelFile );
     m_obj->setShaders( vShader, fShader );
@@ -95,15 +101,27 @@ int main( void )
     // Generate translation node
     Translation m_trans;
 
-    // Generate scene
-    Scene scene;
-    scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
-
-    // Initial position : on +Z
+    // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
     float fov = 60.0;
+
+    ProjectiveCamera m_camera;
+    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+    m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
+    // View matrix
+    m_camera.setLocation( position,           // Camera is here
+                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
+                          up                  // Head is up (set to 0,-1,0 to look upside-down)
+                          );
+
+    // Generate scene
+    Scene m_scene;
+    m_scene.addCamera(m_camera);
+    m_scene.addChild(&m_trans);
+    m_trans.addChild(m_obj);
+
+    // Initial position : on +Z
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
@@ -119,15 +137,6 @@ int main( void )
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        glm::mat4 ProjectionMatrix = glm::perspective(fov, 4.0f / 3.0f, 0.1f, 100.0f);
-        // Camera matrix
-        glm::mat4 ViewMatrix       = glm::lookAt(
-                                    position,           // Camera is here
-                                    glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-                                    up                  // Head is up (set to 0,-1,0 to look upside-down)
-                               );
-
         horizontalAngle += deltaTime * rotSpeed;
         translateValue += deltaTime * transSpeed;
 
@@ -141,9 +150,10 @@ int main( void )
 
         //m_obj->setMVP(MVP);
         //m_obj->setMVP(ModelMatrix, ViewMatrix, ProjectionMatrix);
-        m_obj->setVP(ViewMatrix, ProjectionMatrix);
+        //m_obj->setVP(ViewMatrix, ProjectionMatrix);
 
-        scene.draw();
+        //scene.draw();
+        m_renderer->renderScene(&m_scene);
 
         // Swap buffers
         glfwSwapBuffers();

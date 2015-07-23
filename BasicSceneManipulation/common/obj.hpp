@@ -16,7 +16,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void draw();
+    void draw();
 
 	std::vector<unsigned short> m_vertexIndex;
 
@@ -34,13 +34,10 @@ public:
 	Obj();
 	~Obj();
 
-    void draw();
+    void draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective );
     void setTexture( unsigned int textureFileRef );
     void setTexture( string &textureFileName );
 	void setShaders( string vertexShaderFilename, string fragmentShaderFilename );
-	void setMVP( glm::mat4& MVP );
-    void setMVP( glm::mat4& model, glm::mat4& view, glm::mat4& perspective );
-    void setVP( glm::mat4& view, glm::mat4& perspective );
 
 	// TODO: Hacer que esto sea configurable para cada obj
 	glm::mat4 m_mvp;

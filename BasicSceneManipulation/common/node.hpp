@@ -14,9 +14,10 @@ public:
     Node();
     ~Node();
 
-    virtual void draw();
+    virtual void draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective );
     void addChild( Node* c );
     Node* getChild( const unsigned int id );
+    std::vector<Node*>& getChildren(){ return m_children; }
 
     void setPhader( Node* p );
 
@@ -25,10 +26,6 @@ public:
 
     void setGlobalTranslation( glm::mat4 translation );
     void setLocalTranslation( glm::mat4 translation );
-
-    void updateGlobalTranslation(){m_globalTranslation = m_phader->getGlobalTranslation() * m_localTranslation;}
-
-    void updateChildrenTranslation();
 
 private:
     std::vector<Node*> m_children;
