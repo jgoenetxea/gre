@@ -26,13 +26,53 @@ using namespace glm;
 	string vShader = "../TransformVertexShader.vertexshader";
 	string fShader = "../TextureFragmentShader.fragmentshader";
 	string uvtemplate = "../uvtemplate.DDS";
-	string modelFile = "../cube.obj";
+    string modelFile = "../cube.obj";
 #else
     string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
     string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
     string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
-    string modelFile = "../BasicSceneManipulation/cube.obj";
+    string cubeFile = "../BasicSceneManipulation/cube.obj";
+    string sphereFile = "../BasicSceneManipulation/dirtySphere.obj";
 #endif
+
+    std::vector<gre::Scene> m_scene(2);
+    // Generate translation node
+    std::vector<gre::Translation> m_trans(2);
+
+void generateScenes()
+{
+    // Generate the main model
+    gre::Obj* m_cube = gre::ObjFactory::getInstance()->loadOBJ( cubeFile );
+    m_cube->setShaders( vShader, fShader );
+    m_cube->setTexture( uvtemplate );
+
+    gre::Obj* m_sphere = gre::ObjFactory::getInstance()->loadOBJ( sphereFile );
+    m_sphere->setShaders( vShader, fShader );
+    m_sphere->setTexture( uvtemplate );
+
+    // Generate camera instance
+    glm::vec3 position = glm::vec3( 0, 0, 5 );
+    glm::vec3 up = glm::vec3( 0,1,0 );
+    float fov = 60.0;
+
+    gre::ProjectiveCamera* m_camera = new gre::ProjectiveCamera();
+    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+    m_camera->setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
+    // View matrix
+    m_camera->setLocation( position,           // Camera is here
+                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
+                          up                  // Head is up (set to 0,-1,0 to look upside-down)
+                          );
+
+    // Generate scene
+    m_scene[0].addCamera(*m_camera);
+    m_scene[0].addChild(&m_trans[0]);
+    m_trans[0].addChild(m_cube);
+    // Generate scene
+    m_scene[1].addCamera(*m_camera);
+    m_scene[1].addChild(&m_trans[1]);
+    m_trans[1].addChild(m_sphere);
+}
 
 int main( void )
 {
@@ -63,7 +103,7 @@ int main( void )
 		return -1;
     }
 
-	glfwSetWindowTitle( "<- - ->" );
+    glfwSetWindowTitle( "<- - ->" );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
@@ -82,38 +122,12 @@ int main( void )
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+    glBindVertexArray(VertexArrayID);
 
     // get renderer instance
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
-    // Generate the main model
-    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    m_obj->setShaders( vShader, fShader );
-    m_obj->setTexture( uvtemplate );
-
-    // Generate translation node
-    gre::Translation m_trans;
-
-    // Generate camera instance
-    glm::vec3 position = glm::vec3( 0, 0, 5 );
-    glm::vec3 up = glm::vec3( 0,1,0 );
-    float fov = 60.0;
-
-    gre::ProjectiveCamera m_camera;
-    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
-    // View matrix
-    m_camera.setLocation( position,           // Camera is here
-                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-                          up                  // Head is up (set to 0,-1,0 to look upside-down)
-                          );
-
-    // Generate scene
-    gre::Scene m_scene;
-    m_scene.addCamera(m_camera);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
+    generateScenes();
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
@@ -121,12 +135,20 @@ int main( void )
     float translateValue = 0.f;
     int rotSpeed = 80;
     int transSpeed = 14;
+
+    int sceneId = 0;
+    int counter = 0;
     do
     {
         // time control
         double currentTime = glfwGetTime();
         float deltaTime = float(currentTime - lastTime);
         lastTime = currentTime;
+
+        if( counter++ % 200 == 0 )
+        {
+            sceneId = sceneId?0:1;
+        }
 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -135,13 +157,23 @@ int main( void )
         translateValue += deltaTime * transSpeed;
 
         glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        if( sceneId == 0 )
+        {
+            float radius = 2.f;
+            ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+            ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue)*radius, sin(translateValue)*radius, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        }
+        else if( sceneId == 1 )
+        {
+            float radius = 2.f;
+            //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+            ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue)*radius, 0, sin(translateValue)*radius)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        }
 
-        m_trans.setLocalTranslation(ModelMatrix);
+        m_trans[sceneId].setLocalTranslation(ModelMatrix);
 
         //scene.draw();
-        m_renderer->renderScene(&m_scene);
+        m_renderer->renderScene(&m_scene[sceneId]);
 
         // Swap buffers
         glfwSwapBuffers();
