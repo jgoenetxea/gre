@@ -37,7 +37,7 @@ public:
 	Obj();
 	~Obj();
 
-    void draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective );
+    void draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective );
     void setTexture( unsigned int textureFileRef );
     void setTexture( string &textureFileName );
 	void setShaders( string vertexShaderFilename, string fragmentShaderFilename );

@@ -69,7 +69,7 @@ void Obj::setShaders( string vertexShaderFilename, string fragmentShaderFilename
 //    m_mvp = perspective * view * m_globalTranslation;
 //}
 
-void Obj::draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
+void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective )
 {
 	glUseProgram( m_program );
 

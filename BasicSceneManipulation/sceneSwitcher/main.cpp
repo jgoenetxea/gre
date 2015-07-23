@@ -69,9 +69,28 @@ void generateScenes()
     m_scene[0].addChild(&m_trans[0]);
     m_trans[0].addChild(m_cube);
     // Generate scene
+//    m_scene[1].addCamera(*m_camera);
+//    m_scene[1].addChild(&m_trans[1]);
+//    m_trans[1].addChild(m_sphere);
+    // Generate scene
     m_scene[1].addCamera(*m_camera);
     m_scene[1].addChild(&m_trans[1]);
-    m_trans[1].addChild(m_sphere);
+    m_trans[1].addChild(m_cube);
+    //m_trans[1].addChild(m_sphere);
+    glm::mat4* trans = new glm::mat4(1);
+    *trans = glm::translate(*trans, glm::vec3(0, 2, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+    gre::Translation* sphereOffset = new gre::Translation();
+    sphereOffset->setLocalTranslation( *trans );
+    sphereOffset->addChild(m_sphere);
+    m_trans[1].addChild(sphereOffset);
+
+    // set node names
+    m_camera->setName("Camera");
+    m_trans[0].setName("Trans_0");
+    m_trans[1].setName("Trans_1");
+    sphereOffset->setName("sphereOffset");
+    m_cube->setName("Cube mesh");
+    m_sphere->setName("Sphere mesh");
 }
 
 int main( void )
@@ -134,7 +153,7 @@ int main( void )
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
     int rotSpeed = 80;
-    int transSpeed = 14;
+    int transSpeed = 5;
 
     int sceneId = 0;
     int counter = 0;

@@ -27,6 +27,7 @@ find_package( GLM REQUIRED )
 set( LAB_SRCS
     gre/camera.cpp
     gre/projectiveCamera.cpp
+    gre/orthoCamera.cpp
     gre/node.cpp
     gre/scene.cpp
     gre/obj.cpp
@@ -41,6 +42,7 @@ set( LAB_SRCS
 set( LAB_HEADERS
     gre/camera.hpp
     gre/projectiveCamera.hpp
+    gre/orthoCamera.hpp
     gre/node.hpp
     gre/scene.hpp
     gre/obj.hpp

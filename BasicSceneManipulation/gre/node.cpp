@@ -8,7 +8,7 @@ Node::Node()
 {
     m_globalTranslation = glm::mat4(1);
     m_localTranslation = glm::mat4(1);
-    m_phader = NULL;
+    m_name = "Unamed";
 }
 
 Node::~Node()
@@ -19,7 +19,7 @@ Node::~Node()
     }
 }
 
-void Node::draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
+void Node::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective )
 {
     /*for(std::vector<Node*>::iterator it=m_children.begin() ; it!=m_children.end() ; ++it)
     {
@@ -29,7 +29,6 @@ void Node::draw( glm::mat4& model, glm::mat4& view, glm::mat4& perspective )
 
 void Node::addChild( Node* c )
 {
-    c->setPhader(this);
     m_children.push_back(c);
 }
 
@@ -42,17 +41,13 @@ Node* Node::getChild( const unsigned int id )
     return NULL;
 }
 
-void Node::setPhader( Node* p )
-{
-    m_phader = p;
-}
-
 void Node::setGlobalTranslation( glm::mat4 translation )
 {
+    return;
     // Define the global translation
-    m_globalTranslation = translation;
+   // m_globalTranslation = translation;
     // Compute the local translation for the defined global
-    m_localTranslation = m_phader->getGlobalTranslation() * glm::inverse(m_globalTranslation);
+    //m_localTranslation = m_phader->getGlobalTranslation() * glm::inverse(m_globalTranslation);
 
 
 }
@@ -60,6 +55,6 @@ void Node::setGlobalTranslation( glm::mat4 translation )
 void Node::setLocalTranslation( glm::mat4 translation )
 {
     m_localTranslation = translation;
-    m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
+    //m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
 }
 
