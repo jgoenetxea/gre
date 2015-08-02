@@ -6,6 +6,9 @@
 #include <fstream>
 
 #include <GL/glew.h>
+//#include<GL/gl.h>
+//#include<GL/glu.h>
+//#include<GL/glext.h>
 
 #include "shaderProgram.hpp"
 #include "texture.hpp"
@@ -161,6 +164,35 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 void Obj::buildObject()
 {
 	//For each
+}
+
+void Obj::getInnerData( std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& uvs, std::vector<glm::vec3>& normals  )
+{
+    vertices = m_vertices;
+    uvs = m_uvs;
+    normals = m_normals;
+}
+
+void Obj::setInnerData( const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, const std::vector<glm::vec3>& normals  )
+{
+    m_vertices = vertices;
+    m_uvs = uvs;
+    m_normals = normals;
+
+    if( m_vertexBuffer != 0 ) glDeleteBuffers(1, &m_vertexBuffer);
+    if( m_uvBuffer != 0 ) glDeleteBuffers(1, &m_uvBuffer);
+    if( m_normalBuffer != 0 ) glDeleteBuffers(1, &m_normalBuffer);
+
+    m_vertexBuffer = 0;
+    m_uvBuffer = 0;
+    m_normalBuffer = 0;
+}
+
+void Obj::setMeshList( const std::vector<Mesh*>& meshList )
+{
+    if( m_meshList.size() > 0 ) m_meshList.clear();
+
+    m_meshList = meshList;
 }
 
 /******************************************************************************/

@@ -22,19 +22,21 @@ using namespace glm;
 #include "../../gre/renderer.hpp"
 #include "../../gre/projectiveCamera.hpp"
 
+#include "../../greFX/explosion.hpp"
+
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
 	string fShader = "../TextureFragmentShader.fragmentshader";
 	string uvtemplate = "../uvtemplate.DDS";
 	string modelFile = "../cube.obj";
 #else
-    string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
-    string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
+    string vShader = "../BasicSceneManipulation/shaders/vertexDisplacement/vertex.sh";
+    string fShader = "../BasicSceneManipulation/shaders/vertexDisplacement/fragment.sh";
     string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
     string modelFile = "../BasicSceneManipulation/cube.obj";
 #endif
 
-int main( void )
+int main( void ) // EXPLOSION
 {
 	// Initialise GLFW
 	if( !glfwInit() )
@@ -94,9 +96,10 @@ int main( void )
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    m_obj->setShaders( vShader, fShader );
-    m_obj->setTexture( uvtemplate );
+    gre::Explosion* m_explosion = new gre::Explosion();
+    m_explosion->setObject( *gre::ObjFactory::getInstance()->loadOBJ( modelFile ) );
+    m_explosion->setShaders( vShader, fShader );
+    m_explosion->setTexture( uvtemplate );
 
     // Generate translation node
     gre::Translation m_trans;
@@ -119,7 +122,7 @@ int main( void )
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
     m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
+    m_trans.addChild(m_explosion);
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
@@ -140,11 +143,11 @@ int main( void )
         horizontalAngle += deltaTime * rotSpeed;
         translateValue += deltaTime * transSpeed;
 
-        glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+//        glm::mat4 ModelMatrix = glm::mat4(1.0);
+//        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+//        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
-        m_trans.setLocalTranslation(ModelMatrix);
+//        m_trans.setLocalTranslation(ModelMatrix);
 
         //scene.draw();
         m_renderer->renderScene(&m_scene);

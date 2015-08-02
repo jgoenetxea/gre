@@ -6,7 +6,12 @@ cmake_minimum_required( VERSION 2.8 )
 
 # If you don't name the project, it will take the default name "Project"
 # Note: this must be set in the beginning of the CMakeLists file
-project( labirinth )
+project( shaderLab )
+
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
 
 # Add the extra cmake module script path
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
@@ -15,19 +20,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 #              OpenGL Configuration                 #
 #---------------------------------------------------#
 # Automatically find GL libraries
-find_package( OpenGL )
-find_package( GLEW REQUIRED )
-find_package( GLFW REQUIRED )
-find_package( GLM REQUIRED )
-FIND_PACKAGE ( X11 REQUIRED )
-
-
-IF ( X11_FOUND )
-      INCLUDE_DIRECTORIES ( ${X11_INCLUDE_DIR} )
-      LINK_LIBRARIES ( ${X11_LIBRARIES} )
-      MESSAGE ( STATUS " X11_INCLUDE_DIR: " ${X11_INCLUDE_DIR} )
-      MESSAGE ( STATUS " X11_LIBRARIES: " ${X11_LIBRARIES} )
-ENDIF ( X11_FOUND )
+FIND_PACKAGE( GLM REQUIRED )
 
 #---------------------------------------------------#
 #              Project Files                        #
@@ -64,45 +57,79 @@ set( LAB_HEADERS
 )
 
 set( FX_CLASSES 
-        ../greFX/explosion.cpp
-        ../greFX/explosion.hpp
+    ../greFX/explosion.cpp
+    ../greFX/explosion.hpp
 )
 
-set( TESTING_BASE_APP basic/main.cpp )
+set( TESTING_BASE_APP
+						main.cpp 
+	)
+set( TESTING_BASE_APP_SOURCE
+						mainwindow.cpp
+	)
+set( TESTING_BASE_APP_HEADER
+						mainwindow.h
+	)
+	
+SET( PROJECT_FORMS
+	forms/mainwindow.ui
+	)
+SET( PROJECT_RESOURCES resources/images.qrc )
 
-set( TESTING_BASE_64k_APP basic_64k/main.cpp )
+#---------------------------------------------------#
+#              Qt5 Configuration                 	#
+#---------------------------------------------------#
+FIND_PACKAGE( Qt5Widgets REQUIRED )
+FIND_PACKAGE( Qt5OpenGL REQUIRED )
+SET( QT_USE_QTOPENGL TRUE )
 
-set( TESTING_BASE_ORTHO_APP basicOrtho/main.cpp )
+QT5_WRAP_CPP( PROJECT_HEADERS_MOC ${TESTING_BASE_APP_HEADER} )
+QT5_WRAP_UI( PROJECT_FORMS_HEADERS ${PROJECT_FORMS} )
+QT5_ADD_RESOURCES( PROJECT_RESOURCES_RCC ${PROJECT_RESOURCES} )
+SET( QT_INCLUDE_DIR ${Qt5Widgets_INCLUDE_DIRS} )
 
-set( MULTY_SCENE_APP sceneSwitcher/main.cpp )
-
-set( EXPLOSION_SCENE_APP explosionScene/main.cpp )
+#SOURCE_GROUP( "Generated Files" FILES
+#	${PROJECT_HEADERS_MOC}
+#	${PROJECT_FORMS_HEADERS}
+#	${PROJECT_RESOURCES_RCC}
+#	)
 
 #---------------------------------------------------#
 #               Project Configuration               #
 #---------------------------------------------------#
+#SOURCE_GROUP( "Project Files" FILES
+#	${TESTING_BASE_APP_SOURCE}
+#	${TESTING_BASE_APP_HEADER}
+#	)
+	
 # Add all sources defined above to the program
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIR} ${GLM_INCLUDE_DIR} )
-link_directories( ${CMAKE_BINARY_DIR}/bin ${GLFW_LIBRARY_DIRS})
+INCLUDE_DIRECTORIES(
+                                        ${CMAKE_CURRENT_SOURCE_DIR}
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/include
+                                        ${CMAKE_BINARY_DIR}
+					${GLM_INCLUDE_DIR} 
+					${QT_INCLUDE_DIR} 
+					)
+#LINK_DIRECTORIES( ${CMAKE_BINARY_DIR}/bin )
 
 # Add _d to the library in debug
-set( CMAKE_DEBUG_POSTFIX _d )
+SET( CMAKE_DEBUG_POSTFIX _d )
 
-add_executable( basicCubeMoving ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_APP} )
-target_link_libraries( basicCubeMoving ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
-
-add_executable( basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
-target_link_libraries( basicCubeMoving_64k ${OPENGL_gl_LIBRARY} )
-
-add_executable( basicOrtho ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_ORTHO_APP} )
-target_link_libraries( basicOrtho ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
-
-add_executable( multyScene ${LAB_HEADERS} ${LAB_SRCS} ${MULTY_SCENE_APP} )
-target_link_libraries( multyScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
-
-add_executable( explosionScene ${LAB_HEADERS} ${LAB_SRCS} ${EXPLOSION_SCENE_APP} ${FX_CLASSES} )
-target_link_libraries( explosionScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
-
+ADD_EXECUTABLE( shaderLab 
+				${LAB_HEADERS} 
+				${LAB_SRCS} 
+				${TESTING_BASE_APP}
+				${TESTING_BASE_APP_SOURCE} 
+				${TESTING_BASE_APP_HEADER} 
+				${PROJECT_HEADERS_MOC}
+				${PROJECT_FORMS_HEADERS}
+				${PROJECT_RESOURCES_RCC}
+)
+TARGET_LINK_LIBRARIES( shaderLab 
+                                                                ${OPENGL_LIBRARIES}
+                                                                ${Qt5Widgets_LIBRARIES}
+                                                                ${Qt5OpenGL_LIBRARIES}
+					  )
 
 
 #---------------------------------------------------#

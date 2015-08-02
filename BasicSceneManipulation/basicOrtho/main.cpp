@@ -21,6 +21,9 @@ using namespace glm;
 
 #include "../../gre/renderer.hpp"
 #include "../../gre/projectiveCamera.hpp"
+#include "../../gre/orthoCamera.hpp"
+
+#include "../../gre/shaderProgram.hpp"
 
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
@@ -94,18 +97,29 @@ int main( void )
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    gre::Obj* m_obj = gre::ShapeDispatcher::getShapes()->getQuad();//gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_obj->setName("Quad");
     m_obj->setShaders( vShader, fShader );
     m_obj->setTexture( uvtemplate );
 
     // Generate translation node
     gre::Translation m_trans;
+    m_trans.setName("Translation");
 
     // Generate camera instance
-    glm::vec3 position = glm::vec3( 0, 0, 5 );
-    glm::vec3 up = glm::vec3( 0,1,0 );
-    float fov = 60.0;
+    glm::vec3 position = glm::vec3( 0., 0., 5. );
+    glm::vec3 up = glm::vec3( 0.,1.,0. );
 
+//    gre::OrthoCamera m_camera;
+//    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+//    m_camera.setConfiguration(-1., 1., -1., 1., 1., 20.);
+//    // View matrix
+//    m_camera.setLocation( position,           // Camera is here
+//                          glm::vec3( 0., 0., 0. ), // and looks here : at the same position, plus "direction"
+//                          up                  // Head is up (set to 0,-1,0 to look upside-down)
+//                          );
+    // Generate camera instance
+    float fov = 60.0;
     gre::ProjectiveCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
@@ -123,10 +137,13 @@ int main( void )
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
-    float horizontalAngle = 0.f;
-    float translateValue = 0.f;
-    int rotSpeed = 80;
-    int transSpeed = 14;
+//    float horizontalAngle = 0.f;
+//    float translateValue = 0.f;
+//    int rotSpeed = 80;
+//    int transSpeed = 14;
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
     do
     {
         // time control
@@ -137,14 +154,14 @@ int main( void )
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        horizontalAngle += deltaTime * rotSpeed;
-        translateValue += deltaTime * transSpeed;
+//        horizontalAngle += deltaTime * rotSpeed;
+//        translateValue += deltaTime * transSpeed;
 
-        glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+//        glm::mat4 ModelMatrix = glm::mat4(1.0);
+//        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+//        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
-        m_trans.setLocalTranslation(ModelMatrix);
+//        m_trans.setLocalTranslation(ModelMatrix);
 
         //scene.draw();
         m_renderer->renderScene(&m_scene);

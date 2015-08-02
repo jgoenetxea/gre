@@ -100,14 +100,16 @@ public:
 	Shapes();
 	virtual ~Shapes();
 
-	void drawCube( unsigned int textureFileRef=0, unsigned int textureUniformLocator=0 );
+    //void drawCube( unsigned int textureFileRef=0, unsigned int textureUniformLocator=0 );
 
     Obj* getCube();
 
+    Obj* getQuad();
+
 	// TODO: Generate a skybox cube generation function
 
-private:
-	unsigned int m_cubeVertexBuffer, m_cubeuvBuffer;
+//private:
+//	unsigned int m_cubeVertexBuffer, m_cubeuvBuffer;
 };
 
 
@@ -115,25 +117,17 @@ private:
 //***********************************************************/
 // 				SHAPE DISPATCHER (Singleton)
 //***********************************************************/
-namespace ShapeDispatcher
+class ShapeDispatcher
 {
-	static Shapes* shapesSingleton = 0;
-
+public:
 	static Shapes* getShapes()
 	{
-		if( shapesSingleton == 0 )
-		{
-			shapesSingleton = new Shapes();
-		}
+        static Shapes* shapesSingleton = new Shapes();
 		return shapesSingleton;
 	}
 
 	static void destroyShapes()
 	{
-		if( shapesSingleton != 0 )
-		{
-			delete shapesSingleton;
-		}
 	}
 };
 

@@ -13,14 +13,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "../gre/objloader.hpp"
-#include "../gre/shapes.hpp"
+#include "../../gre/objloader.hpp"
+#include "../../gre/shapes.hpp"
 
-#include "../gre/scene.hpp"
-#include "../gre/translation.hpp"
+#include "../../gre/scene.hpp"
+#include "../../gre/translation.hpp"
 
-#include "../gre/renderer.hpp"
-#include "../gre/projectiveCamera.hpp"
+#include "../../gre/renderer.hpp"
+#include "../../gre/projectiveCamera.hpp"
 
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
@@ -81,7 +81,7 @@ void generateScenes()
     *trans = glm::translate(*trans, glm::vec3(0, 2, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
     gre::Translation* sphereOffset = new gre::Translation();
     sphereOffset->setLocalTranslation( *trans );
-    sphereOffset->addChild(m_sphere);
+    sphereOffset->addChild(m_cube);
     m_trans[1].addChild(sphereOffset);
 
     // set node names
