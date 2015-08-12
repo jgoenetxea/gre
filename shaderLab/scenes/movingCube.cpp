@@ -70,7 +70,7 @@ void MovingCube::initialize()
     m_trans.addChild(m_obj);
 
     // Initial position : on +Z
-    lastTime = time(0);
+    m_timer = new gre::Timer();
     horizontalAngle = 0.f;
     translateValue = 0.f;
     rotSpeed = 80;
@@ -82,9 +82,11 @@ void MovingCube::initialize()
 void MovingCube::paint()
 {
     // time control
-    double currentTime = time(0);
-    float deltaTime = float(currentTime - lastTime);
-    lastTime = currentTime;
+    float deltaTime = m_timer->splitSeconds();
+    //float deltaTime = float(currentTime - lastTime);
+    //lastTime = currentTime;
+
+    //std::cout << "Delta: " << deltaTime << std::endl;
 
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -99,6 +101,6 @@ void MovingCube::paint()
     m_trans.setLocalTranslation(ModelMatrix);
 
     m_renderer->renderScene(&m_scene);
-    std::cout << "Render cube #" << m_frame << std::endl;
+    //std::cout << "Render cube #" << m_frame << std::endl;
     m_frame++;
 }

@@ -18,6 +18,8 @@
 #include "../../gre/renderer.hpp"
 #include "../../gre/projectiveCamera.hpp"
 
+#include "../../gre/timer.h"
+
 class MovingCube
 {
 
@@ -40,7 +42,7 @@ private:
     glm::vec3 position;
     glm::vec3 up;
 
-    double lastTime;
+    gre::Timer* m_timer;
     float horizontalAngle;
     float translateValue;
     int rotSpeed;
