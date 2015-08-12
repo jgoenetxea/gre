@@ -15,10 +15,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 #              OpenGL Configuration                 #
 #---------------------------------------------------#
 # Automatically find GL libraries
-find_package( OpenGL )
-find_package( GLEW REQUIRED )
-find_package( GLFW REQUIRED )
-find_package( GLM REQUIRED )
+FIND_PACKAGE( OpenGL )
+FIND_PACKAGE( GLEW REQUIRED )
+FIND_PACKAGE( GLFW REQUIRED )
+FIND_PACKAGE( GLM REQUIRED )
 FIND_PACKAGE ( X11 REQUIRED )
 
 
@@ -74,6 +74,8 @@ set( TESTING_BASE_64k_APP basic_64k/main.cpp )
 
 set( TESTING_BASE_ORTHO_APP basicOrtho/main.cpp )
 
+set( TESTING_ORTHO_PANEL_APP orthoPanel/main.cpp )
+
 set( MULTY_SCENE_APP sceneSwitcher/main.cpp )
 
 set( EXPLOSION_SCENE_APP explosionScene/main.cpp )
@@ -96,6 +98,9 @@ target_link_libraries( basicCubeMoving_64k ${OPENGL_gl_LIBRARY} )
 
 add_executable( basicOrtho ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_ORTHO_APP} )
 target_link_libraries( basicOrtho ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
+add_executable( basicOrthoPanel ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_ORTHO_PANEL_APP} )
+target_link_libraries( basicOrthoPanel ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 add_executable( multyScene ${LAB_HEADERS} ${LAB_SRCS} ${MULTY_SCENE_APP} )
 target_link_libraries( multyScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )

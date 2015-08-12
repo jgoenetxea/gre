@@ -100,16 +100,9 @@ public:
 	Shapes();
 	virtual ~Shapes();
 
-    //void drawCube( unsigned int textureFileRef=0, unsigned int textureUniformLocator=0 );
-
     Obj* getCube();
 
     Obj* getQuad();
-
-	// TODO: Generate a skybox cube generation function
-
-//private:
-//	unsigned int m_cubeVertexBuffer, m_cubeuvBuffer;
 };
 
 

@@ -5,10 +5,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <GL/glew.h>
-//#include<GL/gl.h>
-//#include<GL/glu.h>
-//#include<GL/glext.h>
+#define GL_GLEXT_PROTOTYPES
+#include<GL/gl.h>
 
 #include "shaderProgram.hpp"
 #include "texture.hpp"

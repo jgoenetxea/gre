@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Include GLEW
-#include <GL/glew.h>
+#define GL_GLEXT_PROTOTYPES
+#include<GL/gl.h>
 
 // Include GLFW
 #include <GL/glfw.h>
@@ -57,13 +57,6 @@ int main( void ) // EXPLOSION
 		glfwTerminate();
 		return -1;
 	}
-
-	// Initialize GLEW
-	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
-    }
 
 	glfwSetWindowTitle( "<- - ->" );
 

@@ -30,7 +30,7 @@ void Renderer::renderNode( Node* node, glm::mat4 currentGlobalMatrix )
     for(std::vector<Node*>::iterator it=childrenList.begin() ; it!=childrenList.end() ; ++it)
     {
         n = (*it);
-        std::cout << "Rendering: " << n->getName() << std::endl;
+        //std::cout << "Rendering: " << n->getName() << std::endl;
         n->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
         renderNode((*it), currentGlobalMatrix);
     }

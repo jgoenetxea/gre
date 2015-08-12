@@ -21,6 +21,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 #---------------------------------------------------#
 # Automatically find GL libraries
 FIND_PACKAGE( GLM REQUIRED )
+FIND_PACKAGE( OpenGL )
 
 #---------------------------------------------------#
 #              Project Files                        #
@@ -62,14 +63,22 @@ set( FX_CLASSES
 )
 
 set( TESTING_BASE_APP
-						main.cpp 
+                main.cpp
 	)
 set( TESTING_BASE_APP_SOURCE
-						mainwindow.cpp
+                mainwindow.cpp
+                glView.cpp
 	)
 set( TESTING_BASE_APP_HEADER
-						mainwindow.h
+                mainwindow.h
+                glView.h
+                testGlView.h
 	)
+
+SET( SCENE_DEFINITION
+                scenes/movingCube.cpp
+                scenes/movingCube.h
+    )
 	
 SET( PROJECT_FORMS
 	forms/mainwindow.ui
@@ -82,6 +91,13 @@ SET( PROJECT_RESOURCES resources/images.qrc )
 FIND_PACKAGE( Qt5Widgets REQUIRED )
 FIND_PACKAGE( Qt5OpenGL REQUIRED )
 SET( QT_USE_QTOPENGL TRUE )
+
+# We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
+add_definitions(${Qt5Widgets_DEFINITIONS})
+
+# Executables fail to build with Qt 5 in the default configuration
+# without -fPIE. We add that here.
+set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 QT5_WRAP_CPP( PROJECT_HEADERS_MOC ${TESTING_BASE_APP_HEADER} )
 QT5_WRAP_UI( PROJECT_FORMS_HEADERS ${PROJECT_FORMS} )
@@ -107,29 +123,31 @@ INCLUDE_DIRECTORIES(
                                         ${CMAKE_CURRENT_SOURCE_DIR}
                                         ${CMAKE_CURRENT_SOURCE_DIR}/include
                                         ${CMAKE_BINARY_DIR}
-					${GLM_INCLUDE_DIR} 
+                                        ${GLM_INCLUDE_DIR}
 					${QT_INCLUDE_DIR} 
 					)
-#LINK_DIRECTORIES( ${CMAKE_BINARY_DIR}/bin )
+
 
 # Add _d to the library in debug
 SET( CMAKE_DEBUG_POSTFIX _d )
 
-ADD_EXECUTABLE( shaderLab 
-				${LAB_HEADERS} 
-				${LAB_SRCS} 
-				${TESTING_BASE_APP}
-				${TESTING_BASE_APP_SOURCE} 
-				${TESTING_BASE_APP_HEADER} 
-				${PROJECT_HEADERS_MOC}
-				${PROJECT_FORMS_HEADERS}
-				${PROJECT_RESOURCES_RCC}
+ADD_EXECUTABLE( shaderLab
+                                ${LAB_HEADERS}
+                                ${LAB_SRCS}
+                                ${TESTING_BASE_APP}
+                                ${SCENE_DEFINITION}
+                                ${TESTING_BASE_APP_SOURCE}
+                                ${TESTING_BASE_APP_HEADER}
+                                ${PROJECT_FORMS_HEADERS}
+                                ${PROJECT_RESOURCES_RCC}
 )
-TARGET_LINK_LIBRARIES( shaderLab 
-                                                                ${OPENGL_LIBRARIES}
-                                                                ${Qt5Widgets_LIBRARIES}
-                                                                ${Qt5OpenGL_LIBRARIES}
-					  )
+
+MESSAGE("GLEW libraries: ${GLEW_LIBRARY}")
+TARGET_LINK_LIBRARIES( shaderLab
+    ${OPENGL_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+    ${Qt5OpenGL_LIBRARIES}
+)
 
 
 #---------------------------------------------------#

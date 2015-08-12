@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <GL/glew.h>
+#define GL_GLEXT_PROTOTYPES
+#include<GL/gl.h>
 
 #include "shaderProgram.hpp"
 

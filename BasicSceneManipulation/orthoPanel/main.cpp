@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// include opengl
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
 
@@ -32,7 +33,7 @@ using namespace glm;
     string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
     string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
     string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
-    string modelFile = "../BasicSceneManipulation/cube.obj";
+    string modelFile = "../BasicSceneManipulation/plane.obj";
 #endif
 
 int main( void )
@@ -59,12 +60,6 @@ int main( void )
 
     glfwSetWindowTitle( "<- - ->" );
 
-    //SceneControl* sceneControl;
-    //sceneControl = SceneControl::getInstance();
-    //sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
-    //sceneControl->setControlType( INTER_MOUSELOOK_KEYROTATE );
-    //sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
-
     // Ensure we can capture the escape key being pressed below
     glfwEnable( GLFW_STICKY_KEYS );
     glfwSetMousePos(1024/2, 768/2);
@@ -88,7 +83,8 @@ int main( void )
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    //gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    gre::Obj* m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
     m_obj->setShaders( vShader, fShader );
     m_obj->setTexture( uvtemplate );
 
@@ -101,7 +97,7 @@ int main( void )
 
     gre::OrthoCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(-2.f, 2.f, -2.f, 2.f, 0.1f, 100.0f);
+    m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
     // View matrix
     m_camera.setLocation( position,           // Camera is here
                           glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
@@ -134,7 +130,7 @@ int main( void )
         translateValue += deltaTime * transSpeed;
 
         glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(1, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
         m_trans.setLocalTranslation(ModelMatrix);
 
