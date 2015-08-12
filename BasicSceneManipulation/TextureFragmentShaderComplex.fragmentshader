@@ -1,0 +1,40 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+
+// Ouput data
+out vec3 fragColor;
+
+// Values that stay constant for the whole mesh.
+uniform sampler2D iChannel0;
+uniform vec3 iResolution;		// Viewport resolution (in pixels)
+uniform float iGlobalTime;		// shader playback time (in seconds)
+uniform vec4 iMouse;			// mouse pixel coords. xy: current (if MLB down), zw: click
+uniform vec4 iDate;				// (year, month, day, time in seconds)
+uniform float iSampleRate;		// sound sample rate (i.e., 44100)
+
+void main()
+{	
+    vec2 r = vec2( gl_FragCoord.xy - 0.5*iResolution.xy );
+    r = 2.0 * r.xy / iResolution.y;
+    
+    vec3 bgCol = vec3(0.0);
+    vec3 col1 = vec3(0.216, 0.471, 0.698);
+    
+    //float antialiasingInterval = 0.5;
+    float s = 0.5+(sin(iGlobalTime)*0.5); //(between 0.0 and 1.0)
+    float antialiasingInterval = 0.5*s;
+   
+    vec3 pixel = bgCol;
+    
+    vec2 cp;
+    cp.x = sin(iGlobalTime);
+    cp.y = cos(iGlobalTime);
+    
+    float radius = 0.3;
+    float m = smoothstep( radius-antialiasingInterval, radius+antialiasingInterval, length(r - cp) );
+	pixel = mix(col1, bgCol, m);
+    
+	fragColor = pixel;
+}

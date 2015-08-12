@@ -61,6 +61,7 @@ set( LAB_HEADERS
     ../gre/shaderProgram.hpp
     ../gre/shapes.hpp
     ../gre/texture.hpp
+    ../gre/timer.h
 )
 
 set( FX_CLASSES 

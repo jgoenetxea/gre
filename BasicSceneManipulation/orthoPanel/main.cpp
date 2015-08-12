@@ -31,9 +31,8 @@ using namespace glm;
     string modelFile = "../cube.obj";
 #else
     string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
-    string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
+    string fShader = "../BasicSceneManipulation/TextureFragmentShaderComplex.fragmentshader";
     string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
-    string modelFile = "../BasicSceneManipulation/plane.obj";
 #endif
 
 int main( void )
@@ -130,7 +129,7 @@ int main( void )
         translateValue += deltaTime * transSpeed;
 
         glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(1, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(1, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
         m_trans.setLocalTranslation(ModelMatrix);
 

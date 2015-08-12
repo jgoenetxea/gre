@@ -2,6 +2,7 @@
 #define OBJ_H
 
 #include "node.hpp"
+#include "timer.h"
 
 #include <vector>
 #include <string>
@@ -61,8 +62,19 @@ public:
 protected:
 	unsigned int m_vertexBuffer, m_uvBuffer, m_normalBuffer;
 	unsigned int m_texture;
-	unsigned int m_textureUniformLocator, m_matrixUniformLocator;
+    unsigned int m_textureUniformLocator;
+    unsigned int m_matrixUniformLocator;
+    unsigned int m_iResolutionUniformLocator;
+    unsigned int m_iGlobalTimeUniformLocator;
+    unsigned int m_iMouseUniformLocator;
+    unsigned int m_iDateUniformLocator;
+    unsigned int m_iSampleRateUniformLocator;
     unsigned int m_program;
+
+private:
+    float m_elapsedTime;    // Elapsed time in seconds
+    Timer* m_timer;
+    int m_viewport[4];
 
 	void buildObject();
 };

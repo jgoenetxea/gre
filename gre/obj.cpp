@@ -14,16 +14,17 @@
 using namespace std;
 using namespace gre;
 
-Obj::Obj()
+Obj::Obj() :
+    m_timer(NULL),
+    m_texture(0),
+    m_textureUniformLocator(0),
+    m_matrixUniformLocator(0),
+    m_program(0),
+    m_vertexBuffer(0),
+    m_uvBuffer(0),
+    m_normalBuffer(0)
 {
-	m_texture = 0;
-	m_textureUniformLocator = 0;
-	m_matrixUniformLocator = 0;
-	m_program = 0;
 
-	m_vertexBuffer = 0;
-	m_uvBuffer = 0;
-	m_normalBuffer = 0;
 }
 
 Obj::~Obj()
@@ -51,8 +52,13 @@ void Obj::setTexture( std::string& textureFileName )
 void Obj::setShaders( string vertexShaderFilename, string fragmentShaderFilename )
 {
     m_program = ProgramGenerator::makeProgramUsingFiles( vertexShaderFilename, fragmentShaderFilename );
-    m_matrixUniformLocator = glGetUniformLocation(m_program, "MVP");
-    m_textureUniformLocator  = glGetUniformLocation(m_program, "uSampler");
+    m_matrixUniformLocator = glGetUniformLocation(m_program, "modelViewMatrix");
+    m_textureUniformLocator  = glGetUniformLocation(m_program, "iChannel0");
+    m_iResolutionUniformLocator = glGetUniformLocation(m_program, "iResolution");
+    m_iGlobalTimeUniformLocator = glGetUniformLocation(m_program, "iGlobalTime");
+    m_iMouseUniformLocator = glGetUniformLocation(m_program, "iMouse");
+    m_iDateUniformLocator = glGetUniformLocation(m_program, "iDate");
+    m_iSampleRateUniformLocator = glGetUniformLocation(m_program, "iSampleRate");
 }
 
 //void Obj::setMVP( glm::mat4& MVP )
@@ -74,9 +80,22 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 {
 	glUseProgram( m_program );
 
+    // Compute model view perspective matrix
     m_mvp = perspective * view * model;
 
+    // Compute elapsed time
+    if( m_timer == NULL )
+    {
+        m_timer = new gre::Timer();
+    }
+    m_elapsedTime = static_cast<float>(m_timer->getTotalElapsedSeconds());
+
+    // Get viewport size (yes, is dirty, but is not time for fancy solutions
+    glGetIntegerv( GL_VIEWPORT, m_viewport );
+
 	glUniformMatrix4fv( m_matrixUniformLocator, 1, GL_FALSE, &m_mvp[0][0] );
+    glUniform1f( m_iGlobalTimeUniformLocator, m_elapsedTime );
+    glUniform4i( m_iResolutionUniformLocator, m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
