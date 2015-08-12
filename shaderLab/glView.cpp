@@ -17,11 +17,13 @@ void GLView::initializeGL()
     setAnimationFrameRate( 60 );
 
     m_mc.initialize();
+    m_sq.initialize();
 }
 
 void GLView::paintGL()
 {
-    m_mc.paint();
+    //m_mc.paint();
+    m_sq.paint();
 }
 
 void GLView::resizeGL(int width, int height)

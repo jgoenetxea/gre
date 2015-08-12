@@ -78,6 +78,8 @@ set( TESTING_BASE_APP_HEADER
 SET( SCENE_DEFINITION
                 scenes/movingCube.cpp
                 scenes/movingCube.h
+                scenes/simpleQuad.cpp
+                scenes/simpleQuad.h
     )
 	
 SET( PROJECT_FORMS

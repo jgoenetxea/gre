@@ -5,6 +5,7 @@
 #include <QTimer>
 
 #include "scenes/movingCube.h"
+#include "scenes/simpleQuad.h"
 
 class GLView : public QGLWidget
 {
@@ -25,6 +26,7 @@ private:
     unsigned int m_fps;
 
     MovingCube m_mc;
+    SimpleQuad m_sq;
 
 protected slots:
     void sltTimerEvent();
