@@ -84,7 +84,7 @@ int main( void )
     // Generate the main model
     //gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
     gre::Obj* m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_obj->setShaders( vShader, fShader );
+    m_obj->setShadersFromFiles( vShader, fShader );
     m_obj->setTexture( uvtemplate );
 
     // Generate translation node

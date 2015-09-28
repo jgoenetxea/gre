@@ -15,18 +15,24 @@ public:
     explicit GLView(QWidget *parent = 0);
     ~GLView();
 
+    void setAnimationFrameRate( const unsigned int fps );
+    void updateShader( const string& fragmentShader );
+    std::string& getCurrentFragmentShaderCode();
+    std::string& getCurrentVertexShaderCode();
+
 protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
-    void setAnimationFrameRate( const unsigned int fps );
 
 private:
     QTimer* m_fps_timer;
     unsigned int m_fps;
 
-    MovingCube m_mc;
     SimpleQuad m_sq;
+
+signals:
+    void initialized();
 
 protected slots:
     void sltTimerEvent();

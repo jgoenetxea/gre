@@ -7,9 +7,9 @@ namespace gre
 class ProgramGenerator
 {
 public:
-    static GLuint makeProgram( std::string& vertex_file_path, std::string& fragment_file_path);
+    static GLuint makeProgram( const std::string& vertex_file_path, const std::string& fragment_file_path);
 
-    static GLuint makeProgramUsingFiles(std::string& vertex_file_path, std::string& fragment_file_path);
+    static GLuint makeProgramUsingFiles( const std::string& vertex_file_path, const std::string& fragment_file_path);
 };
 
 }

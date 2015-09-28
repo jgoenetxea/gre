@@ -37,15 +37,16 @@ void SimpleQuad::initialize()
 	// Cull triangles which normal is not towards the camera
     glEnable(GL_CULL_FACE);
 
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+    // Not used if only one vertes array is used. If more than one vertex array is used, try with 'glVertexAttribPointer()'.
+    //glGenVertexArrays(1, &VertexArrayID);
+    //glBindVertexArray(VertexArrayID);
 
     // get renderer instance
     m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
     m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_obj->setShaders( vShader2, fShader2 );
+    m_obj->setShadersFromFiles( vShader2, fShader2 );
     m_obj->setTexture( uvtemplate2 );
 
     // Generate camera instance
@@ -99,4 +100,19 @@ void SimpleQuad::paint()
     m_renderer->renderScene(&m_scene);
     //std::cout << "Render cube #" << m_frame << std::endl;
     m_frame++;
+}
+
+void SimpleQuad::updateFragmentShader( const string& fragmentShaderCode )
+{
+    m_obj->updateFragmentShader( fragmentShaderCode );
+}
+
+std::string& SimpleQuad::getCurrentFragmentShaderCode()
+{
+    return m_obj->getCurrentFragmentShaderCode();
+}
+
+std::string& SimpleQuad::getCurrentVertexShaderCode()
+{
+    return m_obj->getCurrentVertexShaderCode();
 }

@@ -43,11 +43,11 @@ void generateScenes()
 {
     // Generate the main model
     gre::Obj* m_cube = gre::ObjFactory::getInstance()->loadOBJ( cubeFile );
-    m_cube->setShaders( vShader, fShader );
+    m_cube->setShadersFromFiles( vShader, fShader );
     m_cube->setTexture( uvtemplate );
 
     gre::Obj* m_sphere = gre::ObjFactory::getInstance()->loadOBJ( sphereFile );
-    m_sphere->setShaders( vShader, fShader );
+    m_sphere->setShadersFromFiles( vShader, fShader );
     m_sphere->setTexture( uvtemplate );
 
     // Generate camera instance

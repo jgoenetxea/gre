@@ -10,13 +10,14 @@
 
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
+//#include<GLES2/gl2.h>
 
 #include "shaderProgram.hpp"
 
 using namespace std;
 using namespace gre;
 
-GLuint ProgramGenerator::makeProgramUsingFiles( std::string& vertex_file_path, std::string& fragment_file_path )
+GLuint ProgramGenerator::makeProgramUsingFiles( const std::string& vertex_file_path, const std::string& fragment_file_path )
 {
     // Read the Vertex Shader code from the file
     std::string vertexShaderCode;
@@ -51,7 +52,7 @@ GLuint ProgramGenerator::makeProgramUsingFiles( std::string& vertex_file_path, s
     return makeProgram(vertexShaderCode, fragmentShaderCode);
 }
 
-GLuint ProgramGenerator::makeProgram(std::string& vertexCode, std::string& fragmentCode)
+GLuint ProgramGenerator::makeProgram( const std::string& vertexCode, const std::string& fragmentCode)
 {
 	// Create the shaders
     GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);

@@ -3,6 +3,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
+//#include<GLES2/gl2.h>
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -29,6 +30,11 @@ public:
 
     void initialize();
     void paint();
+
+    void updateFragmentShader( const string& fragmentShaderCode );
+
+    std::string& getCurrentFragmentShaderCode();
+    std::string& getCurrentVertexShaderCode();
 
 private:
     GLuint VertexArrayID;

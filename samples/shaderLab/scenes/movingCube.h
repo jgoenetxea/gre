@@ -2,9 +2,10 @@
 #define MOVINGCUBE_H
 
 #define GL_GLEXT_PROTOTYPES
-#include<GL/gl.h>
+#include <GLES2/gl2.h>
 
 // Include GLM
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -14,7 +14,6 @@ project( labirinthOld )
 #---------------------------------------------------#
 # Automatically find GL libraries
 FIND_PACKAGE( OpenGL )
-FIND_PACKAGE( GLEW REQUIRED )
 FIND_PACKAGE( GLFW REQUIRED )
 FIND_PACKAGE( GLM REQUIRED )
 FIND_PACKAGE( X11 REQUIRED )
@@ -83,29 +82,29 @@ set( EXPLOSION_SCENE_APP explosionScene/main.cpp )
 #               Project Configuration               #
 #---------------------------------------------------#
 # Add all sources defined above to the program
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIR} ${GLM_INCLUDE_DIR} )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIR} )
 link_directories( ${CMAKE_BINARY_DIR}/bin ${GLFW_LIBRARY_DIRS})
 
 # Add _d to the library in debug
 set( CMAKE_DEBUG_POSTFIX _d )
 
-add_executable( basicCubeMoving ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_APP} )
-target_link_libraries( basicCubeMoving ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+add_executable( sample_basicCubeMoving ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_APP} )
+target_link_libraries( sample_basicCubeMoving ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-add_executable( basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
-target_link_libraries( basicCubeMoving_64k ${OPENGL_gl_LIBRARY} )
+add_executable( sample_basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
+target_link_libraries( sample_basicCubeMoving_64k ${OPENGL_gl_LIBRARY} )
 
-add_executable( basicOrtho ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_ORTHO_APP} )
-target_link_libraries( basicOrtho ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+add_executable( sample_basicOrtho ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_BASE_ORTHO_APP} )
+target_link_libraries( sample_basicOrtho ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-add_executable( basicOrthoPanel ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_ORTHO_PANEL_APP} )
-target_link_libraries( basicOrthoPanel ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+add_executable( sample_basicOrthoPanel ${LAB_HEADERS} ${LAB_SRCS} ${TESTING_ORTHO_PANEL_APP} )
+target_link_libraries( sample_basicOrthoPanel ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-add_executable( multyScene ${LAB_HEADERS} ${LAB_SRCS} ${MULTY_SCENE_APP} )
-target_link_libraries( multyScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+add_executable( sample_multyScene ${LAB_HEADERS} ${LAB_SRCS} ${MULTY_SCENE_APP} )
+target_link_libraries( sample_multyScene ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-add_executable( explosionScene ${LAB_HEADERS} ${LAB_SRCS} ${EXPLOSION_SCENE_APP} ${FX_CLASSES} )
-target_link_libraries( explosionScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+#add_executable( sample_explosionScene ${LAB_HEADERS} ${LAB_SRCS} ${EXPLOSION_SCENE_APP} ${FX_CLASSES} )
+#target_link_libraries( sample_explosionScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 
 

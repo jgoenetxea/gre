@@ -17,6 +17,18 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    void updateEditorWithShaderCode();
+    void updateSceneWithNewShaderCode();
+    void initialize();
+
+private slots:
+    void sltSystemInitialized();
+
+public slots:
+    void sltUpdateEditorContent();
+    void sltRunProgram();
+    void sltShowHideCodeEditor(bool status);
 };
 
 #endif // MAINWINDOW_H

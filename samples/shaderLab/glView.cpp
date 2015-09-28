@@ -14,15 +14,13 @@ GLView::~GLView()
 
 void GLView::initializeGL()
 {
-    setAnimationFrameRate( 60 );
-
-    m_mc.initialize();
     m_sq.initialize();
+
+    emit(initialized());
 }
 
 void GLView::paintGL()
 {
-    //m_mc.paint();
     m_sq.paint();
 }
 
@@ -65,3 +63,19 @@ void GLView::sltTimerEvent()
     paintGL();
     update();
 }
+
+void GLView::updateShader( const string& fragmentShader )
+{
+    m_sq.updateFragmentShader( fragmentShader );
+}
+
+std::string& GLView::getCurrentFragmentShaderCode()
+{
+    return m_sq.getCurrentFragmentShaderCode();
+}
+
+std::string& GLView::getCurrentVertexShaderCode()
+{
+    return m_sq.getCurrentVertexShaderCode();
+}
+

@@ -68,11 +68,15 @@ set( TESTING_BASE_APP
 set( TESTING_BASE_APP_SOURCE
                 mainwindow.cpp
                 glView.cpp
+                codeeditor.cpp
+                highlighter.cpp
 	)
 set( TESTING_BASE_APP_HEADER
                 mainwindow.h
                 glView.h
                 testGlView.h
+                codeeditor.h
+                highlighter.h
 	)
 
 SET( SCENE_DEFINITION
@@ -144,7 +148,6 @@ ADD_EXECUTABLE( shaderLab
                                 ${PROJECT_RESOURCES_RCC}
 )
 
-MESSAGE("GLEW libraries: ${GLEW_LIBRARY}")
 TARGET_LINK_LIBRARIES( shaderLab
     ${OPENGL_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
