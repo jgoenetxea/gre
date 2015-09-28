@@ -19,7 +19,7 @@ FIND_PACKAGE( OpenGL )
 FIND_PACKAGE( GLEW REQUIRED )
 FIND_PACKAGE( GLFW REQUIRED )
 FIND_PACKAGE( GLM REQUIRED )
-FIND_PACKAGE ( X11 REQUIRED )
+FIND_PACKAGE( X11 REQUIRED )
 
 
 IF ( X11_FOUND )
@@ -64,7 +64,7 @@ set( LAB_HEADERS
     ../gre/timer.h
 )
 
-set( FX_CLASSES 
+set( FX_CLASSES
         ../greFX/explosion.cpp
         ../greFX/explosion.hpp
 )
@@ -120,7 +120,7 @@ target_link_libraries( explosionScene ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL
 #	if( NOT DOXYGEN_FOUND )
 #		message( FATAL_ERROR "Doxygen is needed to build the documentation. Please install it correctly" )
 #	endif()
-#	
+#
 #	#-- Configure the Template Doxyfile for our specific project
 #	configure_file( doc/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY IMMEDIATE )
 #	#-- Add a custom target to run Doxygen when ever the project is built

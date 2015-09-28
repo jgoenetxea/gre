@@ -63,6 +63,13 @@ SET(CMAKE_BINARY_DIR ${${PROJ_MAIN_NAME}_PATH_EXE})
 
 # Dependencies
 # ------------------------------------------------------------------------------------------------------
+# Automatically find GL libraries
+#FIND_PACKAGE( OpenGL )
+#FIND_PACKAGE( GLEW REQUIRED )
+#FIND_PACKAGE( GLFW REQUIRED )
+#FIND_PACKAGE( GLM REQUIRED )
+#FIND_PACKAGE( X11 REQUIRED )
+
 # GLM
 IF(${PROJ_MAIN_NAME}_DEPENDENCY_GLM)
   MESSAGE("Adding GLM")
