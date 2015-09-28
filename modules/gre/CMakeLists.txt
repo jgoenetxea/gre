@@ -7,7 +7,7 @@ MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 # Include directories with headers
 #-----------------------------------------------------------------------#
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/include )		# This projects' includes
-INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_DEPENDENCY_GLM_DIR} )	# GLM
+INCLUDE_DIRECTORIES( ${GLM_INCLUDE_DIR} )	# GLM
 #INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_DEPENDENCY_GLFW_DIR}/include )	# GLFW
 
 # Source, macro to find all files. If you add more, regenerate project
@@ -19,7 +19,6 @@ FILE(GLOB ${PROJ_NAME}_HEADERS
     "include/*.h"
     "include/*.hpp"
 )
-#MESSAGE("Vgoni: ${${PROJ_NAME}_HEADERS}")
 
 # Create Library
 #-----------------------------------------------------------------------#

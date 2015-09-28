@@ -6,10 +6,8 @@ cmake_minimum_required( VERSION 2.8 )
 
 # If you don't name the project, it will take the default name "Project"
 # Note: this must be set in the beginning of the CMakeLists file
-project( labirinth )
+project( labirinthOld )
 
-# Add the extra cmake module script path
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 #---------------------------------------------------#
 #              OpenGL Configuration                 #

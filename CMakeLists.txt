@@ -15,6 +15,7 @@ SET( ${PROJ_MAIN_NAME}_PATCH_VERSION 0 CACHE STRING "Patch version" FORCE)
 # Include Cmake helpers
 # ------------------------------------------------------------------------------------------------------
 INCLUDE( cmake/scripts.cmake)
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # Configure variables
 # ------------------------------------------------------------------------------------------------------
@@ -51,8 +52,7 @@ OPTION(${PROJ_MAIN_NAME}_BUILD_CPP11         "Force compile with standard C++11"
 
 # Configure CMake options
 # ------------------------------------------------------------------------------------------------------
-OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_GLM     "Headers GLM" 				                      ON )
-OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_GLFW    "Library GLFW" 				                      ON )
+OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_XXX     "Dependency sample" 				                      OFF )
 
 # Configuration current project with cmake variables
 # ------------------------------------------------------------------------------------------------------
@@ -63,6 +63,8 @@ SET(CMAKE_BINARY_DIR ${${PROJ_MAIN_NAME}_PATH_EXE})
 
 # Dependencies
 # ------------------------------------------------------------------------------------------------------
+MESSAGE(" Automatically find GL libraries...")
+
 # Automatically find GL libraries
 #FIND_PACKAGE( OpenGL )
 #FIND_PACKAGE( GLEW REQUIRED )
@@ -71,13 +73,9 @@ SET(CMAKE_BINARY_DIR ${${PROJ_MAIN_NAME}_PATH_EXE})
 #FIND_PACKAGE( X11 REQUIRED )
 
 # GLM
-IF(${PROJ_MAIN_NAME}_DEPENDENCY_GLM)
-  MESSAGE("Adding GLM")
-  SET(${PROJ_MAIN_NAME}_DEPENDENCY_GLM_DIR NOT_FOUND CACHE PATH "The path where GLM is placed")
-  IF(${PROJ_MAIN_NAME}_DEPENDENCY_GLM_DIR STREQUAL NOT_FOUND)
-  	MESSAGE(FATAL_ERROR "Select GLM Dir manually!")
-  ENDIF()
-ENDIF()
+MESSAGE("Looking for GLM_DIR...")
+FIND_PACKAGE( GLM REQUIRED )
+
 # GLFW make install in system
 #IF(${PROJ_MAIN_NAME}_DEPENDENCY_GLFW)
 #  MESSAGE("Adding GLFW")
