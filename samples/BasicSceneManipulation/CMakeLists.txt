@@ -26,11 +26,16 @@ SET( TESTING_ORTHO_PANEL_APP orthoPanel/main.cpp )
 SET( MULTY_SCENE_APP sceneSwitcher/main.cpp )
 SET( EXPLOSION_SCENE_APP explosionScene/main.cpp )
 
+SET( GLFW_SAMPLE glfw_sample/main.cpp )
+
 
 # Create Library
 #-----------------------------------------------------------------------#
 ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_APP} )
 TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
+ADD_EXECUTABLE( sample_glfw ${GLFW_SAMPLE} )
+TARGET_LINK_LIBRARIES( sample_glfw ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 #ADD_EXECUTABLE( sample_basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
 #TARGET_LINK_LIBRARIES( sample_basicCubeMoving_64k gre-l ${OPENGL_gl_LIBRARY} )

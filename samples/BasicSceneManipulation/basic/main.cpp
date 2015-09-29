@@ -58,6 +58,8 @@ int main( void )
 		return -1;
 	}
 
+    glfwWindowHint(GLFW_DEPTH_BITS, 16);
+
 	// Open a window and create its OpenGL context
     window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
     if( window == NULL )
@@ -68,7 +70,7 @@ int main( void )
 	}
 
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    //glfwSwapInterval(1);
 
     glfwSetKeyCallback(window, key_callback);
 
@@ -113,9 +115,9 @@ int main( void )
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
     // View matrix
-    m_camera.setLocation( position,           // Camera is here
+    m_camera.setLocation( position,         // Camera is here
                           glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-                          up                  // Head is up (set to 0,-1,0 to look upside-down)
+                          up                // Head is up (set to 0,-1,0 to look upside-down)
                           );
 
     // Generate scene
