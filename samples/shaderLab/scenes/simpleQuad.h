@@ -10,16 +10,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-#include "../../gre/objloader.hpp"
-#include "../../gre/shapes.hpp"
+#include "objloader.hpp"
+#include "shapes.hpp"
 
-#include "../../gre/scene.hpp"
-#include "../../gre/translation.hpp"
+#include "scene.hpp"
+#include "translation.hpp"
 
-#include "../../gre/renderer.hpp"
-#include "../../gre/orthoCamera.hpp"
+#include "renderer.hpp"
+#include "orthoCamera.hpp"
 
-#include "../../gre/timer.h"
+#include "timer.h"
 
 class SimpleQuad
 {

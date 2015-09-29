@@ -6,6 +6,8 @@ Instruction:
 2º Add GLM library path
 3º apt-get install libglfw-dev
 
+4º Include qt paths in CMake "Qt/5.4/gcc_64/lib/cmake/Qt5Widgets" & "Qt/5.4/gcc_64/lib/cmake/Qt5OpenGL"
+
 Description:
 -------------------------------------------------
 Opensource Render Engine molon

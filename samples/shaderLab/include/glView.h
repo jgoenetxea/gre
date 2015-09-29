@@ -4,8 +4,8 @@
 #include <QGLWidget>
 #include <QTimer>
 
-#include "scenes/movingCube.h"
-#include "scenes/simpleQuad.h"
+//#include "movingCube.h"
+#include "simpleQuad.h"
 
 class GLView : public QGLWidget
 {
