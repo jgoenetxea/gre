@@ -58,7 +58,10 @@ int main( void )
 		return -1;
 	}
 
-    glfwWindowHint(GLFW_DEPTH_BITS, 16);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
     window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
