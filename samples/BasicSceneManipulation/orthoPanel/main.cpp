@@ -7,22 +7,22 @@
 #include<GL/gl.h>
 
 // Include GLFW
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "../../gre/objloader.hpp"
-#include "../../gre/shapes.hpp"
+#include "objloader.hpp"
+#include "shapes.hpp"
 
-#include "../../gre/scene.hpp"
-#include "../../gre/translation.hpp"
+#include "scene.hpp"
+#include "translation.hpp"
 
-#include "../../gre/renderer.hpp"
-#include "../../gre/projectiveCamera.hpp"
-#include "../../gre/orthoCamera.hpp"
+#include "renderer.hpp"
+#include "projectiveCamera.hpp"
+#include "orthoCamera.hpp"
 
 #ifdef _WIN32
     string vShader = "../TransformVertexShader.vertexshader";

@@ -6,6 +6,7 @@ MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 
 
 FIND_PACKAGE( GLFW REQUIRED )
+FIND_PACKAGE( X11 REQUIRED )
 
 # Include directories with headers
 #-----------------------------------------------------------------------#
@@ -31,17 +32,17 @@ SET( EXPLOSION_SCENE_APP explosionScene/main.cpp )
 ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_APP} )
 TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-ADD_EXECUTABLE( sample_basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
-TARGET_LINK_LIBRARIES( sample_basicCubeMoving_64k gre-l ${OPENGL_gl_LIBRARY} )
+#ADD_EXECUTABLE( sample_basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
+#TARGET_LINK_LIBRARIES( sample_basicCubeMoving_64k gre-l ${OPENGL_gl_LIBRARY} )
 
-ADD_EXECUTABLE( sample_basicOrtho ${TESTING_BASE_ORTHO_APP} )
-TARGET_LINK_LIBRARIES( sample_basicOrtho gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+#ADD_EXECUTABLE( sample_basicOrtho ${TESTING_BASE_ORTHO_APP} )
+#TARGET_LINK_LIBRARIES( sample_basicOrtho gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-ADD_EXECUTABLE( sample_basicOrthoPanel ${TESTING_ORTHO_PANEL_APP} )
-TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+#ADD_EXECUTABLE( sample_basicOrthoPanel ${TESTING_ORTHO_PANEL_APP} )
+#TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
-ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
-TARGET_LINK_LIBRARIES( sample_multyScene gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+#ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
+#TARGET_LINK_LIBRARIES( sample_multyScene gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 
 # Install
