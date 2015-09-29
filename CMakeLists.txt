@@ -72,6 +72,9 @@ MESSAGE(" Automatically find GL libraries...")
 #FIND_PACKAGE( GLM REQUIRED )
 #FIND_PACKAGE( X11 REQUIRED )
 
+# Opengl
+FIND_PACKAGE( OpenGL )
+
 # GLM
 MESSAGE("Looking for GLM_DIR...")
 FIND_PACKAGE( GLM REQUIRED )

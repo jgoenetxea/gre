@@ -71,16 +71,19 @@ SET( QT_INCLUDE_DIR ${Qt5Widgets_INCLUDE_DIRS} )
 ADD_EXECUTABLE( ${PROJ_NAME} 
 			${${PROJ_NAME}_HEADERS} 
 			${${PROJ_NAME}_SRC} 
+                        ${${PROJ_NAME}_SCENES}
 			${PROJECT_FORMS_HEADERS} 
 			${PROJECT_RESOURCES_RCC}
 ) 
 
 # Link libraries with Project
 #-----------------------------------------------------------------------#
-TARGET_LINK_LIBRARIES( ${PROJ_NAME} gre-l)
-TARGET_LINK_LIBRARIES( ${PROJ_NAME} ${OPENGL_LIBRARIES} )
-TARGET_LINK_LIBRARIES( ${PROJ_NAME} ${Qt5Widgets_LIBRARIES} )
-TARGET_LINK_LIBRARIES( ${PROJ_NAME} ${Qt5OpenGL_LIBRARIES} )
+TARGET_LINK_LIBRARIES( ${PROJ_NAME}
+                            gre-l
+                            ${OPENGL_LIBRARIES}
+                            ${Qt5Widgets_LIBRARIES}
+                            ${Qt5OpenGL_LIBRARIES}
+)
 
 
 # Install
