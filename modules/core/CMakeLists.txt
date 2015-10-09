@@ -1,6 +1,6 @@
 # Header
 #-----------------------------------------------------------------------#
-SET(PROJ_NAME gre-l)
+SET(PROJ_NAME gre_core)
 PROJECT(${PROJ_NAME})
 MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 

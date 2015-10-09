@@ -10,7 +10,7 @@ FIND_PACKAGE( X11 REQUIRED )
 
 # Include directories with headers
 #-----------------------------------------------------------------------#
-INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/gre/include )	# Other includes in modules
+INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/core/include )	# Other includes in modules
 INCLUDE_DIRECTORIES( ${GLM_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${GLFW_INCLUDE_DIRS} )
 
@@ -34,22 +34,22 @@ SET( GLFW_SAMPLE glfw_sample/main.cpp )
 ADD_DEFINITIONS(-DASSET_DIRECTORY="${CMAKE_SOURCE_DIR}/samples/BasicSceneManipulation/assets/" )
 
 ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_APP} )
-TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_glfw ${GLFW_SAMPLE} )
 TARGET_LINK_LIBRARIES( sample_glfw ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 #ADD_EXECUTABLE( sample_basicCubeMoving_64k  ${TESTING_BASE_64k_APP} )
-#TARGET_LINK_LIBRARIES( sample_basicCubeMoving_64k gre-l ${OPENGL_gl_LIBRARY} )
+#TARGET_LINK_LIBRARIES( sample_basicCubeMoving_64k gre_core ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_basicOrtho ${TESTING_BASE_ORTHO_APP} )
-TARGET_LINK_LIBRARIES( sample_basicOrtho gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+TARGET_LINK_LIBRARIES( sample_basicOrtho gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_basicOrthoPanel ${TESTING_ORTHO_PANEL_APP} )
-TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
-TARGET_LINK_LIBRARIES( sample_multyScene gre-l ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+TARGET_LINK_LIBRARIES( sample_multyScene gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 
 # Install

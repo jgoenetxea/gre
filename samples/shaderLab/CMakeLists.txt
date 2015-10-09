@@ -8,7 +8,7 @@ MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 #-----------------------------------------------------------------------#
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/include )		# This projects' includes
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/scenes )		# This projects' scenes
-INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/gre/include )	# Other includes in modules
+INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/core/include )	# Other includes in modules
 INCLUDE_DIRECTORIES( ${GLM_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
 
@@ -68,18 +68,18 @@ SET( QT_INCLUDE_DIR ${Qt5Widgets_INCLUDE_DIRS} )
 
 # Create Library
 #-----------------------------------------------------------------------#
-ADD_EXECUTABLE( ${PROJ_NAME} 
-			${${PROJ_NAME}_HEADERS} 
-			${${PROJ_NAME}_SRC} 
+ADD_EXECUTABLE( ${PROJ_NAME}
+			${${PROJ_NAME}_HEADERS}
+			${${PROJ_NAME}_SRC}
                         ${${PROJ_NAME}_SCENES}
-			${PROJECT_FORMS_HEADERS} 
+			${PROJECT_FORMS_HEADERS}
 			${PROJECT_RESOURCES_RCC}
-) 
+)
 
 # Link libraries with Project
 #-----------------------------------------------------------------------#
 TARGET_LINK_LIBRARIES( ${PROJ_NAME}
-                            gre-l
+                            gre_core
                             ${OPENGL_LIBRARIES}
                             ${Qt5Widgets_LIBRARIES}
                             ${Qt5OpenGL_LIBRARIES}

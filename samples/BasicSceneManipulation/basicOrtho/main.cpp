@@ -23,6 +23,9 @@ using namespace glm;
 #include "projectiveCamera.hpp"
 #include "orthoCamera.hpp"
 
+#include "logger.h"
+#define LOG_TAG "SAMPLE-BASICORTHO"
+
 string assets_path = ASSET_DIRECTORY;
 
 #ifdef _WIN32
@@ -137,6 +140,7 @@ int main( void )
         double currentTime = glfwGetTime();
         float deltaTime = float(currentTime - lastTime);
         lastTime = currentTime;
+        LOGD("deltaTime: %f", deltaTime);
 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
