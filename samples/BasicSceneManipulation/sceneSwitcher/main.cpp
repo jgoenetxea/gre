@@ -22,22 +22,36 @@ using namespace glm;
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
 
+string assets_path = ASSET_DIRECTORY;
+
 #ifdef _WIN32
-	string vShader = "../TransformVertexShader.vertexshader";
-	string fShader = "../TextureFragmentShader.fragmentshader";
-	string uvtemplate = "../uvtemplate.DDS";
+    string vShader = "../TransformVertexShader.vertexshader";
+    string fShader = "../TextureFragmentShader.fragmentshader";
+    string uvtemplate = "../uvtemplate.DDS";
     string modelFile = "../cube.obj";
 #else
-    string vShader = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
-    string fShader = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
-    string uvtemplate = "../BasicSceneManipulation/uvtemplate.DDS";
-    string cubeFile = "../BasicSceneManipulation/cube.obj";
-    string sphereFile = "../BasicSceneManipulation/dirtySphere.obj";
+    string vShader = assets_path+"shaders/basic130.vert";
+    string fShader = assets_path+"shaders/basic130.frag";
+    string uvtemplate = assets_path+"obj/uvtemplate.DDS";
+    string modelFile = assets_path+"obj/cube.obj";
+    string cubeFile = assets_path+"obj/cube.obj";
+    string sphereFile = assets_path+"obj/dirtySphere.obj";
 #endif
 
-    std::vector<gre::Scene> m_scene(2);
-    // Generate translation node
-    std::vector<gre::Translation> m_trans(2);
+static void error_callback(int error, const char* description)
+{
+    fputs(description, stderr);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+std::vector<gre::Scene> m_scene(2);
+// Generate translation node
+std::vector<gre::Translation> m_trans(2);
 
 void generateScenes()
 {
@@ -95,31 +109,35 @@ void generateScenes()
 
 int main( void )
 {
-	// Initialise GLFW
-	if( !glfwInit() )
-	{
-		fprintf( stderr, "Failed to initialize GLFW\n" );
-		return -1;
-	}
+    GLFWwindow* window;
 
-	glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwSetErrorCallback(error_callback);
 
-	// Open a window and create its OpenGL context
-	if( !glfwOpenWindow( 1024, 768, 0,0,0,0, 32,0, GLFW_WINDOW ) )
-	{
-		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-		glfwTerminate();
-		return -1;
-	}
+    // Initialise GLFW
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        return -1;
+    }
 
-    glfwSetWindowTitle( "<- - ->" );
+    //glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Ensure we can capture the escape key being pressed below
-	glfwEnable( GLFW_STICKY_KEYS );
-	glfwSetMousePos(1024/2, 768/2);
+    // Open a window and create its OpenGL context
+    window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
+    if( window == NULL )
+    {
+        fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+    //glfwSwapInterval(1);
+
+    glfwSetKeyCallback(window, key_callback);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -150,7 +168,7 @@ int main( void )
 
     int sceneId = 0;
     int counter = 0;
-    do
+    while(!glfwWindowShouldClose(window))
     {
         // time control
         double currentTime = glfwGetTime();
@@ -188,19 +206,19 @@ int main( void )
         m_renderer->renderScene(&m_scene[sceneId]);
 
         // Swap buffers
-        glfwSwapBuffers();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
 
     } // Check if the ESC key was pressed or the window was closed
-    while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
-           glfwGetWindowParam( GLFW_OPENED ) );
 
 	// Cleanup VBO and shader
 	//glDeleteProgram(programID);
 	//glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
-	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
+    // Close OpenGL window and terminate GLFW
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
     //SceneControl::deleteInstance();
 

@@ -22,16 +22,18 @@ using namespace glm;
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
 
+string assets_path = ASSET_DIRECTORY;
+
 #ifdef _WIN32
 	string vShader = "../TransformVertexShader.vertexshader";
 	string fShader = "../TextureFragmentShader.fragmentshader";
-	string uvtemplate = "../uvtemplate.DDS";
-	string modelFile = "../cube.obj";
+    string uvtemplate = "../uvtemplate.DDS";
+    string modelFile = "../cube.obj";
 #else
-    string vShader = "/home/VICOMTECH/jgoenetxea/Repositories/git/labirinth/samples/BasicSceneManipulation/TransformVertexShader.vertexshader";
-    string fShader = "/home/VICOMTECH/jgoenetxea/Repositories/git/labirinth/samples/BasicSceneManipulation/TextureFragmentShader.fragmentshader";
-    string uvtemplate = "/home/VICOMTECH/jgoenetxea/Repositories/git/labirinth/samples/BasicSceneManipulation/uvtemplate.DDS";
-    string modelFile = "/home/VICOMTECH/jgoenetxea/Repositories/git/labirinth/samples/BasicSceneManipulation/cube.obj";
+    string vShader = assets_path+"shaders/basic130.vert";
+    string fShader = assets_path+"shaders/basic130.frag";
+    string uvtemplate = assets_path+"obj/uvtemplate.DDS";
+    string modelFile = assets_path+"obj/cube.obj";
 #endif
 
 static void error_callback(int error, const char* description)
@@ -58,10 +60,10 @@ int main( void )
 		return -1;
 	}
 
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
     window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
