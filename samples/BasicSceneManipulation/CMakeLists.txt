@@ -61,5 +61,3 @@ TARGET_LINK_LIBRARIES( sample_glfw ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 #
 #PRINTBASICINFO(${PROJ_NAME})						# Macro cmake_tools to print, uncomment to add info
 #MESSAGE(" - Module ${PROJ_NAME} added!")					# Out info
-
-
