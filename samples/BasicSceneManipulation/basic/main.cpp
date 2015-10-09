@@ -1,6 +1,10 @@
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
+#define RAD2GRAD 180.0/M_PI
+#define GRAD2RAD M_PI/180.0
 
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
@@ -118,7 +122,7 @@ int main( void )
 
     gre::ProjectiveCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(fov, 4.0f / 3.0f, 0.1f, 100.0f);
+    m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 100.0f);
     // View matrix
     m_camera.setLocation( position,         // Camera is here
                           glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
@@ -135,7 +139,7 @@ int main( void )
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
-    int rotSpeed = 80;
+    int rotSpeed = 80 * GRAD2RAD;
     int transSpeed = 14;
     while(!glfwWindowShouldClose(window))
     {

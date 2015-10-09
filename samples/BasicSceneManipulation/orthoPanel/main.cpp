@@ -1,6 +1,10 @@
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
+#define RAD2GRAD 180.0/M_PI
+#define GRAD2RAD M_PI/180.0
 
 // include opengl
 #define GL_GLEXT_PROTOTYPES
@@ -131,7 +135,7 @@ int main( void )
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
-    int rotSpeed = 80;
+    int rotSpeed = 80*GRAD2RAD;
     int transSpeed = 14;
     while(!glfwWindowShouldClose(window))
     {
