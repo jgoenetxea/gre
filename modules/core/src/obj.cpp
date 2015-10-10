@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
@@ -47,7 +48,26 @@ void Obj::setTexture( unsigned int textureFileRef )
 
 void Obj::setTexture( std::string& textureFileName )
 {
-    m_texture = loadDDS(textureFileName.c_str());
+    int dotPos = textureFileName.rfind('.');
+    if(dotPos != std::string::npos)
+    {
+        std::string extension = textureFileName.substr(dotPos+1, static_cast<int>(textureFileName.size())-dotPos);
+        std::locale loc;
+        std::stringstream ss;
+        for (std::string::size_type i=0; i<extension.length(); ++i)
+            ss << std::tolower(extension[i],loc);
+
+        extension = ss.str();
+
+        if(extension == "png")
+        {
+            m_texture = loadPNG(textureFileName.c_str());
+        }
+        else if(extension == "dds")
+        {
+            m_texture = loadDDS(textureFileName.c_str());
+        }
+    }
 }
 
 void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode )

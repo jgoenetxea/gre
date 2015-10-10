@@ -7,6 +7,7 @@ MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 
 FIND_PACKAGE( GLFW REQUIRED )
 
+
 # Include directories with headers
 #-----------------------------------------------------------------------#
 INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/core/include )	# Other includes in modules
@@ -16,6 +17,7 @@ INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH} )
 
 LINK_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} )
 LINK_DIRECTORIES( ${GLFW_LIBRARY_DIRS})
+
 
 
 # Locate the main files of each sample.
@@ -32,7 +34,12 @@ SET( SRC main.cpp
 ADD_DEFINITIONS(-DASSET_DIRECTORY="${CMAKE_SOURCE_DIR}/samples/QuadAnimation/assets/" )
 
 ADD_EXECUTABLE( ${PROJ_NAME} ${SRC} )
-TARGET_LINK_LIBRARIES( ${PROJ_NAME} gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${${PROJ_MAIN_NAME}_GUCPP_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJ_NAME}
+                                    gre_core
+                                    ${GLFW_LIBRARIES}
+                                    ${OPENGL_gl_LIBRARY}
+                                    ${${PROJ_MAIN_NAME}_GUCPP_LIBS}
+                                    )
 
 # Install
 #-----------------------------------------------------------------------#

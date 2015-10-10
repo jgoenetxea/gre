@@ -4,11 +4,14 @@ SET(PROJ_NAME gre_core)
 PROJECT(${PROJ_NAME})
 MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 
+FIND_PACKAGE( PNG REQUIRED )
+
 # Include directories with headers
 #-----------------------------------------------------------------------#
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/include )		# This projects' includes
 INCLUDE_DIRECTORIES( ${GLM_INCLUDE_DIR} )	# GLM
 #INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_DEPENDENCY_GLFW_DIR}/include )	# GLFW
+INCLUDE_DIRECTORIES( ${PNG_INCLUDE_DIRS} )
 
 # Source, macro to find all files. If you add more, regenerate project
 #-----------------------------------------------------------------------#
@@ -26,7 +29,7 @@ ADD_LIBRARY(${PROJ_NAME} ${${PROJ_MAIN_NAME}_LIB_TYPE} ${${PROJ_NAME}_HEADERS} $
 
 # Link libraries with Project
 #-----------------------------------------------------------------------#
-#TARGET_LINK_LIBRARIES(${PROJ_NAME} project-dependency1)
+TARGET_LINK_LIBRARIES(${PROJ_NAME} ${PNG_LIBRARIES})
 
 # Install
 #-----------------------------------------------------------------------#
