@@ -4,18 +4,36 @@ SET(PROJ_NAME sample-list)
 PROJECT(${PROJ_NAME})
 MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 
-
 FIND_PACKAGE( GLFW REQUIRED )
 FIND_PACKAGE( X11 REQUIRED )
+
+# GUCpp
+OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP     "Dependency sample" 				                      OFF )
+IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
+  MESSAGE("Adding GUCPP")
+  SET(${PROJ_MAIN_NAME}_GUCPP_DIR NOT_FOUND CACHE PATH "The path where GUCPP is placed")
+  IF(${PROJ_MAIN_NAME}_GUCPP_DIR STREQUAL NOT_FOUND)
+  	MESSAGE(FATAL_ERROR "Select GUCPP Dir manually!")
+  ELSE()
+  	SET(${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH} 
+  			${${PROJ_MAIN_NAME}_GUCPP_DIR}/geometry2d-tmb/include
+  			${${PROJ_MAIN_NAME}_GUCPP_DIR}/SimpleJSON/include )
+  	SET(${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} 
+  			${${PROJ_MAIN_NAME}_GUCPP_DIR}/geometry2d-tmb/lib
+  			${${PROJ_MAIN_NAME}_GUCPP_DIR}/SimpleJSON/lib)
+  	SET(${${PROJ_MAIN_NAME}_GUCPP_LIBS} SimpleJSON geometry2d-tmb)
+  ENDIF()
+ENDIF()
 
 # Include directories with headers
 #-----------------------------------------------------------------------#
 INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_PATH_MAIN}/modules/core/include )	# Other includes in modules
 INCLUDE_DIRECTORIES( ${GLM_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${GLFW_INCLUDE_DIRS} )
+INCLUDE_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH} )
 
 LINK_DIRECTORIES( ${GLFW_LIBRARY_DIRS})
-
+LINK_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} )
 
 # Locate the main files of each sample.
 #-----------------------------------------------------------------------#
@@ -46,7 +64,7 @@ ADD_EXECUTABLE( sample_basicOrtho ${TESTING_BASE_ORTHO_APP} )
 TARGET_LINK_LIBRARIES( sample_basicOrtho gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_basicOrthoPanel ${TESTING_ORTHO_PANEL_APP} )
-TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${${PROJ_MAIN_NAME}_GUCPP_LIBS} )
 
 ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
 TARGET_LINK_LIBRARIES( sample_multyScene gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )

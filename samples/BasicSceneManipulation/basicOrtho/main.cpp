@@ -31,18 +31,18 @@ using namespace glm;
 #include "logger.h"
 #define LOG_TAG "SAMPLE-BASICORTHO"
 
-string assets_path = ASSET_DIRECTORY;
+std::string assets_path = ASSET_DIRECTORY;
 
 #ifdef _WIN32
-    string vShader = "../TransformVertexShader.vertexshader";
-    string fShader = "../TextureFragmentShader.fragmentshader";
-    string uvtemplate = "../uvtemplate.DDS";
-    string modelFile = "../cube.obj";
+	std::string vShader = "../TransformVertexShader.vertexshader";
+	std::string fShader = "../TextureFragmentShader.fragmentshader";
+	std::string uvtemplate = "../uvtemplate.DDS";
+	std::string modelFile = "../cube.obj";
 #else
-    string vShader = assets_path+"shaders/basic130.vert";
-    string fShader = assets_path+"shaders/basic130.frag";
-    string uvtemplate = assets_path+"obj/uvtemplate.DDS";
-    string modelFile = assets_path+"obj/cube.obj";
+	std::string vShader = assets_path+"shaders/basic130.vert";
+	std::string fShader = assets_path+"shaders/basic130.frag";
+	std::string uvtemplate = assets_path+"obj/uvtemplate.DDS";
+	std::string modelFile = assets_path+"obj/cube.obj";
 #endif
 
 static void error_callback(int error, const char* description)
@@ -54,6 +54,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+void initializeScene()
+{
+
+}
+
+void createBox()
+{
+
 }
 
 int main( void )
@@ -139,6 +149,11 @@ int main( void )
     float translateValue = 0.f;
     int rotSpeed = 80 * GRAD2RAD;
     int transSpeed = 14;
+
+    // Initialize scene
+    initializeScene();
+    createBox();
+
     while(!glfwWindowShouldClose(window))
     {
         // time control
