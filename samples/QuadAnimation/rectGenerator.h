@@ -14,7 +14,7 @@ using namespace threemonkeybits;
 
 #include <string>
 
-class RectGenerator : public GLFWWindow
+class RectGenerator : public GLFWWindowImpl
 {
 public:
     RectGenerator();
@@ -29,6 +29,11 @@ public:
     void close();
 
     bool generateQuads();
+
+    void getCameraPosition(glm::vec3& pos);
+    void setCameraPosition(glm::vec3& pos);
+    void translateCameraPosition(const glm::vec3& offset);
+    void zoom(const float value);
 
 protected:
     // Asstes

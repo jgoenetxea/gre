@@ -2,17 +2,17 @@
 #include  <string>
 
 #include "logger.h"
-#define LOG_TAG "GLFWWindow"
+#define LOG_TAG "GLFWWindowImpl"
 
-GLFWWindow::GLFWWindow()
+GLFWWindowImpl::GLFWWindowImpl()
 {
 }
 
-GLFWWindow::~GLFWWindow()
+GLFWWindowImpl::~GLFWWindowImpl()
 {
 }
 
-bool GLFWWindow::init(const std::string& windowName, const int windowWidth, const int windowHeight, key_callback_t keyCallbackFunction, error_callback_t errorCallbackFunction)
+bool GLFWWindowImpl::init(const std::string& windowName, const int windowWidth, const int windowHeight, key_callback_t keyCallbackFunction, error_callback_t errorCallbackFunction)
 {
     m_screenWidth = windowWidth;
     m_screenHeighth = windowHeight;
@@ -63,25 +63,25 @@ bool GLFWWindow::init(const std::string& windowName, const int windowWidth, cons
     return 0;
 }
 
-bool GLFWWindow::updateScene()
+bool GLFWWindowImpl::updateScene()
 {
     return glfwWindowShouldClose(m_window);
 }
 
-bool GLFWWindow::render()
+bool GLFWWindowImpl::render()
 {
     // Swap buffers
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
-void GLFWWindow::exitWithError(int errorCode)
+void GLFWWindowImpl::exitWithError(int errorCode)
 {
     LOGE("Received error code: %d", errorCode);
     exit(errorCode);
 }
 
-void GLFWWindow::close()
+void GLFWWindowImpl::close()
 {
     // Cleanup VBO and shader
     LOGI("Cleaning...");

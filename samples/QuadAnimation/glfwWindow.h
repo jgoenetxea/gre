@@ -10,11 +10,11 @@
 typedef void (*key_callback_t)(GLFWwindow* window, int key, int scancode, int action, int mods); // type for conciseness
 typedef void (*error_callback_t)(int error, const char* description); // type for conciseness
 
-class GLFWWindow
+class GLFWWindowImpl
 {
 public:
-    GLFWWindow();
-    ~GLFWWindow();
+    GLFWWindowImpl();
+    ~GLFWWindowImpl();
 
     virtual bool init(const std::string& windowName, const int windowWidth, const int windowHeight, key_callback_t keyCallbackFunction, error_callback_t errorCallbackFunction);
 

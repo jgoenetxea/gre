@@ -19,6 +19,10 @@ public:
     glm::mat4& getProjectionMatrix(){ return m_projectionMatrix; }
     glm::mat4& getViewMatrix(){ return m_viewMatrix; }
 
+    glm::vec3& getUp(){ return m_up; }
+    glm::vec3& getLocation(){ return m_location; }
+    glm::vec3& getTarget(){ return m_target; }
+
 protected:
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     glm::mat4 m_projectionMatrix;
@@ -26,6 +30,8 @@ protected:
     glm::mat4 m_viewMatrix;
 
     glm::vec3 m_up;
+    glm::vec3 m_location;
+    glm::vec3 m_target;
 };
 
 }

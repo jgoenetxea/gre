@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include <typeinfo>
 
 RectGenerator::RectGenerator()
 {
@@ -95,7 +96,7 @@ void RectGenerator::close()
     }
     m_rectangles.clear();
 
-    GLFWWindow::close();
+    GLFWWindowImpl::close();
 }
 
 bool RectGenerator::generateQuads()
@@ -119,4 +120,36 @@ bool RectGenerator::generateQuads()
     }
     LOGI("Scene generated!");
     return true;
+}
+
+void RectGenerator::getCameraPosition(glm::vec3& pos)
+{
+    glm::mat4 transMat = m_camera.getGlobalTranslation();
+}
+
+void RectGenerator::setCameraPosition(glm::vec3& pos)
+{
+    glm::mat4 transMat = m_camera.getGlobalTranslation();
+}
+
+void RectGenerator::translateCameraPosition(const glm::vec3& offset)
+{
+    glm::vec3 up = m_camera.getUp();
+    glm::vec3 location = m_camera.getLocation();
+    glm::vec3 target = m_camera.getTarget();
+
+    location += offset;
+    target += offset;
+
+    m_camera.setLocation(location, target, up);
+}
+
+void RectGenerator::zoom(const float value)
+{
+    m_camera.setConfiguration( -value,
+                                value,
+                               -value,
+                                value,
+                                m_camera.getNearValue(),
+                                m_camera.getFarValue());
 }
