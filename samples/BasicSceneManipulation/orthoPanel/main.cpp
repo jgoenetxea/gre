@@ -28,6 +28,9 @@ using namespace glm;
 #include "projectiveCamera.hpp"
 #include "orthoCamera.hpp"
 
+#include "logger.h"
+#define LOG_TAG "SAMPLE-ORTHOPANEL"
+
 string assets_path = ASSET_DIRECTORY;
 
 #ifdef _WIN32
@@ -42,6 +45,27 @@ string assets_path = ASSET_DIRECTORY;
     string modelFile = assets_path+"obj/cube.obj";
 #endif
 
+////////////////////////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////////////////////////
+const int screenWidth = 1024;
+const int screenHeighth = 768;
+GLFWwindow* window;
+gre::Renderer* m_renderer;
+gre::Obj* m_obj;
+gre::Translation m_trans;
+gre::Scene m_scene;
+GLuint VertexArrayID;
+gre::OrthoCamera m_camera;
+double lastTime = 0.f;
+float horizontalAngle = 0.f;
+float translateValue = 0.f;
+int rotSpeed = 0;
+int transSpeed = 0;
+
+////////////////////////////////////////////////////////////////////////////////////
+// Callbacks
+////////////////////////////////////////////////////////////////////////////////////
 static void error_callback(int error, const char* description)
 {
     fputs(description, stderr);
@@ -52,118 +76,154 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
+////////////////////////////////////////////////////////////////////////////////////
+// Function declaration
+////////////////////////////////////////////////////////////////////////////////////
+int initEngine();
+int initScene();
+void configureScene();
+int generateScene();
+void process();
+void exitWithError(const int errorCode);
+void cleanAndTerminate();
 
-int main( void )
+////////////////////////////////////////////////////////////////////////////////////
+// Function
+////////////////////////////////////////////////////////////////////////////////////
+int initEngine()
 {
-    GLFWwindow* window;
+	LOGI("Initializing gre engine...");
+	glfwSetErrorCallback(error_callback);
 
-    glfwSetErrorCallback(error_callback);
+	// Initialise GLFW
+	if( !glfwInit() )
+	{
+		LOGE( "Failed to initialize GLFW" );
+		exitWithError(-1);
+	}
 
-    // Initialise GLFW
-    if( !glfwInit() )
-    {
-        fprintf( stderr, "Failed to initialize GLFW\n" );
-        return -1;
-    }
+	//glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    //glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// Open a window and create its OpenGL context
+	window = glfwCreateWindow( screenWidth, screenHeighth, LOG_TAG, NULL, NULL );
+	if( window == NULL )
+	{
+		LOGE("Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials." );
+		glfwTerminate();
+		exitWithError(-1);
+	}
 
-    // Open a window and create its OpenGL context
-    window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
-    if( window == NULL )
-    {
-        fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-        glfwTerminate();
-        return -1;
-    }
+	glfwMakeContextCurrent(window);
+	//glfwSwapInterval(1);
 
-    glfwMakeContextCurrent(window);
-    //glfwSwapInterval(1);
+	glfwSetKeyCallback(window, key_callback);
 
-    glfwSetKeyCallback(window, key_callback);
+	// Dark blue background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-    // Dark blue background
-    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
 
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
+	// Cull triangles which normal is not towards the camera
+	glEnable(GL_CULL_FACE);
 
-    // Cull triangles which normal is not towards the camera
-    glEnable(GL_CULL_FACE);
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+	LOGI("Engine initialized!");
+	return 0;
+}
 
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+int initScene()
+{
+	LOGI("Initializing scene...");
+	// get renderer instance
+	m_renderer = gre::Renderer::getInstance();
 
-    // get renderer instance
-    gre::Renderer* m_renderer = gre::Renderer::getInstance();
+	// Generate the main model
+	m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
+	m_obj->setShadersFromFiles( vShader, fShader );
+	m_obj->setTexture( uvtemplate );
+	// Generate camera instance
+	glm::vec3 position = glm::vec3( 0, 0, 5 );
+	glm::vec3 up = glm::vec3( 0,1,0 );
 
-    // Generate the main model
-    //gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    gre::Obj* m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_obj->setShadersFromFiles( vShader, fShader );
-    m_obj->setTexture( uvtemplate );
 
-    // Generate translation node
-    gre::Translation m_trans;
+	// Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
+	// View matrix
+	m_camera.setLocation( position,           // Camera is here
+			glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
+			up                  // Head is up (set to 0,-1,0 to look upside-down)
+	);
 
-    // Generate camera instance
-    glm::vec3 position = glm::vec3( 0, 0, 5 );
-    glm::vec3 up = glm::vec3( 0,1,0 );
+	// Generate scene
+	m_scene.addCamera(m_camera);
+	m_scene.addChild(&m_trans);
+	m_trans.addChild(m_obj);
+	LOGI("Scene initialized!");
+	return 0;
+}
 
-    gre::OrthoCamera m_camera;
-    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
-    // View matrix
-    m_camera.setLocation( position,           // Camera is here
-                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-                          up                  // Head is up (set to 0,-1,0 to look upside-down)
-                          );
+/**
+ * Initial position : on +Z
+ */
+void configureScene()
+{
+	LOGI("Configuring scene...");
+    lastTime = glfwGetTime();
+    horizontalAngle = 0.f;
+    translateValue = 0.f;
+    rotSpeed = 80*GRAD2RAD;
+    transSpeed = 14;
+    LOGI("Scene configured!");
+}
+int generateScene()
+{
+	LOGI("Generating scene...");
 
-    // Generate scene
-    gre::Scene m_scene;
-    m_scene.addCamera(m_camera);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
+	LOGI("Scene generated!");
+	return 0;
+}
 
-    // Initial position : on +Z
-    double lastTime = glfwGetTime();
-    float horizontalAngle = 0.f;
-    float translateValue = 0.f;
-    int rotSpeed = 80*GRAD2RAD;
-    int transSpeed = 14;
-    while(!glfwWindowShouldClose(window))
-    {
-        // time control
-        double currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime);
-        lastTime = currentTime;
+void process()
+{
+	 // time control
+	double currentTime = glfwGetTime();
+	float deltaTime = float(currentTime - lastTime);
+	lastTime = currentTime;
 
-        // Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Clear the screen
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        horizontalAngle += deltaTime * rotSpeed;
-        translateValue += deltaTime * transSpeed;
+	horizontalAngle += deltaTime * rotSpeed;
+	translateValue += deltaTime * transSpeed;
 
-        glm::mat4 ModelMatrix = glm::mat4(1.0);
-        //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(1, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	//ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(1, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
 
-        m_trans.setLocalTranslation(ModelMatrix);
+	m_trans.setLocalTranslation(ModelMatrix);
 
-        //scene.draw();
-        m_renderer->renderScene(&m_scene);
+	//scene.draw();
+	m_renderer->renderScene(&m_scene);
 
-        // Swap buffers
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+	// Swap buffers
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+}
 
-    } // Check if the ESC key was pressed or the window was closed
-
+void exitWithError(int errorCode)
+{
+	LOGE("Received error code: %d", errorCode);
+	exit(errorCode);
+}
+void cleanAndTerminate()
+{
+	LOGI("Cleaning...");
     // Cleanup VBO and shader
     //glDeleteProgram(programID);
     //glDeleteTextures(1, &TextureID);
@@ -172,8 +232,20 @@ int main( void )
     // Close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
     glfwTerminate();
+    LOGI("Terminated!");
+}
+int main( void )
+{
+	initEngine();
+	initScene();
 
-    //SceneControl::deleteInstance();
+	LOGI("Start to process...");
+    while(!glfwWindowShouldClose(window))	// Check if the ESC key was pressed or the window was closed
+    {
+       process();
+    }
+    LOGI("Processing finished!");
 
+    cleanAndTerminate();
     return 0;
 }
