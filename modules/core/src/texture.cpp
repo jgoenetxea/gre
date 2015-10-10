@@ -208,9 +208,11 @@ GLuint loadDDS(const char * imagepath){
 
 }
 
-#ifdef USE_PNG
+
 GLuint loadPNG(const char * file_name)
 {
+    GLuint texture = 0;
+#ifdef USE_PNG
     png_byte header[8];
 
     FILE *fp = fopen(file_name, "rb");
@@ -333,7 +335,6 @@ GLuint loadPNG(const char * file_name)
     png_read_image(png_ptr, row_pointers);
 
     // Generate the OpenGL texture object
-    GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -351,8 +352,8 @@ GLuint loadPNG(const char * file_name)
     free(row_pointers);
     fclose(fp);
 
+#endif
     return texture;
 }
 
-#endif
 }

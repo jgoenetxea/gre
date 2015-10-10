@@ -4,10 +4,15 @@
 #include "logger.h"
 #define LOG_TAG "GLFWWindowImpl"
 
-
+static GLFWWindowImpl* _instance;
+static void resizeViewportIndir(GLFWwindow* window, int width, int height)
+{
+    _instance->resizeViewport(width, height);
+}
 
 GLFWWindowImpl::GLFWWindowImpl()
 {
+    _instance = this;
 }
 
 GLFWWindowImpl::~GLFWWindowImpl()
@@ -49,7 +54,7 @@ bool GLFWWindowImpl::init(const std::string& windowName, const int windowWidth, 
     glfwSetKeyCallback(m_window, keyCallbackFunction);
 
     // Register a callback function for window resize events
-    //glfwSetWindowSizeCallback( window_resized );
+    glfwSetWindowSizeCallback( m_window, resizeViewportIndir );
 
     // Dark blue background
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -100,10 +105,10 @@ void GLFWWindowImpl::close()
     LOGI("Terminated!");
 }
 
-//void GLFWWindowImpl::resizeViewport(int width, int height)
-//{
-//    // Set the viewport
-//    glViewport(0, 0, width, height);
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    glfwSwapBuffers(m_window);
-//}
+void GLFWWindowImpl::resizeViewport(int width, int height)
+{
+    // Set the viewport
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(m_window);
+}

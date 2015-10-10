@@ -26,6 +26,8 @@ public:
 
     virtual void close();
 
+    void resizeViewport(int width, int height);
+
 protected:
     int m_screenWidth;
     int m_screenHeighth;
