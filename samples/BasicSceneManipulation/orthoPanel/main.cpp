@@ -28,6 +28,10 @@ using namespace glm;
 #include "projectiveCamera.hpp"
 #include "orthoCamera.hpp"
 
+#include "square2D.h"
+#include "math2D.h"
+using namespace threemonkeybits;
+
 #include "logger.h"
 #define LOG_TAG "SAMPLE-ORTHOPANEL"
 
@@ -48,6 +52,8 @@ string assets_path = ASSET_DIRECTORY;
 ////////////////////////////////////////////////////////////////////////////////////
 // Variables
 ////////////////////////////////////////////////////////////////////////////////////
+
+// Render
 const int screenWidth = 1024;
 const int screenHeighth = 768;
 GLFWwindow* window;
@@ -57,11 +63,23 @@ gre::Translation m_trans;
 gre::Scene m_scene;
 GLuint VertexArrayID;
 gre::OrthoCamera m_camera;
+
+// Configuration
 double lastTime = 0.f;
 float horizontalAngle = 0.f;
 float translateValue = 0.f;
 int rotSpeed = 0;
 int transSpeed = 0;
+
+// Scene generated
+int maxNumberOfRectangles = 0;
+int lowWidth = 0;
+int highWidth = 0;
+int lowHeight = 0;
+int highHeight = 0;
+Point2D centerSquares;
+float radiusSquares = 0.0f;
+std::vector<Square2D*> rectangles;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Callbacks
@@ -175,21 +193,54 @@ int initScene()
 void configureScene()
 {
 	LOGI("Configuring scene...");
+
+	// Scene
     lastTime = glfwGetTime();
     horizontalAngle = 0.f;
     translateValue = 0.f;
     rotSpeed = 80*GRAD2RAD;
     transSpeed = 14;
+
+    // Rectangles
+    maxNumberOfRectangles = 10;
+    lowWidth = 1;
+    highWidth = 5;
+    lowHeight = 2;
+    highHeight = 5;
+    centerSquares = Point2D(0.0f, 0.0f);
+    radiusSquares = 5.0f;
     LOGI("Scene configured!");
 }
 int generateScene()
 {
 	LOGI("Generating scene...");
 
+	// Create random squares
+	for(int i = 0; i < maxNumberOfRectangles; i++)
+	{
+		float width = (float)math2d::randomNumberInterval(lowWidth, highWidth);
+		float height = (float)math2d::randomNumberInterval(lowHeight, highHeight);
+		Point2D origin = math2d::calculateRandomPoint2DInACircle(centerSquares, radiusSquares);
+		Square2D* square = new Square2D(origin, width, height);
+		rectangles.push_back(square);
+	}
+	// Print info
+	for(std::vector<Square2D*>::const_iterator it = rectangles.begin(); it != rectangles.end(); it++)
+	{
+		(*it)->printLog();
+	}
 	LOGI("Scene generated!");
 	return 0;
 }
-
+int freeScene()
+{
+	LOGI("Freeing scene memory..");
+	for(std::vector<Square2D*>::const_iterator it = rectangles.begin(); it != rectangles.end(); it++)
+	{
+		delete *it;
+	}
+	rectangles.clear();
+}
 void process()
 {
 	 // time control
@@ -223,8 +274,8 @@ void exitWithError(int errorCode)
 }
 void cleanAndTerminate()
 {
-	LOGI("Cleaning...");
     // Cleanup VBO and shader
+	LOGI("Cleaning...");
     //glDeleteProgram(programID);
     //glDeleteTextures(1, &TextureID);
     glDeleteVertexArrays(1, &VertexArrayID);
@@ -238,6 +289,8 @@ int main( void )
 {
 	initEngine();
 	initScene();
+	configureScene();
+	generateScene();
 
 	LOGI("Start to process...");
     while(!glfwWindowShouldClose(window))	// Check if the ESC key was pressed or the window was closed
@@ -246,6 +299,7 @@ int main( void )
     }
     LOGI("Processing finished!");
 
+    freeScene();
     cleanAndTerminate();
     return 0;
 }

@@ -15,14 +15,17 @@ IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
   IF(${PROJ_MAIN_NAME}_GUCPP_DIR STREQUAL NOT_FOUND)
   	MESSAGE(FATAL_ERROR "Select GUCPP Dir manually!")
   ELSE()
-  	SET(${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH} 
+  	SET(${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH 
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/geometry2d-tmb/include
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/SimpleJSON/include )
-  	SET(${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} 
+  	SET(${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH 
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/geometry2d-tmb/lib
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/SimpleJSON/lib)
-  	SET(${${PROJ_MAIN_NAME}_GUCPP_LIBS} SimpleJSON geometry2d-tmb)
+  	SET(${PROJ_MAIN_NAME}_GUCPP_LIBS SimpleJSON geometry2d-tmb)
   ENDIF()
+  MESSAGE("---------------- GUCpp include path: ${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH}")
+  MESSAGE("---------------- GUCpp libs path: ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH}")
+  MESSAGE("---------------- GUCpp libs: ${${PROJ_MAIN_NAME}_GUCPP_LIBS}")
 ENDIF()
 
 # Include directories with headers
@@ -79,5 +82,6 @@ TARGET_LINK_LIBRARIES( sample_multyScene gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_
 #        DESTINATION "${${PROJ_MAIN_NAME}_PATH_INSTALL}/${PROJ_NAME}/include"
 #        )
 #
+
 #PRINTBASICINFO(${PROJ_NAME})						# Macro cmake_tools to print, uncomment to add info
-#MESSAGE(" - Module ${PROJ_NAME} added!")					# Out info
+MESSAGE(" - Samples ${PROJ_NAME} done!")					# Out info
