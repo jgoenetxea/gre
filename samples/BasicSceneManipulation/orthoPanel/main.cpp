@@ -227,7 +227,8 @@ int generateScene()
 	// Print info
 	for(std::vector<Square2D*>::const_iterator it = rectangles.begin(); it != rectangles.end(); it++)
 	{
-		(*it)->printLog();
+		std::string data = (*it)->getJSONFormat();
+		LOGD("Data: %s", data.c_str());
 	}
 	LOGI("Scene generated!");
 	return 0;

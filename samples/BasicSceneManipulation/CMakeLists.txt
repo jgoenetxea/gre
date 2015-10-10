@@ -21,7 +21,7 @@ IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
   	SET(${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH 
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/geometry2d-tmb/lib
   			${${PROJ_MAIN_NAME}_GUCPP_DIR}/SimpleJSON/lib)
-  	SET(${PROJ_MAIN_NAME}_GUCPP_LIBS SimpleJSON geometry2d-tmb)
+  	SET(${PROJ_MAIN_NAME}_GUCPP_LIBS geometry2d-tmb SimpleJSON)
   ENDIF()
   MESSAGE("---------------- GUCpp include path: ${${PROJ_MAIN_NAME}_GUCPP_INCLUDE_PATH}")
   MESSAGE("---------------- GUCpp libs path: ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH}")
