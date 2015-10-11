@@ -11,7 +11,8 @@ using namespace glm;
 #include <typeinfo>
 
 RectGenerator::RectGenerator():
-m_quadsGenerated(false)
+m_quadsGenerated(false),
+m_initialZoom(5.0f)
 {
     m_assets_path = ASSET_DIRECTORY;
 
@@ -39,13 +40,14 @@ bool RectGenerator::initScene()
     m_base->setName("Base");
     m_base->setShadersFromFiles( m_vShader, m_fShader );
     m_base->setTexture( m_uvtemplate );
+
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     //m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
-    m_camera.setConfiguration(1.f, 0.1f, 100.0f);
+    m_camera.setConfiguration(5.f, 0.1f, 1000.0f);
     // View matrix
     m_camera.setLocation( position,           // Camera is here
             glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
@@ -140,31 +142,40 @@ void RectGenerator::createNodeQuads()
 {
 	LOGI("Generating node quads...");
 
-	// Create cube
-	gre::CustomObj* m_cube;
-	m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
-	m_cube->setName("Quad");
-	m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
-	m_cube->setTexture( m_uvtemplate );
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		Square2D* square = (*it);
+		const Point2D origin = square->getOrigin();
+		const float width = square->getWidth();
+		const float height = square->getHeight();
 
-	//
-	m_cube->setTranslation(glm::vec3(1.0f, 0.0f, 0.0f));
-	m_cube->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+		gre::CustomObj* m_cube;
+		m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
+		const int objID = m_objs.size();
+		m_cube->setName("Quad" + std::to_string(objID));
+		m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
+		m_cube->setTexture( m_uvtemplate );
 
-	gre::Transformation* m_transformation = new gre::Transformation();
-	m_transformation->setTranslation(glm::vec3(0.0f, 1.0f, 1.0f));
-	//m_transformation->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
-	m_transformation->addChild(m_cube);
+		m_cube->setTranslation(glm::vec3(origin.x, origin.y, 1.0f));
+		m_cube->setScale(glm::vec3(width, height, 1.0f));
 
-    m_scene.addChild(m_transformation);
+		m_objs.push_back(m_cube);
+		m_scene.addChild(m_cube);
 
-
+	}
 	LOGI("Node quads generated!");
 }
 
 void RectGenerator::destroyNodeQuads()
 {
 	LOGI("Destroying node quads...");
+
+	for(std::vector<gre::CustomObj*>::const_iterator it = m_objs.begin(); it != m_objs.end(); ++it)
+	{
+		gre::CustomObj* obj = (*it);
+		m_scene.removeChild(obj);
+	}
+	m_objs.clear();
 	LOGI("Node quads destroyed!");
 }
 

@@ -34,15 +34,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     {
         rg.translateCameraPosition(glm::vec3(step, 0.f, 0.f));
     }
-    else if (key == GLFW_KEY_PAGE_UP  && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_PAGE_UP  && action == GLFW_REPEAT)
     {
         currentZoom += 0.1f;
-        rg.zoom(currentZoom);
+        rg.zoom(currentZoom * rg.getInitialZoom());
     }
-    else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_REPEAT)
     {
         currentZoom -= 0.1f;
-        rg.zoom(currentZoom);
+        rg.zoom(currentZoom * rg.getInitialZoom());
     }
 }
 
@@ -55,6 +55,7 @@ int main( void )
     rg.generateQuads();
     rg.printQuadsInfo();
     rg.createNodeQuads();
+    //rg.destroyNodeQuads();
 
     while(!rg.updateScene())	// Check if the ESC key was pressed or the window was closed
     {

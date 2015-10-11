@@ -20,6 +20,7 @@ public:
 
     virtual void draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective );
     void addChild( Node* c );
+    void removeChild( Node* c );
     Node* getChild( const unsigned int id );
     std::vector<Node*>& getChildren(){ return m_children; }
 
