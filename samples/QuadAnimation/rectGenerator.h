@@ -1,5 +1,7 @@
 #include "glfwWindow.h"
 
+#include "customObj.hpp"
+
 #include "objloader.hpp"
 #include "shapes.hpp"
 #include "scene.hpp"
@@ -46,6 +48,7 @@ protected:
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
+    //gre::CustomObj* m_cube;
     gre::Obj* m_cube;
     gre::Translation m_trans;
     gre::Scene m_scene;
