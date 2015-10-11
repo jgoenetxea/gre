@@ -31,6 +31,8 @@ public:
     void setName( const std::string name ){ m_name = name; }
     std::string& getName(){ return m_name; }
 
+    void getViewportSize( int& width, int & height );
+
 private:
     std::vector<Node*> m_children;
 

@@ -48,7 +48,8 @@ bool RectGenerator::initScene()
 
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
+    //m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
+    m_camera.setConfiguration(1.f, 0.1f, 100.0f);
     // View matrix
     m_camera.setLocation( position,           // Camera is here
             glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"

@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+#define GL_GLEXT_PROTOTYPES
+#include<GL/gl.h>
+//#include<GLES2/gl2.h>
+
 using namespace gre;
 
 Node::Node()
@@ -58,3 +62,12 @@ void Node::setLocalTranslation( glm::mat4 translation )
     //m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
 }
 
+void Node::getViewportSize( int& width, int & height )
+{
+    GLint viewport[4];
+
+    glGetIntegerv( GL_VIEWPORT, viewport );
+
+    width = viewport[2] - viewport[0];
+    height = viewport[3] - viewport[1];
+}
