@@ -76,7 +76,6 @@ protected:
     unsigned int m_iSampleRateUniformLocator;
     unsigned int m_program;
 
-private:
     float m_elapsedTime;    // Elapsed time in seconds
     Timer* m_timer;
     int m_viewport[4];
