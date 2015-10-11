@@ -49,10 +49,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 int main( void )
 {
 
-    rg.init("Quad generator", 800, 600, key_callback, error_callback);
+    rg.init("Quad generator", 800, 800, key_callback, error_callback);
 
     rg.initScene();
     rg.generateQuads();
+    rg.printQuadsInfo();
+    rg.createNodeQuads();
 
     while(!rg.updateScene())	// Check if the ESC key was pressed or the window was closed
     {

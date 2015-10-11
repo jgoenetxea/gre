@@ -92,6 +92,21 @@ GLuint ProgramGenerator::makeProgram( const std::string& vertexCode, const std::
         printf("%s\n", &fragmentShaderErrorMessage[0]);
 	}
 
+    // Compile Geometry Shader
+//	printf("Compiling shader : %s\n", fragmentCode);
+    char const * geometrySourcePointer = geometryCode.c_str();
+    glShaderSource(geometryShaderID, 1, &geometrySourcePointer , NULL);
+    glCompileShader(geometryShaderID);
+
+    // Check Fragment Shader
+    glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if ( infoLogLength > 0 ){
+        std::vector<char> fragmentShaderErrorMessage(infoLogLength+1);
+        glGetShaderInfoLog(fragmentShaderID, infoLogLength, NULL, &fragmentShaderErrorMessage[0]);
+        printf("%s\n", &fragmentShaderErrorMessage[0]);
+    }
+
 
 	// Link the program
 	printf("Linking program\n");
