@@ -21,12 +21,14 @@ public:
     ~CustomObj();
 
     void draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective );
-    void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode );
-    void setShadersFromFiles( std::string& vertex_file_path, std::string& fragment_file_path );
+    void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode="" );
+    void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path="" );
     void updateFragmentShader( const string& fragmentShaderCode );
 
-    CustomObj& operator=(Obj& obj); // move assignment
+    void initWithObj(Obj& obj); // move assignment
 
+protected:
+    unsigned int m_colourUniformLocator;
 };
 
 }

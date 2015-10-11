@@ -47,6 +47,7 @@ public:
 protected:
     // Asstes
     std::string m_assets_path;
+    std::string m_gShader;
     std::string m_vShader;
     std::string m_fShader;
     std::string m_fColourShader;
@@ -55,9 +56,14 @@ protected:
     std::string m_uvtemplate;
     std::string m_modelFile;
 
+    std::string m_gShaderTron;
+    std::string m_vShaderTron;
+    std::string m_fShaderTron;
+
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
+    gre::CustomObj* m_cube;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
 

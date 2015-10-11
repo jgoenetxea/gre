@@ -24,7 +24,10 @@ Obj::Obj() :
     m_program(0),
     m_vertexBuffer(0),
     m_uvBuffer(0),
-    m_normalBuffer(0)
+    m_normalBuffer(0),
+    m_currentVertexShaderCode(""),
+    m_currentFragmentShaderCode(""),
+    m_currentGeometryShaderCode("")
 {
 
 }
@@ -70,11 +73,12 @@ void Obj::setTexture( std::string& textureFileName )
     }
 }
 
-void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode )
+void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode )
 {
     m_currentVertexShaderCode = vertexShaderCode;
     m_currentFragmentShaderCode = fragmentShaderCode;
-    m_program = ProgramGenerator::makeProgram( vertexShaderCode, fragmentShaderCode );
+    m_currentGeometryShaderCode = geometryShaderCode;
+    m_program = ProgramGenerator::makeProgram( vertexShaderCode, fragmentShaderCode, geometryShaderCode );
     m_matrixUniformLocator = glGetUniformLocation(m_program, "modelViewMatrix");
     m_textureUniformLocator  = glGetUniformLocation(m_program, "iChannel0");
     m_iResolutionUniformLocator = glGetUniformLocation(m_program, "iResolution");
@@ -84,7 +88,7 @@ void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShad
     m_iSampleRateUniformLocator = glGetUniformLocation(m_program, "iSampleRate");
 }
 
-void Obj::setShadersFromFiles( std::string& vertex_file_path, std::string& fragment_file_path )
+void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path )
 {
     // Read the Vertex Shader code from the file
     std::string vertexShaderCode;
@@ -112,17 +116,35 @@ void Obj::setShadersFromFiles( std::string& vertex_file_path, std::string& fragm
     }
     else
     {
-        printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path.c_str());
+        printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", fragment_file_path.c_str());
         return ;
     }
 
-    return setShaders(vertexShaderCode, fragmentShaderCode);
+    // Read the Fragment Shader code from the file
+    std::string geometryShaderCode = "";
+    if(static_cast<int>(geometry_file_path.size()) > 0)
+    {
+        std::ifstream geometryShaderStream(geometry_file_path.c_str(), std::ios::in);
+        if(geometryShaderStream.is_open()){
+            std::string line = "";
+            while(getline(geometryShaderStream, line))
+                geometryShaderCode += "\n" + line;
+            geometryShaderStream.close();
+        }
+        else
+        {
+            printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", geometry_file_path.c_str());
+            return ;
+        }
+    }
+
+    return setShaders(vertexShaderCode, fragmentShaderCode, geometryShaderCode);
 }
 
 void Obj::updateFragmentShader( const string& fragmentShaderCode )
 {
     glDeleteProgram( m_program );
-    setShaders( m_currentVertexShaderCode, fragmentShaderCode );
+    setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode );
 }
 
 //void Obj::setMVP( glm::mat4& MVP )

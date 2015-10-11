@@ -14,10 +14,9 @@ uniform vec4 iMouse;			// mouse pixel coords. xy: current (if MLB down), zw: cli
 uniform vec4 iDate;				// (year, month, day, time in seconds)
 uniform float iSampleRate;		// sound sample rate (i.e., 44100)
 
-uniform vec3 iColour;
-
 void main(){
 
 	// Output color = color of the texture at the specified UV
-	fragColor = iColour;
+	fragColor = texture2D( iChannel0, UV ).rgb;
+	//fragColor = vec3(255,0,0);
 }

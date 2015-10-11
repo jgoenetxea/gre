@@ -15,6 +15,7 @@ m_quadsGenerated(false)
 {
     m_assets_path = ASSET_DIRECTORY;
 
+    m_gShader = m_assets_path+"shaders/basic.geom";
     m_vShader = m_assets_path+"shaders/basic130.vert";
     m_fShader = m_assets_path+"shaders/basic130.frag";
     m_fColourShader = m_assets_path+"shaders/colour.frag";
@@ -23,6 +24,10 @@ m_quadsGenerated(false)
     //m_uvtemplate = m_assets_path+"obj/uvtemplate.DDS";
     m_uvtemplate = m_assets_path+"images/test.png";
     m_modelFile = m_assets_path+"obj/cube.obj";
+
+    m_gShaderTron = m_assets_path+"shaders/basicTron.geom";
+    m_vShaderTron = m_assets_path+"shaders/basicTron.vert";
+    m_fShaderTron = m_assets_path+"shaders/basicTron.frag";
 }
 
 RectGenerator::~RectGenerator()
@@ -45,9 +50,9 @@ bool RectGenerator::initScene()
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
 
-    m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
-    m_cube->setShadersFromFiles( m_vShader, m_fWaveShader );
-    m_cube->setTexture( m_uvtemplate );
+//    m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
+//    m_cube->setShadersFromFiles( m_vShader, m_fWaveShader );
+//    m_cube->setTexture( m_uvtemplate );
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     //m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
@@ -147,20 +152,21 @@ void RectGenerator::createNodeQuads()
 	LOGI("Generating node quads...");
 
 	// Create cube
-	gre::CustomObj* m_cube;
-	m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
-	m_cube->setName("Quad");
-	m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
-	m_cube->setTexture( m_uvtemplate );
+    gre::Obj* cube = gre::ShapeDispatcher::getShapes()->getQuad();
+    m_cube  = new gre::CustomObj();
+    m_cube->initWithObj(*cube);
+    m_cube->setName("Quad");
+    m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
+    m_cube->setTexture( m_uvtemplate );
 
-	//
-	m_cube->setTranslation(glm::vec3(1.0f, 0.0f, 0.0f));
-	m_cube->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+    //
+    //m_cube->setTranslation(glm::vec3(1.0f, 0.0f, 0.0f));
+    m_cube->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
 
-	gre::Transformation* m_transformation = new gre::Transformation();
-	m_transformation->setTranslation(glm::vec3(0.0f, 1.0f, 1.0f));
-	//m_transformation->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
-	m_transformation->addChild(m_cube);
+    gre::Transformation* m_transformation = new gre::Transformation();
+    m_transformation->setTranslation(glm::vec3(0.0f, .0f, 1.0f));
+    //m_transformation->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+    m_transformation->addChild(m_cube);
 
     m_scene.addChild(m_transformation);
 
