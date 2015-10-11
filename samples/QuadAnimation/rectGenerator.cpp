@@ -16,7 +16,7 @@ RectGenerator::RectGenerator()
 
     m_vShader = m_assets_path+"shaders/basic130.vert";
     m_fShader = m_assets_path+"shaders/basic130.frag";
-    m_fColourShader = m_assets_path+"shaders/gradient.frag";
+    m_fColourShader = m_assets_path+"shaders/colour.frag";
     //m_uvtemplate = m_assets_path+"obj/uvtemplate.DDS";
     m_uvtemplate = m_assets_path+"images/test.png";
     m_modelFile = m_assets_path+"obj/cube.obj";
