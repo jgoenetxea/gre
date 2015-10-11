@@ -42,7 +42,7 @@ bool RectGenerator::initScene()
     glm::vec3 up = glm::vec3( 0,1,0 );
 
 
-    m_cube = gre::ShapeDispatcher::getShapes()->getQuad();
+    m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
     m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
     m_cube->setTexture( m_uvtemplate );
 

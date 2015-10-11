@@ -49,8 +49,8 @@ protected:
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
-    //gre::CustomObj* m_cube;
-    gre::Obj* m_cube;
+    gre::CustomObj* m_cube;
+    //gre::Obj* m_cube;
     gre::Transformation m_trans;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
