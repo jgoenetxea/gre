@@ -41,9 +41,9 @@ void Transformation::setTranslation(glm::vec3 translation)
 void Transformation::computeLocalMatrix()
 {
 	glm::mat4 t = glm::mat4(1.0);
-	t = glm::scale(t, m_scale);
 	t = glm::translate(t, m_translation);
 	t = glm::rotate(t, m_rotationAngle, m_rotationAxis);
+	t = glm::scale(t, m_scale);
 	this->setLocalTranslation(t);
 }
 
