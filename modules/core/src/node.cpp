@@ -6,8 +6,13 @@ using namespace gre;
 
 Node::Node()
 {
-    m_globalTranslation = glm::mat4(1);
-    m_localTranslation = glm::mat4(1);
+    m_globalTransformation = glm::mat4(1.0f);
+    m_localTransformation = glm::mat4(1.0f);
+    m_scale = glm::vec3(1.0f);
+    m_rotationAngle = 0.0f;
+	m_rotationAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+    m_translation = glm::vec3(1.0f);
+
     m_name = "Unamed";
 }
 
@@ -41,7 +46,7 @@ Node* Node::getChild( const unsigned int id )
     return NULL;
 }
 
-void Node::setGlobalTranslation( glm::mat4 translation )
+void Node::setGlobalTranslation( glm::mat4 transformation )
 {
     return;
     // Define the global translation
@@ -52,9 +57,9 @@ void Node::setGlobalTranslation( glm::mat4 translation )
 
 }
 
-void Node::setLocalTranslation( glm::mat4 translation )
+void Node::setLocalTranslation( glm::mat4 transformation )
 {
-    m_localTranslation = translation;
+    m_localTransformation = transformation;
     //m_globalTranslation = m_localTranslation * m_phader->getGlobalTranslation();
 }
 

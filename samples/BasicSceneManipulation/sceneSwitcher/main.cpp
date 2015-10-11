@@ -21,7 +21,7 @@ using namespace glm;
 #include "shapes.hpp"
 
 #include "scene.hpp"
-#include "translation.hpp"
+#include "transformation.hpp"
 
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
@@ -55,7 +55,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 std::vector<gre::Scene> m_scene(2);
 // Generate translation node
-std::vector<gre::Translation> m_trans(2);
+std::vector<gre::Transformation> m_trans(2);
 
 void generateScenes()
 {
@@ -97,7 +97,7 @@ void generateScenes()
     //m_trans[1].addChild(m_sphere);
     glm::mat4* trans = new glm::mat4(1);
     *trans = glm::translate(*trans, glm::vec3(0, 2, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-    gre::Translation* sphereOffset = new gre::Translation();
+    gre::Transformation* sphereOffset = new gre::Transformation();
     sphereOffset->setLocalTranslation( *trans );
     sphereOffset->addChild(m_cube);
     m_trans[1].addChild(sphereOffset);

@@ -14,7 +14,7 @@
 #include "shapes.hpp"
 
 #include "scene.hpp"
-#include "translation.hpp"
+#include "transformation.hpp"
 
 #include "renderer.hpp"
 #include "orthoCamera.hpp"
@@ -42,7 +42,7 @@ private:
     gre::Scene m_scene;
     gre::Renderer* m_renderer;
     gre::Obj* m_obj;
-    gre::Translation m_trans;
+    gre::Transformation m_trans;
 
     gre::OrthoCamera m_camera;
     glm::vec3 position;

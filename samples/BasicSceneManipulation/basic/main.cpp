@@ -21,7 +21,7 @@ using namespace glm;
 #include "shapes.hpp"
 
 #include "scene.hpp"
-#include "translation.hpp"
+#include "transformation.hpp"
 
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
@@ -113,7 +113,7 @@ int main( void )
     m_obj->setTexture( uvtemplate );
 
     // Generate translation node
-    gre::Translation m_trans;
+    gre::Transformation m_trans;
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );

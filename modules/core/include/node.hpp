@@ -5,6 +5,7 @@
 #include <string>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 using namespace std;
 
@@ -22,11 +23,11 @@ public:
     Node* getChild( const unsigned int id );
     std::vector<Node*>& getChildren(){ return m_children; }
 
-    glm::mat4 getGlobalTranslation(){ return m_globalTranslation; }
-    glm::mat4 getLocalTranslation(){ return m_localTranslation; }
+    glm::mat4 getGlobalTranslation(){ return m_globalTransformation; }
+    glm::mat4 getLocalTranslation(){ return m_localTransformation; }
 
-    void setGlobalTranslation( glm::mat4 translation );
-    void setLocalTranslation( glm::mat4 translation );
+    void setGlobalTranslation( glm::mat4 transformation );
+    void setLocalTranslation( glm::mat4 transformation );
 
     void setName( const std::string name ){ m_name = name; }
     std::string& getName(){ return m_name; }
@@ -35,8 +36,13 @@ private:
     std::vector<Node*> m_children;
 
 protected:
-    glm::mat4 m_localTranslation;
-    glm::mat4 m_globalTranslation;
+    glm::mat4 m_localTransformation;
+    glm::mat4 m_globalTransformation;
+
+    glm::vec3 m_scale;
+    float m_rotationAngle;
+	glm::vec3 m_rotationAxis;
+    glm::vec3 m_translation;
 
     std::string m_name;
 };

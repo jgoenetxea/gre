@@ -18,7 +18,7 @@ using namespace glm;
 #include "shapes.hpp"
 
 #include "scene.hpp"
-#include "translation.hpp"
+#include "transformation.hpp"
 
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"

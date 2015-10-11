@@ -44,8 +44,7 @@ bool RectGenerator::initScene()
 
     m_cube = gre::ShapeDispatcher::getShapes()->getQuad();
     m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
-    //m_cube->setTexture( m_uvtemplate );
-
+    m_cube->setTexture( m_uvtemplate );
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
@@ -63,11 +62,8 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Locate the new quad
-    glm::mat4 t = glm::mat4(1.0);
-    t = glm::scale(t, glm::vec3(0.2f, 0.2f, 0.2f));
-    //t = glm::rotate(t, 0.f, glm::vec3(0, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-    t = glm::translate(t, glm::vec3(0, 0, 1)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-    m_trans.setLocalTranslation(t);
+    m_trans.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+    m_trans.setTranslation(glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Init Rectangles
     m_maxNumberOfRectangles = 10;
@@ -84,7 +80,9 @@ bool RectGenerator::initScene()
 
 bool RectGenerator::updateScene()
 {
-
+	static float position = 0.0f;
+	m_trans.rotate(1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	position = position + 0.001f;
 
     return glfwWindowShouldClose(m_window);
 }
@@ -127,11 +125,12 @@ bool RectGenerator::generateQuads()
         Square2D* square = new Square2D(origin, width, height);
         m_rectangles.push_back(square);
     }
+
     // Print info
     for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
     {
-        std::string data = (*it)->getJSONFormat();
-        LOGD("Data: %s", data.c_str());
+        //std::string data = (*it)->getJSONFormat();
+        //LOGD("Data: %s", data.c_str());
     }
     LOGI("Scene generated!");
     return true;

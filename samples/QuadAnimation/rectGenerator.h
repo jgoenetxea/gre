@@ -1,9 +1,10 @@
+#include <transformation.hpp>
+
 #include "glfwWindow.h"
 
 #include "objloader.hpp"
 #include "shapes.hpp"
 #include "scene.hpp"
-#include "translation.hpp"
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
 #include "orthoCamera.hpp"
@@ -47,7 +48,7 @@ protected:
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
     gre::Obj* m_cube;
-    gre::Translation m_trans;
+    gre::Transformation m_trans;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
     // Scene generated configuration

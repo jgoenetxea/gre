@@ -22,7 +22,7 @@ using namespace glm;
 #include "shapes.hpp"
 
 #include "scene.hpp"
-#include "translation.hpp"
+#include <transformation.hpp>
 
 #include "renderer.hpp"
 #include "projectiveCamera.hpp"
@@ -59,7 +59,7 @@ const int screenHeighth = 768;
 GLFWwindow* window;
 gre::Renderer* m_renderer;
 gre::Obj* m_obj;
-gre::Translation m_trans;
+gre::Transformation m_trans;
 gre::Scene m_scene;
 GLuint VertexArrayID;
 gre::OrthoCamera m_camera;

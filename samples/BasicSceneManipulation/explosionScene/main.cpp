@@ -95,7 +95,7 @@ int main( void ) // EXPLOSION
     m_explosion->setTexture( uvtemplate );
 
     // Generate translation node
-    gre::Translation m_trans;
+    gre::Transformation m_trans;
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
