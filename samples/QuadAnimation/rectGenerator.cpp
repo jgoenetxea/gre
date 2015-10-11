@@ -17,6 +17,8 @@ RectGenerator::RectGenerator()
     m_vShader = m_assets_path+"shaders/basic130.vert";
     m_fShader = m_assets_path+"shaders/basic130.frag";
     m_fColourShader = m_assets_path+"shaders/colour.frag";
+    m_fGradientShader = m_assets_path+"shaders/gradient.frag";
+    m_fWaveShader = m_assets_path+"shaders/glowedWave.frag";
     //m_uvtemplate = m_assets_path+"obj/uvtemplate.DDS";
     m_uvtemplate = m_assets_path+"images/test.png";
     m_modelFile = m_assets_path+"obj/cube.obj";
@@ -35,7 +37,7 @@ bool RectGenerator::initScene()
 
     // Generate the main model
     m_base = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_base->setShadersFromFiles( m_vShader, m_fShader );
+    m_base->setShadersFromFiles( m_vShader, m_fGradientShader );
     m_base->setTexture( m_uvtemplate );
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
@@ -43,7 +45,7 @@ bool RectGenerator::initScene()
 
 
     m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
-    m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
+    m_cube->setShadersFromFiles( m_vShader, m_fWaveShader );
     m_cube->setTexture( m_uvtemplate );
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units

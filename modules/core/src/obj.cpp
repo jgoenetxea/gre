@@ -151,8 +151,9 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
     if( m_timer == NULL )
     {
         m_timer = new gre::Timer();
+        m_timer->init();
     }
-    m_elapsedTime = static_cast<float>(m_timer->getTotalElapsedSeconds());
+    m_elapsedTime = static_cast<float>(m_timer->getElapsedSeconds());
 
     // Get viewport size (yes, is dirty, but is not time for fancy solutions
     glGetIntegerv( GL_VIEWPORT, m_viewport );

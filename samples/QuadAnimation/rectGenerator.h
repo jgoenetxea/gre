@@ -44,6 +44,8 @@ protected:
     std::string m_vShader;
     std::string m_fShader;
     std::string m_fColourShader;
+    std::string m_fWaveShader;
+    std::string m_fGradientShader;
     std::string m_uvtemplate;
     std::string m_modelFile;
     // Rendering elements
