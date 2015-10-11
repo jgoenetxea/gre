@@ -6,6 +6,9 @@
 #include<GL/gl.h>
 //#include<GLES2/gl2.h>
 
+#include "logger.h"
+#define LOG_TAG "Node"
+
 using namespace gre;
 
 Node::Node()
@@ -39,6 +42,23 @@ void Node::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4&
 void Node::addChild( Node* c )
 {
     m_children.push_back(c);
+}
+
+void Node::removeChild( Node* c )
+{
+	for (std::vector<Node*>::iterator it = m_children.begin(); it != m_children.end(); )
+	{
+		if( (*it) == c )
+		{
+			//LOGD("Removing: %p", c);
+			delete * it;
+			it = m_children.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 Node* Node::getChild( const unsigned int id )

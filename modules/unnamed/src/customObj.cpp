@@ -18,7 +18,9 @@ using namespace gre;
 
 CustomObj::CustomObj()
 {
-
+    m_color.x = 128.f;
+    m_color.y = 128.f;
+    m_color.z = 128.f;
 }
 
 CustomObj::~CustomObj()
@@ -130,7 +132,7 @@ void CustomObj::draw( const glm::mat4& model, const glm::mat4& view, const glm::
     glUniform1f( m_iGlobalTimeUniformLocator, m_elapsedTime );
     glUniform3f( m_iResolutionUniformLocator, m_viewport[2]-m_viewport[0], m_viewport[3]-m_viewport[1], 0.f);
 
-    glUniform3f( m_colourUniformLocator, 255.f, 255.f, 0.f);
+    glUniform3f( m_colourUniformLocator, m_color.r, m_color.g, m_color.b);
 
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);

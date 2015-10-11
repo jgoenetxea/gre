@@ -44,6 +44,8 @@ public:
     void translateCameraPosition(const glm::vec3& offset);
     void zoom(const float value);
 
+    float getInitialZoom() { return m_initialZoom; };
+
 protected:
     // Asstes
     std::string m_assets_path;
@@ -68,6 +70,7 @@ protected:
     gre::OrthoCamera m_camera;
 
     // Scene generated configuration
+    int m_initialZoom;
     bool m_quadsGenerated;
     int m_maxNumberOfRectangles;
     int m_lowWidth;
@@ -77,5 +80,6 @@ protected:
     Point2D m_centerSquares;
     float m_radiusSquares;
     std::vector<Square2D*> m_rectangles;
+    std::vector<gre::CustomObj*> m_objs;
 
 };

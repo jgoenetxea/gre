@@ -27,8 +27,12 @@ public:
 
     void initWithObj(Obj& obj); // move assignment
 
+    void setColor( const int r, const int g, const int b ){ m_color = glm::vec3(static_cast<float>(r),static_cast<float>(g),static_cast<float>(b)); }
+    glm::vec3& getColor(){return m_color;}
+
 protected:
     unsigned int m_colourUniformLocator;
+    glm::vec3 m_color;
 };
 
 }
