@@ -15,7 +15,7 @@ Node::Node()
     m_scale = glm::vec3(1.0f);
     m_rotationAngle = 0.0f;
 	m_rotationAxis = glm::vec3(0.0f, 0.0f, 1.0f);
-    m_translation = glm::vec3(1.0f);
+    m_translation = glm::vec3(0.0f);
 
     m_name = "Unamed";
 }

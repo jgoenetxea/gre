@@ -1,6 +1,8 @@
 #include "renderer.hpp"
 
 #include <iostream>
+#include "logger.h"
+#define LOG_TAG "Renderer"
 
 using namespace gre;
 
@@ -25,13 +27,11 @@ void Renderer::renderScene( Scene* scene )
 void Renderer::renderNode( Node* node, glm::mat4 currentGlobalMatrix )
 {
     std::vector<Node*>& childrenList = node->getChildren();
-    currentGlobalMatrix = currentGlobalMatrix * node->getLocalTranslation();
-    Node* n;
+    currentGlobalMatrix = node->getLocalTranslation() * currentGlobalMatrix;
+    node->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
     for(std::vector<Node*>::iterator it=childrenList.begin() ; it!=childrenList.end() ; ++it)
     {
-        n = (*it);
-        //std::cout << "Rendering: " << n->getName() << std::endl;
-        n->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
+        //LOGD("Rendering: %s", n->getName().c_str());
         renderNode((*it), currentGlobalMatrix);
     }
 }

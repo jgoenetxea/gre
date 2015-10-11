@@ -31,7 +31,13 @@ public:
 
     void close();
 
+    // Create nodes objects
     bool generateQuads();
+    void printQuadsInfo();
+
+    // Create & destroy nodes in the scene from objects
+    void createNodeQuads();
+    void destroyNodeQuads();
 
     void getCameraPosition(glm::vec3& pos);
     void setCameraPosition(glm::vec3& pos);
@@ -48,15 +54,15 @@ protected:
     std::string m_fGradientShader;
     std::string m_uvtemplate;
     std::string m_modelFile;
+
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
-    gre::CustomObj* m_cube;
-    //gre::Obj* m_cube;
-    gre::Transformation m_trans;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
+
     // Scene generated configuration
+    bool m_quadsGenerated;
     int m_maxNumberOfRectangles;
     int m_lowWidth;
     int m_highWidth;

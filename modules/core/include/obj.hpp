@@ -1,7 +1,7 @@
 #ifndef OBJ_H
 #define OBJ_H
 
-#include "node.hpp"
+#include "transformation.hpp"
 #include "timer.h"
 
 #include <vector>
@@ -32,7 +32,7 @@ private:
 	unsigned int m_indexBuffer;
 };
 
-class Obj: public Node
+class Obj: public Transformation
 {
 public:
 	Obj();

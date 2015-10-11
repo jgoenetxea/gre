@@ -10,7 +10,8 @@ using namespace glm;
 
 #include <typeinfo>
 
-RectGenerator::RectGenerator()
+RectGenerator::RectGenerator():
+m_quadsGenerated(false)
 {
     m_assets_path = ASSET_DIRECTORY;
 
@@ -37,12 +38,12 @@ bool RectGenerator::initScene()
 
     // Generate the main model
     m_base = gre::ShapeDispatcher::getShapes()->getQuad();
+    m_base->setName("Base");
     m_base->setShadersFromFiles( m_vShader, m_fGradientShader );
     m_base->setTexture( m_uvtemplate );
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
-
 
     m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
     m_cube->setShadersFromFiles( m_vShader, m_fWaveShader );
@@ -58,15 +59,10 @@ bool RectGenerator::initScene()
     );
 
     // Generate scene
+    m_scene.setName("Scene");
     m_scene.addCamera(m_camera);
     m_scene.addChild(m_base);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(m_cube);
     LOGI("Scene initialized!");
-
-    // Locate the new quad
-    m_trans.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
-    m_trans.setTranslation(glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Init Rectangles
     m_maxNumberOfRectangles = 10;
@@ -83,10 +79,7 @@ bool RectGenerator::initScene()
 
 bool RectGenerator::updateScene()
 {
-	static float position = 0.0f;
-	m_trans.rotate(1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-	position = position + 0.001f;
-
+	// Your code here.
     return glfwWindowShouldClose(m_window);
 }
 
@@ -115,9 +108,25 @@ void RectGenerator::close()
     GLFWWindowImpl::close();
 }
 
+void RectGenerator::printQuadsInfo()
+{
+	if(!m_quadsGenerated)
+	{
+		LOGE("First generate quads");
+		return;
+	}
+	// Print info
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		std::string data = (*it)->getJSONFormat();
+		LOGD("Data: %s", data.c_str());
+	}
+	return;
+}
+
 bool RectGenerator::generateQuads()
 {
-    LOGI("Generating scene...");
+    LOGI("Generating quads...");
 
     // Create random squares
     for(int i = 0; i < m_maxNumberOfRectangles; i++)
@@ -128,15 +137,41 @@ bool RectGenerator::generateQuads()
         Square2D* square = new Square2D(origin, width, height);
         m_rectangles.push_back(square);
     }
-
-    // Print info
-    for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
-    {
-        //std::string data = (*it)->getJSONFormat();
-        //LOGD("Data: %s", data.c_str());
-    }
-    LOGI("Scene generated!");
+    m_quadsGenerated = true;
+    LOGI("Quads generated!");
     return true;
+}
+
+void RectGenerator::createNodeQuads()
+{
+	LOGI("Generating node quads...");
+
+	// Create cube
+	gre::CustomObj* m_cube;
+	m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
+	m_cube->setName("Quad");
+	m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
+	m_cube->setTexture( m_uvtemplate );
+
+	//
+	m_cube->setTranslation(glm::vec3(1.0f, 0.0f, 0.0f));
+	m_cube->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+
+	gre::Transformation* m_transformation = new gre::Transformation();
+	m_transformation->setTranslation(glm::vec3(0.0f, 1.0f, 1.0f));
+	//m_transformation->setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+	m_transformation->addChild(m_cube);
+
+    m_scene.addChild(m_transformation);
+
+
+	LOGI("Node quads generated!");
+}
+
+void RectGenerator::destroyNodeQuads()
+{
+	LOGI("Destroying node quads...");
+	LOGI("Node quads destroyed!");
 }
 
 void RectGenerator::getCameraPosition(glm::vec3& pos)
