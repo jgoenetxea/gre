@@ -3,20 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
-    string vShader2 = "../TransformVertexShader.vertexshader";
-    string fShader2 = "../TextureFragmentShader.fragmentshader";
-    string uvtemplate2 = "../uvtemplate.DDS";
-#else
-    string vShader2 = "../BasicSceneManipulation/TransformVertexShader.vertexshader";
-    string fShader2 = "../BasicSceneManipulation/TextureFragmentShader.fragmentshader";
-    string uvtemplate2 = "../BasicSceneManipulation/uvtemplate.DDS";
-#endif
-
 using namespace glm;
 SimpleQuad::SimpleQuad()
 {
     m_frame = 0;
+
+    m_assets_path = ASSET_DIRECTORY;
+
+    m_vShader = m_assets_path+"shaders/basic130.vert";
+    m_fShader = m_assets_path+"shaders/basic130.frag";
+    m_fColourShader = m_assets_path+"shaders/colour.frag";
+    //m_uvtemplate = m_assets_path+"obj/uvtemplate.DDS";
+    m_uvtemplate = m_assets_path+"images/test.png";
+    m_modelFile = m_assets_path+"obj/cube.obj";
 }
 
 SimpleQuad::~SimpleQuad()
@@ -46,8 +45,8 @@ void SimpleQuad::initialize()
 
     // Generate the main model
     m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_obj->setShadersFromFiles( vShader2, fShader2 );
-    m_obj->setTexture( uvtemplate2 );
+    m_obj->setShadersFromFiles( m_vShader, m_fShader );
+    //m_obj->setTexture( m_uvtemplate );
 
     // Generate camera instance
     position = glm::vec3( 0, 0, 5 );

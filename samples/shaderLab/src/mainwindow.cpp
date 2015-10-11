@@ -2,21 +2,25 @@
 #include "ui_mainwindow.h"
 
 const string defaultFragmentShader = "#version 330 core\n \
-// Interpolated values from the vertex shaders\n \
-in vec2 UV;\n \
-// Ouput data\n \
-out vec3 fragColor;\n \
-// Values that stay constant for the whole mesh.\n \
-uniform sampler2D iChannel0;\n \
-uniform vec3 iResolution;		// Viewport resolution (in pixels)\n \
-uniform float iGlobalTime;		// shader playback time (in seconds)\n \
-uniform vec4 iMouse;			// mouse pixel coords. xy: current (if MLB down), zw: click\n \
-uniform vec4 iDate;				// (year, month, day, time in seconds)\n \
-uniform float iSampleRate;		// sound sample rate (i.e., 44100)\n \
-\n \
-void main(){\n \
-    fragColor = vec3(255,0,0);\n \
-}\n";
+ // Interpolated values from the vertex shaders\n \
+ in vec2 UV;\n \
+ // Ouput data\n \
+ out vec3 fragColor;\n \
+ // Values that stay constant for the whole mesh.\n \
+ uniform sampler2D iChannel0;\n \
+ uniform vec3 iResolution;		// Viewport resolution (in pixels)\n \
+ uniform float iGlobalTime;		// shader playback time (in seconds)\n \
+ uniform vec4 iMouse;			// mouse pixel coords. xy: current (if MLB down), zw: click\n \
+ uniform vec4 iDate;				// (year, month, day, time in seconds)\n \
+ uniform float iSampleRate;		// sound sample rate (i.e., 44100)\n \
+ \n \
+ void main(){\n \
+    vec2 r = gl_FragCoord.xy / iResolution.xy;\n \
+    gl_FragColor.r = r.x;\n \
+    gl_FragColor.g = 0.0;\n \
+    gl_FragColor.b = r.y;\n \
+    gl_FragColor.a = 1.0;\n \
+ }\n";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

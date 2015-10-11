@@ -40,11 +40,13 @@ protected:
     std::string m_assets_path;
     std::string m_vShader;
     std::string m_fShader;
+    std::string m_fColourShader;
     std::string m_uvtemplate;
     std::string m_modelFile;
     // Rendering elements
     gre::Renderer* m_renderer;
-    gre::Obj* m_obj;
+    gre::Obj* m_base;
+    gre::Obj* m_cube;
     gre::Translation m_trans;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;

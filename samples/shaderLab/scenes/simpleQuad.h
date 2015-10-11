@@ -54,6 +54,14 @@ private:
     int rotSpeed;
     int transSpeed;
 
+    // Asstes
+    std::string m_assets_path;
+    std::string m_vShader;
+    std::string m_fShader;
+    std::string m_fColourShader;
+    std::string m_uvtemplate;
+    std::string m_modelFile;
+
     int m_frame;
 };
 

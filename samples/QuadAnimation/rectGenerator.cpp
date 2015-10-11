@@ -16,6 +16,7 @@ RectGenerator::RectGenerator()
 
     m_vShader = m_assets_path+"shaders/basic130.vert";
     m_fShader = m_assets_path+"shaders/basic130.frag";
+    m_fColourShader = m_assets_path+"shaders/gradient.frag";
     //m_uvtemplate = m_assets_path+"obj/uvtemplate.DDS";
     m_uvtemplate = m_assets_path+"images/test.png";
     m_modelFile = m_assets_path+"obj/cube.obj";
@@ -33,12 +34,17 @@ bool RectGenerator::initScene()
     m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
-    m_obj->setShadersFromFiles( m_vShader, m_fShader );
-    m_obj->setTexture( m_uvtemplate );
+    m_base = gre::ShapeDispatcher::getShapes()->getQuad();
+    m_base->setShadersFromFiles( m_vShader, m_fShader );
+    m_base->setTexture( m_uvtemplate );
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
+
+
+    m_cube = gre::ShapeDispatcher::getShapes()->getQuad();
+    m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
+    //m_cube->setTexture( m_uvtemplate );
 
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -51,9 +57,17 @@ bool RectGenerator::initScene()
 
     // Generate scene
     m_scene.addCamera(m_camera);
+    m_scene.addChild(m_base);
     m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
+    m_trans.addChild(m_cube);
     LOGI("Scene initialized!");
+
+    // Locate the new quad
+    glm::mat4 t = glm::mat4(1.0);
+    t = glm::scale(t, glm::vec3(0.2f, 0.2f, 0.2f));
+    //t = glm::rotate(t, 0.f, glm::vec3(0, 0, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+    t = glm::translate(t, glm::vec3(0, 0, 1)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+    m_trans.setLocalTranslation(t);
 
     // Init Rectangles
     m_maxNumberOfRectangles = 10;

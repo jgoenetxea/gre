@@ -63,6 +63,7 @@ SET( QT_INCLUDE_DIR ${Qt5Widgets_INCLUDE_DIRS} )
 
 
 
+ADD_DEFINITIONS(-DASSET_DIRECTORY="${CMAKE_SOURCE_DIR}/samples/shaderLab/assets/" )
 
 
 

@@ -159,7 +159,7 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 
 	glUniformMatrix4fv( m_matrixUniformLocator, 1, GL_FALSE, &m_mvp[0][0] );
     glUniform1f( m_iGlobalTimeUniformLocator, m_elapsedTime );
-    glUniform4i( m_iResolutionUniformLocator, m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
+    glUniform3f( m_iResolutionUniformLocator, m_viewport[2]-m_viewport[0], m_viewport[3]-m_viewport[1], 0.f);
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
