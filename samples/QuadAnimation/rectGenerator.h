@@ -37,6 +37,7 @@ public:
 
     // Create & destroy nodes in the scene from objects
     void createNodeQuads();
+    void updateNodeQuads();
     void destroyNodeQuads();
 
     void getCameraPosition(glm::vec3& pos);
@@ -81,5 +82,6 @@ protected:
     float m_radiusSquares;
     std::vector<Square2D*> m_rectangles;
     std::vector<gre::CustomObj*> m_objs;
+    bool m_nodeQuadsGenerated;
 
 };

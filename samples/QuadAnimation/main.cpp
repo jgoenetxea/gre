@@ -55,7 +55,8 @@ int main( void )
     rg.generateQuads();
     rg.printQuadsInfo();
     rg.createNodeQuads();
-    //rg.destroyNodeQuads();
+    //rg.updateNodeQuads(); 	// works
+    //rg.destroyNodeQuads();	// works
 
     while(!rg.updateScene())	// Check if the ESC key was pressed or the window was closed
     {

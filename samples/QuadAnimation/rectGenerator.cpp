@@ -12,7 +12,8 @@ using namespace glm;
 
 RectGenerator::RectGenerator():
 m_quadsGenerated(false),
-m_initialZoom(5.0f)
+m_nodeQuadsGenerated(false),
+m_initialZoom(15.0f)
 {
     m_assets_path = ASSET_DIRECTORY;
 
@@ -182,9 +183,30 @@ void RectGenerator::createNodeQuads()
 		m_scene.addChild(m_cube);
 
 	}
+	m_nodeQuadsGenerated = true;
 	LOGI("Node quads generated!");
 }
 
+void RectGenerator::updateNodeQuads()
+{
+	if(!m_nodeQuadsGenerated)
+	{
+		LOGE("First generate node quads");
+		return;
+	}
+	std::vector<gre::CustomObj*>::const_iterator it2 = m_objs.begin();
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		Square2D* square = (*it);
+		const Point2D origin = square->getOrigin();
+		const float width = square->getWidth();
+		const float height = square->getHeight();
+		gre::CustomObj* obj = (*it2);
+		obj->setTranslation(glm::vec3(origin.x, origin.y, 1.0f));
+		obj->setScale(glm::vec3(width, height, 1.0f));
+		++it2;
+	}
+}
 void RectGenerator::destroyNodeQuads()
 {
 	LOGI("Destroying node quads...");
