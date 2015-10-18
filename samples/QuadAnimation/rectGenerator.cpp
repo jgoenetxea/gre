@@ -9,11 +9,15 @@
 using namespace glm;
 
 #include <typeinfo>
+#include <algorithm>
+#include <iterator>
+#include <unistd.h>
 
 RectGenerator::RectGenerator():
 m_quadsGenerated(false),
 m_nodeQuadsGenerated(false),
-m_initialZoom(15.0f)
+m_initialZoom(1.0f),
+m_background(NULL)
 {
     m_assets_path = ASSET_DIRECTORY;
 
@@ -30,11 +34,20 @@ m_initialZoom(15.0f)
     m_gShaderTron = m_assets_path+"shaders/basicTron.geom";
     m_vShaderTron = m_assets_path+"shaders/basicTron.vert";
     m_fShaderTron = m_assets_path+"shaders/basicTron.frag";
+
+    m_rectangles.clear();
+    m_objs.clear();
 }
 
 RectGenerator::~RectGenerator()
 {
-
+	if(m_background)
+	{
+		delete m_background;
+	}
+	// Free memory
+	destroyNodeQuads();
+	destroyQuads();
 }
 
 bool RectGenerator::initScene()
@@ -52,10 +65,6 @@ bool RectGenerator::initScene()
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
     glm::vec3 up = glm::vec3( 0,1,0 );
-
-//    m_cube = static_cast<gre::CustomObj*>(gre::ShapeDispatcher::getShapes()->getQuad());
-//    m_cube->setShadersFromFiles( m_vShader, m_fWaveShader );
-//    m_cube->setTexture( m_uvtemplate );
 
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     //m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
@@ -80,8 +89,11 @@ bool RectGenerator::initScene()
     m_highHeight = 5;
     m_centerSquares = Point2D(0.0f, 0.0f);
     m_radiusSquares = 5.0f;
+    m_initialZoom = 15.0f;
     LOGI("Scene configured!");
 
+    // Update zoom
+    zoom(m_initialZoom);
     return true;
 }
 
@@ -132,9 +144,18 @@ void RectGenerator::printQuadsInfo()
 	return;
 }
 
-bool RectGenerator::generateQuads()
+bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
 {
     LOGI("Generating quads...");
+
+    if(renderEach)
+    {
+    	// Pre-render
+		createNodeQuads();
+		render();
+		destroyNodeQuads();
+		usleep(delayMs*1000);
+    }
 
     // Create random squares
     for(int i = 0; i < m_maxNumberOfRectangles; i++)
@@ -144,6 +165,14 @@ bool RectGenerator::generateQuads()
         Point2D origin = math2d::calculateRandomPoint2DInACircle(m_centerSquares, m_radiusSquares);
         Square2D* square = new Square2D(origin, width, height);
         m_rectangles.push_back(square);
+
+        if(renderEach)
+        {
+        	createNodeQuads();
+        	render();
+        	destroyNodeQuads();
+        	usleep(delayMs*1000);
+        }
     }
     m_quadsGenerated = true;
     LOGI("Quads generated!");
@@ -160,33 +189,38 @@ void RectGenerator::createNodeQuads()
 		const Point2D origin = square->getOrigin();
 		const float width = square->getWidth();
 		const float height = square->getHeight();
-
-		gre::CustomObj* m_cube;
-        gre::Obj* cube = gre::ShapeDispatcher::getShapes()->getQuad();
-        m_cube  = new gre::CustomObj();
-        m_cube->initWithObj(*cube);
-
-        int r = rand() % 255;
-        int g = rand() % 255;
-        int b = rand() % 255;
-        m_cube->setColor(r,g,b);
-
 		const int objID = m_objs.size();
-		m_cube->setName("Quad" + std::to_string(objID));
-		m_cube->setShadersFromFiles( m_vShader, m_fColourShader );
-		m_cube->setTexture( m_uvtemplate );
+		std::string name = "Quad" + std::to_string(objID);
 
-		m_cube->setTranslation(glm::vec3(origin.x, origin.y, 1.0f));
-		m_cube->setScale(glm::vec3(width, height, 1.0f));
-
-		m_objs.push_back(m_cube);
-		m_scene.addChild(m_cube);
-
+		gre::CustomObj* myQuad = createNodeQuad(name, origin.x, origin.y, width, height, 1.0f);
+		m_objs.push_back(myQuad);
+		m_scene.addChild(myQuad);
 	}
 	m_nodeQuadsGenerated = true;
 	LOGI("Node quads generated!");
 }
 
+gre::CustomObj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, float width, float height, float z)
+{
+	gre::CustomObj* customQuad;
+	gre::Obj* quad = gre::ShapeDispatcher::getShapes()->getQuad();
+	customQuad = new gre::CustomObj();
+	customQuad->initWithObj(*quad);
+
+	int r = rand() % 255;
+	int g = rand() % 255;
+	int b = rand() % 255;
+	customQuad->setColor(r,g,b);
+
+	customQuad->setName(name);
+	customQuad->setShadersFromFiles( m_vShader, m_fColourShader );
+	customQuad->setTexture( m_uvtemplate );
+
+	customQuad->setTranslation(glm::vec3(x0, y0, z));
+	customQuad->setScale(glm::vec3(width, height, 1.0f));
+
+	return customQuad;
+}
 void RectGenerator::updateNodeQuads()
 {
 	if(!m_nodeQuadsGenerated)
@@ -207,6 +241,19 @@ void RectGenerator::updateNodeQuads()
 		++it2;
 	}
 }
+
+void RectGenerator::destroyQuads()
+{
+	LOGI("Destroying Quads...");
+
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		delete (*it);
+	}
+	m_rectangles.clear();
+	LOGI("Quads destroyed!");
+}
+
 void RectGenerator::destroyNodeQuads()
 {
 	LOGI("Destroying node quads...");
@@ -220,6 +267,32 @@ void RectGenerator::destroyNodeQuads()
 	LOGI("Node quads destroyed!");
 }
 
+void RectGenerator::createBackgroundQuad()
+{
+	LOGI("Creating background quad...");
+
+	float minX = 0.0f;
+	float minY = 0.0f;
+	float maxX = 0.0f;
+	float maxY = 0.0f;
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		Square2D* square = (*it);
+		const Point2D origin = square->getOrigin();
+		const float width = square->getWidth();
+		const float height = square->getHeight();
+		if(origin.x < minX) minX = origin.x;
+		if(origin.y < minY) minY = origin.y;
+		if(origin.x + width > maxX) maxX = origin.x + width;
+		if(origin.y + height > maxY) maxY = origin.y + height;
+	}
+
+	LOGD("Min x is: %f", minX);
+	LOGD("Min y is: %f", minY);
+	LOGD("Max x is: %f", maxX);
+	LOGD("Max y is: %f", maxY);
+	m_background = createNodeQuad("Background", minX, minY, maxX, maxY, 1.0f);
+}
 void RectGenerator::getCameraPosition(glm::vec3& pos)
 {
     glm::mat4 transMat = m_camera.getGlobalTranslation();

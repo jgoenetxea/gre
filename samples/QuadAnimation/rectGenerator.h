@@ -32,14 +32,20 @@ public:
     void close();
 
     // Create nodes objects
-    bool generateQuads();
-    void printQuadsInfo();
+    bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);		///< Algorithm Step 1, generate abstract quads
+    void destroyQuads();		///< Algorithm final step, DESTROY!
+
+    // Node helpers
+    void printQuadsInfo();		///< Helper to print info in log
 
     // Create & destroy nodes in the scene from objects
-    void createNodeQuads();
-    void updateNodeQuads();
-    void destroyNodeQuads();
+    void createNodeQuads();		///< Create 3D Scene orthogonal
+    void updateNodeQuads();		///< Update 3D Scene if quads change
+    void destroyNodeQuads();	///< Destroy 3D Scene orthogonal and free memory
+    void createBackgroundQuad();///< Create a Quad grouping all bottom in the z depth
+    gre::CustomObj* createNodeQuad(std::string name, float x0, float y0, float width, float height, float z); ///< Create a single quad in scene
 
+    // Scene management
     void getCameraPosition(glm::vec3& pos);
     void setCameraPosition(glm::vec3& pos);
     void translateCameraPosition(const glm::vec3& offset);
@@ -48,7 +54,7 @@ public:
     float getInitialZoom() { return m_initialZoom; };
 
 protected:
-    // Asstes
+    // Assets
     std::string m_assets_path;
     std::string m_gShader;
     std::string m_vShader;
@@ -66,7 +72,7 @@ protected:
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
-    gre::CustomObj* m_cube;
+    gre::CustomObj* m_background;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
 

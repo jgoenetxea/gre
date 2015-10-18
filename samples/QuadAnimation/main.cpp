@@ -52,9 +52,10 @@ int main( void )
     rg.init("Quad generator", 800, 800, key_callback, error_callback);
 
     rg.initScene();
-    rg.generateQuads();
+    rg.generateQuads(true, 1000);
     rg.printQuadsInfo();
     rg.createNodeQuads();
+    //rg.createBackgroundQuad();// Test propertly, quasibien
     //rg.updateNodeQuads(); 	// works
     //rg.destroyNodeQuads();	// works
 
