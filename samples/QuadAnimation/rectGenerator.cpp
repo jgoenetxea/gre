@@ -9,6 +9,7 @@
 using namespace glm;
 
 #include <typeinfo>
+#include <unistd.h>
 
 RectGenerator::RectGenerator():
 m_quadsGenerated(false),
@@ -72,13 +73,13 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Init Rectangles
-    m_maxNumberOfRectangles = 10;
+    m_maxNumberOfRectangles = 2;
     m_lowWidth = 1;
     m_highWidth = 5;
     m_lowHeight = 2;
     m_highHeight = 5;
     m_centerSquares = Point2D(0.0f, 0.0f);
-    m_radiusSquares = 5.0f;
+    m_radiusSquares = 2.0f;
     LOGI("Scene configured!");
 
     return true;
@@ -138,15 +139,115 @@ bool RectGenerator::generateQuads()
     // Create random squares
     for(int i = 0; i < m_maxNumberOfRectangles; i++)
     {
+    	// Random W & H
         float width = (float)math2d::randomNumberInterval(m_lowWidth, m_highWidth);
         float height = (float)math2d::randomNumberInterval(m_lowHeight, m_highHeight);
+
+        // Generate int origin points
         Point2D origin = math2d::calculateRandomPoint2DInACircle(m_centerSquares, m_radiusSquares);
+        origin.x = (int)origin.x;
+        origin.y = (int)origin.y;
+
+        // Create abstract squares
         Square2D* square = new Square2D(origin, width, height);
         m_rectangles.push_back(square);
     }
     m_quadsGenerated = true;
     LOGI("Quads generated!");
     return true;
+}
+
+bool RectGenerator::separateQuads()
+{
+	LOGI("Separating node quads...");
+
+	bool existOverlap = true;
+
+	while(existOverlap)
+	{
+		// Assume no overlap
+		existOverlap = false;
+
+		for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+		{
+			// Get quads overlap except itself
+			std::vector<Square2D*> overlapList = quadOverlapWith((*it));
+			LOGD("Overlaps: %d", overlapList.size());
+			if(overlapList.size() > 0)
+			{
+				// Will end if no overlap for each one
+				existOverlap = true;
+				for(std::vector<Square2D*>::const_iterator it2 = overlapList.begin(); it2 != overlapList.end(); it2++)
+				{
+					Point2D centerPoint1 = (*it)->getOrigin();
+					Point2D centerPoint2 = (*it2)->getOrigin();
+					float width1 = (*it)->getWidth();
+					float width2 = (*it2)->getWidth();
+
+					const float deltaCenterX = centerPoint1.x - centerPoint2.x;
+					const float deltaWidth = width1 - width2;
+					if(deltaWidth - deltaCenterX >= 0)
+					{
+						centerPoint1.x -= 1;
+						(*it)->setOrigin(centerPoint1);
+					}
+					else
+					{
+						centerPoint1.x += 1;
+						(*it)->setOrigin(centerPoint1);
+					}
+				}
+			}
+		}
+		usleep(1);
+	}
+
+	LOGI("Node quads separated!");
+	return true;
+}
+
+bool RectGenerator::createHallways()
+{
+	LOGI("Generating hallways...");
+	LOGI("Hallways generated!");
+	return true;
+}
+
+bool RectGenerator::quadOverlap(Square2D* square1, Square2D* square2)
+{
+	const float deltaCenterX = square1->getOrigin().x - square2->getOrigin().x;
+	const float deltaWidth = abs(square1->getWidth() - square2->getWidth());
+
+	if(deltaCenterX > deltaWidth)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+std::vector<Square2D*> RectGenerator::quadOverlapWith(Square2D* square)
+{
+	std::vector<Square2D*> overlapList;
+
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		if((*it) == square)
+		{
+			//LOGD("Avoid me :D");
+			continue;
+		}
+		else
+		{
+			if(quadOverlap((*it), square))
+			{
+				overlapList.push_back((*it));
+			}
+		}
+	}
+	return overlapList;
 }
 
 void RectGenerator::createNodeQuads()

@@ -31,8 +31,14 @@ public:
 
     void close();
 
-    // Create nodes objects
+    // Quads steps
     bool generateQuads();
+    bool separateQuads();
+    bool createHallways();
+
+    // Quads helpers
+    bool quadOverlap(Square2D* square1, Square2D* square2);
+    std::vector<Square2D*> quadOverlapWith(Square2D* square);
     void printQuadsInfo();
 
     // Create & destroy nodes in the scene from objects
