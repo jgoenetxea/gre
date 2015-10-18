@@ -48,13 +48,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main( void )
 {
-
+	// Implementation based on https://www.reddit.com/r/gamedev/comments/1dlwc4/procedural_dungeon_generation_algorithm_explained/
     rg.init("Quad generator", 800, 800, key_callback, error_callback);
 
     rg.initScene();
-    rg.generateQuads(true, 1000);
+    rg.generateQuads(false, 1000);
     rg.printQuadsInfo();
     rg.createNodeQuads();
+    rg.selectRooms();
+    rg.createRoomGraph();
+    rg.createConnections();
+    rg.addLoops();
     //rg.createBackgroundQuad();// Test propertly, quasibien
     //rg.updateNodeQuads(); 	// works
     //rg.destroyNodeQuads();	// works

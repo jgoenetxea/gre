@@ -33,6 +33,10 @@ public:
 
     // Create nodes objects
     bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);		///< Algorithm Step 1, generate abstract quads
+    bool selectRooms();			///< Algorithm Step 3, according a threshold, consider some quads rooms, rest are simple cells
+    bool createRoomGraph();		///< Algorithm Step 4, create a graph using the rooms center using Delaunay Triangulation
+    bool createConnections();	///< Algorithm Step 5, use minimal spanning tree to guarrantees all rooms connected but not each one with the rest
+    bool addLoops();			///< Algorithm Step 6, add loops adding a % of removed elements
     void destroyQuads();		///< Algorithm final step, DESTROY!
 
     // Node helpers
@@ -84,10 +88,12 @@ protected:
     int m_highWidth;
     int m_lowHeight;
     int m_highHeight;
+    int m_roomSize;
     Point2D m_centerSquares;
     float m_radiusSquares;
-    std::vector<Square2D*> m_rectangles;
-    std::vector<gre::CustomObj*> m_objs;
+    std::vector<Square2D*> m_rectangles;	///< All quads
+    std::vector<Square2D*> m_rooms;			///< Quads selected as rooms
+    std::vector<gre::CustomObj*> m_objs;	///< All scene quads
     bool m_nodeQuadsGenerated;
 
 };

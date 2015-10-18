@@ -36,6 +36,7 @@ m_background(NULL)
     m_fShaderTron = m_assets_path+"shaders/basicTron.frag";
 
     m_rectangles.clear();
+    m_rooms.clear();
     m_objs.clear();
 }
 
@@ -81,12 +82,13 @@ bool RectGenerator::initScene()
     m_scene.addChild(m_base);
     LOGI("Scene initialized!");
 
-    // Init Rectangles
+    // Configuration quads algorithm
     m_maxNumberOfRectangles = 10;
     m_lowWidth = 1;
-    m_highWidth = 5;
+    m_highWidth = 7;
     m_lowHeight = 2;
-    m_highHeight = 5;
+    m_highHeight = 7;
+    m_roomSize = 3;
     m_centerSquares = Point2D(0.0f, 0.0f);
     m_radiusSquares = 5.0f;
     m_initialZoom = 15.0f;
@@ -179,6 +181,56 @@ bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
     return true;
 }
 
+bool RectGenerator::selectRooms()
+{
+	if(!m_quadsGenerated)
+	{
+		LOGE("First generate quads");
+		return false;
+	}
+	m_rooms.clear();	// Copy quads pointers, never mind if remove old references
+
+	LOGI("Selecting rooms...");
+	// Select
+	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+	{
+		Square2D* square = (*it);
+		const Point2D origin = square->getOrigin();
+		const float width = square->getWidth();
+		const float height = square->getHeight();
+		if(width >= m_roomSize && height >= m_roomSize)
+		{
+			//LOGD("It`s a room");
+			m_rooms.push_back(square);
+		}
+	}
+	LOGI("There are %d rooms in total of %d", (int)m_rooms.size(), (int)m_rectangles.size());
+	return true;
+}
+
+bool RectGenerator::createRoomGraph()
+{
+	if(m_rooms.size() <= 0)
+	{
+		LOGE("First generate rooms");
+		return false;
+	}
+
+	LOGI("Creating graph with rooms centers...");
+	LOGI("Graph created!");
+}
+
+bool RectGenerator::createConnections()
+{
+	LOGI("Creating connections between rooms");
+	LOGI("Connections created!");
+}
+
+bool RectGenerator::addLoops()
+{
+	LOGI("Adding loops");
+	LOGI("Loops insertion completed!");
+}
 void RectGenerator::createNodeQuads()
 {
 	LOGI("Generating node quads...");
