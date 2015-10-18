@@ -37,6 +37,7 @@ public:
     bool createRoomGraph();		///< Algorithm Step 4, create a graph using the rooms center using Delaunay Triangulation
     bool createConnections();	///< Algorithm Step 5, use minimal spanning tree to guarrantees all rooms connected but not each one with the rest
     bool addLoops();			///< Algorithm Step 6, add loops adding a % of removed elements
+    bool createCorridors();		///< Algorithm Step 7, create corridors in L shape between center rooms adding remaining cells to them
     void destroyQuads();		///< Algorithm final step, DESTROY!
 
     // Node helpers

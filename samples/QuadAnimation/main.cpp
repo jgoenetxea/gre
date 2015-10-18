@@ -59,6 +59,7 @@ int main( void )
     rg.createRoomGraph();
     rg.createConnections();
     rg.addLoops();
+    rg.createCorridors();
     //rg.createBackgroundQuad();// Test propertly, quasibien
     //rg.updateNodeQuads(); 	// works
     //rg.destroyNodeQuads();	// works

@@ -231,6 +231,12 @@ bool RectGenerator::addLoops()
 	LOGI("Adding loops");
 	LOGI("Loops insertion completed!");
 }
+
+bool RectGenerator::createCorridors()
+{
+	LOGI("Creating corridors...");
+	LOGI("Corridors created!");
+}
 void RectGenerator::createNodeQuads()
 {
 	LOGI("Generating node quads...");
