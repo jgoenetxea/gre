@@ -13,6 +13,7 @@
 #include <GLFW/glfw3.h>
 
 // Include GLM
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
@@ -28,17 +29,10 @@ using namespace glm;
 
 string assets_path = ASSET_DIRECTORY;
 
-#ifdef _WIN32
-	string vShader = "../TransformVertexShader.vertexshader";
-	string fShader = "../TextureFragmentShader.fragmentshader";
-    string uvtemplate = "../uvtemplate.DDS";
-    string modelFile = "../cube.obj";
-#else
-    string vShader = assets_path+"shaders/basic130.vert";
-    string fShader = assets_path+"shaders/basic130.frag";
-    string uvtemplate = assets_path+"obj/uvtemplate.DDS";
-    string modelFile = assets_path+"obj/cube.obj";
-#endif
+string vShader = assets_path+"shaders/basic130.vert";
+string fShader = assets_path+"shaders/basic130.frag";
+string uvtemplate = assets_path+"obj/cube.png";
+string modelFile = assets_path+"obj/cube.obj";
 
 static void error_callback(int error, const char* description)
 {
@@ -116,13 +110,13 @@ int main( void )
     gre::Transformation m_trans;
 
     // Generate camera instance
-    glm::vec3 position = glm::vec3( 0, 0, 5 );
+    glm::vec3 position = glm::vec3( 0, 0, 500 );
     glm::vec3 up = glm::vec3( 0,1,0 );
     float fov = 60.0;
 
     gre::ProjectiveCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 100.0f);
+    m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 1000.0f);
     // View matrix
     m_camera.setLocation( position,         // Camera is here
                           glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
@@ -132,15 +126,16 @@ int main( void )
     // Generate scene
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
+    m_scene.addChild(m_obj);
+    //m_scene.addChild(&m_trans);
+    //m_trans.addChild(m_obj);
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
-    int rotSpeed = 80 * GRAD2RAD;
-    int transSpeed = 14;
+    int rotSpeed = 180 * GRAD2RAD;
+    int transSpeed = 5;
     while(!glfwWindowShouldClose(window))
     {
         // time control
@@ -154,11 +149,14 @@ int main( void )
         horizontalAngle += deltaTime * rotSpeed;
         translateValue += deltaTime * transSpeed;
 
-        glm::mat4 ModelMatrix = glm::mat4(1.0);
-        ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        m_obj->setRotation(horizontalAngle, glm::vec3(0, 1, 0));
+        m_obj->setTranslation(glm::vec3(cos(translateValue)*2, 0, 0));
 
-        m_trans.setLocalTranslation(ModelMatrix);
+        //glm::mat4 ModelMatrix = glm::mat4(1.0);
+        //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+        //ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+
+        //m_trans.setLocalTranslation(ModelMatrix);
 
         //scene.draw();
         m_renderer->renderScene(&m_scene);
