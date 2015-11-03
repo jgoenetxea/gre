@@ -27,7 +27,8 @@ void Renderer::renderScene( Scene* scene )
 void Renderer::renderNode( Node* node, glm::mat4 currentGlobalMatrix )
 {
     std::vector<Node*>& childrenList = node->getChildren();
-    currentGlobalMatrix = node->getLocalTranslation() * currentGlobalMatrix;
+    currentGlobalMatrix = currentGlobalMatrix * node->getLocalTranslation();
+    //currentGlobalMatrix = node->getLocalTranslation() * currentGlobalMatrix;
     node->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
     for(std::vector<Node*>::iterator it=childrenList.begin() ; it!=childrenList.end() ; ++it)
     {

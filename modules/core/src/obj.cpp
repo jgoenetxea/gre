@@ -27,7 +27,8 @@ Obj::Obj() :
     m_normalBuffer(0),
     m_currentVertexShaderCode(""),
     m_currentFragmentShaderCode(""),
-    m_currentGeometryShaderCode("")
+    m_currentGeometryShaderCode(""),
+    m_extraValuesDefined(false)
 {
 
 }
@@ -73,7 +74,7 @@ void Obj::setTexture( std::string& textureFileName )
     }
 }
 
-void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode )
+void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode, const std::vector<std::string>& extraValues )
 {
     m_currentVertexShaderCode = vertexShaderCode;
     m_currentFragmentShaderCode = fragmentShaderCode;
@@ -86,9 +87,37 @@ void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShad
     m_iMouseUniformLocator = glGetUniformLocation(m_program, "iMouse");
     m_iDateUniformLocator = glGetUniformLocation(m_program, "iDate");
     m_iSampleRateUniformLocator = glGetUniformLocation(m_program, "iSampleRate");
+
+    if(extraValues.size() > (unsigned int)0)
+    {
+        m_extraValueNames = extraValues;
+        m_extraValuesDefined = true;
+        m_extraUniforms.clear();
+        GLint value;
+        for(std::vector<std::string>::const_iterator it = extraValues.begin() ; it != extraValues.end() ; ++it)
+        {
+            value = glGetUniformLocation(m_program, (*it).c_str());
+            m_extraUniforms.push_back(value);
+        }
+    }
+    else
+    {
+        m_extraValuesDefined = false;
+    }
+}
+
+void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::vector<std::string>& extraValues )
+{
+    setShadersFromFiles(vertex_file_path, fragment_file_path, "", extraValues);
 }
 
 void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path )
+{
+    std::vector<std::string> extraValues;
+    setShadersFromFiles(vertex_file_path, fragment_file_path, geometry_file_path, extraValues);
+}
+
+void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path, const std::vector<std::string>& extraValues )
 {
     // Read the Vertex Shader code from the file
     std::string vertexShaderCode;
@@ -138,13 +167,58 @@ void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::s
         }
     }
 
-    return setShaders(vertexShaderCode, fragmentShaderCode, geometryShaderCode);
+    return setShaders(vertexShaderCode, fragmentShaderCode, geometryShaderCode, extraValues);
 }
 
 void Obj::updateFragmentShader( const string& fragmentShaderCode )
 {
     glDeleteProgram( m_program );
-    setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode );
+    setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode, m_extraValueNames );
+}
+
+void Obj::updateFragmentShader( const string& fragmentShaderCode, const std::vector<std::string>& extraValues )
+{
+    glDeleteProgram( m_program );
+    setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode, extraValues );
+}
+
+void Obj::setExtraValues( const std::vector<std::vector<float> >& extraElementValues )
+{
+    m_extraUniformValues = extraElementValues;
+}
+
+void Obj::applyExtraValues( const unsigned int& program, const std::vector<unsigned int>& extraElementIds, const std::vector<std::vector<float> >& extraElementValues )
+{
+    unsigned int n = extraElementIds.size();
+    unsigned int uniformId = 0;
+    for(int element=0 ; element<n ; ++element)
+    {
+        unsigned int size = extraElementValues[element].size();
+        uniformId = extraElementIds[element];
+        switch(size)
+        {
+            case 1:{
+                glUniform1f( uniformId, extraElementValues[element][0] );
+                break;
+            }
+            case 2:{
+                glUniform2f( uniformId, extraElementValues[element][0], extraElementValues[element][1] );
+                break;
+            }
+            case 3:{
+                glUniform3f( uniformId, extraElementValues[element][0], extraElementValues[element][1], extraElementValues[element][2] );
+                break;
+            }
+            case 4:{
+                glUniform4f( uniformId, extraElementValues[element][0], extraElementValues[element][1], extraElementValues[element][2], extraElementValues[element][3] );
+                break;
+            }
+            default:{
+                printf("Uniform size not managed!!\n");
+            }
+
+        }
+    }
 }
 
 //void Obj::setMVP( glm::mat4& MVP )
@@ -189,6 +263,11 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
 	glUniform1i(m_textureUniformLocator, 0);
+
+    if(m_extraValuesDefined)
+    {
+        applyExtraValues(m_program, m_extraUniforms, m_extraUniformValues);
+    }
 
 	// Initialize the buffers if they are not initialized jet
 	if( m_vertexBuffer == 0 )

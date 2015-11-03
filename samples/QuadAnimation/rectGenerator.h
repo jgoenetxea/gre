@@ -2,7 +2,7 @@
 
 #include "glfwWindow.h"
 
-#include "customObj.hpp"
+#include "obj.hpp"
 
 #include "objloader.hpp"
 #include "shapes.hpp"
@@ -50,7 +50,7 @@ public:
     void updateNodeQuads();		///< Update 3D Scene if quads change
     void destroyNodeQuads();	///< Destroy 3D Scene orthogonal and free memory
     void createBackgroundQuad();///< Create a Quad grouping all bottom in the z depth
-    gre::CustomObj* createNodeQuad(std::string name, float x0, float y0, float width, float height, float z); ///< Create a single quad in scene
+    gre::Obj* createNodeQuad(std::string name, float x0, float y0, float width, float height, float z); ///< Create a single quad in scene
 
     // Scene management
     void getCameraPosition(glm::vec3& pos);
@@ -79,7 +79,7 @@ protected:
     // Rendering elements
     gre::Renderer* m_renderer;
     gre::Obj* m_base;
-    gre::CustomObj* m_background;
+    gre::Obj* m_background;
     gre::Scene m_scene;
     gre::OrthoCamera m_camera;
 
@@ -96,7 +96,10 @@ protected:
     float m_radiusSquares;
     std::vector<Square2D*> m_rectangles;	///< All quads
     std::vector<Square2D*> m_rooms;			///< Quads selected as rooms
-    std::vector<gre::CustomObj*> m_objs;	///< All scene quads
+    std::vector<gre::Obj*> m_objs;	///< All scene quads
     bool m_nodeQuadsGenerated;
+
+private:
+    float getRandomNumberBetween0and1();
 
 };

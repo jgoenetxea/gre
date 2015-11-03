@@ -35,19 +35,16 @@ using namespace threemonkeybits;
 #include "logger.h"
 #define LOG_TAG "SAMPLE-ORTHOPANEL"
 
+
+//#define USE_TEXTURE
+
 string assets_path = ASSET_DIRECTORY;
 
-#ifdef _WIN32
-    string vShader = "../TransformVertexShader.vertexshader";
-    string fShader = "../TextureFragmentShader.fragmentshader";
-    string uvtemplate = "../uvtemplate.DDS";
-    string modelFile = "../cube.obj";
-#else
-    string vShader = assets_path+"shaders/basic130.vert";
-    string fShader = assets_path+"shaders/basic130.frag";
-    string uvtemplate = assets_path+"obj/uvtemplate.DDS";
-    string modelFile = assets_path+"obj/cube.obj";
-#endif
+string vShader = assets_path+"shaders/basic130.vert";
+string fShader = assets_path+"shaders/basic130.frag";
+string fShaderColor = assets_path+"shaders/colour.frag";
+string uvtemplate = assets_path+"obj/cube.png";
+string modelFile = assets_path+"obj/cube.obj";
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -164,8 +161,26 @@ int initScene()
 
 	// Generate the main model
 	m_obj = gre::ShapeDispatcher::getShapes()->getQuad();
+#ifdef USE_TEXTURE
 	m_obj->setShadersFromFiles( vShader, fShader );
 	m_obj->setTexture( uvtemplate );
+#else
+    // Define colour structure
+    int r = 255;
+    int g = 0;
+    int b = 128;
+    std::vector<std::string> extraShaderUniforms;
+    std::vector<std::vector<float> > extraShaderUniformValues;
+    extraShaderUniforms.push_back("iColour");
+    std::vector<float> color(3);
+    color[0] = static_cast<float>(r);
+    color[1] = static_cast<float>(g);
+    color[2] = static_cast<float>(b);
+    extraShaderUniformValues.push_back(color);
+    // Define the object with the new elements
+    m_obj->setShadersFromFiles( vShader, fShaderColor, extraShaderUniforms );
+    m_obj->setExtraValues( extraShaderUniformValues );
+#endif
 	// Generate camera instance
 	glm::vec3 position = glm::vec3( 0, 0, 5 );
 	glm::vec3 up = glm::vec3( 0,1,0 );

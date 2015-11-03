@@ -4,6 +4,7 @@
 #define LOG_TAG "RectGenerator"
 
 // Include GLM
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
@@ -61,7 +62,6 @@ bool RectGenerator::initScene()
     m_base = gre::ShapeDispatcher::getShapes()->getQuad();
     m_base->setName("Base");
     m_base->setShadersFromFiles( m_vShader, m_fGradientShader );
-    m_base->setTexture( m_uvtemplate );
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 5 );
@@ -220,12 +220,12 @@ bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuan
 					if(deltaWidth - deltaCenterX >= 0)
 					{
 						centerPoint1.x -= 1;
-						(*it)->setOrigin(centerPoint1);
+                        //(*it)->setOrigin(centerPoint1); // (goe): Error de compilación
 					}
 					else
 					{
 						centerPoint1.x += 1;
-						(*it)->setOrigin(centerPoint1);
+                        //(*it)->setOrigin(centerPoint1); // (goe): Error de compilación
 					}
 				}
 			}
@@ -357,7 +357,7 @@ void RectGenerator::createNodeQuads()
 		const int objID = m_objs.size();
 		std::string name = "Quad" + std::to_string(objID);
 
-		gre::CustomObj* myQuad = createNodeQuad(name, origin.x, origin.y, width, height, 1.0f);
+        gre::Obj* myQuad = createNodeQuad(name, origin.x, origin.y, width, height, 1.0f);
 		m_objs.push_back(myQuad);
 		m_scene.addChild(myQuad);
 	}
@@ -365,27 +365,43 @@ void RectGenerator::createNodeQuads()
 	LOGI("Node quads generated!");
 }
 
-gre::CustomObj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, float width, float height, float z)
+float RectGenerator::getRandomNumberBetween0and1()
 {
-	gre::CustomObj* customQuad;
-	gre::Obj* quad = gre::ShapeDispatcher::getShapes()->getQuad();
-	customQuad = new gre::CustomObj();
-	customQuad->initWithObj(*quad);
+    static bool isInit = false;
+    if(!isInit)
+    {
+        srand(time(NULL));
+        isInit = true;
+    }
 
-	int r = rand() % 255;
-	int g = rand() % 255;
-	int b = rand() % 255;
-	customQuad->setColor(r,g,b);
-
-	customQuad->setName(name);
-	customQuad->setShadersFromFiles( m_vShader, m_fColourShader );
-	customQuad->setTexture( m_uvtemplate );
-
-	customQuad->setTranslation(glm::vec3(x0, y0, z));
-	customQuad->setScale(glm::vec3(width, height, 1.0f));
-
-	return customQuad;
+    return ((float) rand() / (RAND_MAX));
 }
+
+gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, float width, float height, float z)
+{
+    gre::Obj* quad = gre::ShapeDispatcher::getShapes()->getQuad();
+
+    // Generate colour uniform structure
+    std::vector<std::string> extraShaderUniforms;
+    std::vector<std::vector<float> > extraShaderUniformValues;
+    extraShaderUniforms.push_back("iColour");
+    std::vector<float> color(3);
+    color[0] = getRandomNumberBetween0and1();  // red
+    color[1] = getRandomNumberBetween0and1();  // green
+    color[2] = getRandomNumberBetween0and1();  // blue
+    LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
+    extraShaderUniformValues.push_back(color);
+
+    quad->setName(name);
+    quad->setShadersFromFiles( m_vShader, m_fColourShader, extraShaderUniforms );
+    quad->setExtraValues(extraShaderUniformValues);
+
+    quad->setTranslation(glm::vec3(x0, y0, z));
+    quad->setScale(glm::vec3(width, height, 1.0f));
+
+    return quad;
+}
+
 void RectGenerator::updateNodeQuads()
 {
 	if(!m_nodeQuadsGenerated)
@@ -393,14 +409,14 @@ void RectGenerator::updateNodeQuads()
 		LOGE("First generate node quads");
 		return;
 	}
-	std::vector<gre::CustomObj*>::const_iterator it2 = m_objs.begin();
+    std::vector<gre::Obj*>::const_iterator it2 = m_objs.begin();
 	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
 	{
 		Square2D* square = (*it);
 		const Point2D origin = square->getOrigin();
 		const float width = square->getWidth();
 		const float height = square->getHeight();
-		gre::CustomObj* obj = (*it2);
+        gre::Obj* obj = (*it2);
 		obj->setTranslation(glm::vec3(origin.x, origin.y, 1.0f));
 		obj->setScale(glm::vec3(width, height, 1.0f));
 		++it2;
@@ -423,9 +439,9 @@ void RectGenerator::destroyNodeQuads()
 {
 	LOGI("Destroying node quads...");
 
-	for(std::vector<gre::CustomObj*>::const_iterator it = m_objs.begin(); it != m_objs.end(); ++it)
+    for(std::vector<gre::Obj*>::const_iterator it = m_objs.begin(); it != m_objs.end(); ++it)
 	{
-		gre::CustomObj* obj = (*it);
+        gre::Obj* obj = (*it);
 		m_scene.removeChild(obj);
 	}
 	m_objs.clear();

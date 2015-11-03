@@ -33,17 +33,10 @@ using namespace glm;
 
 std::string assets_path = ASSET_DIRECTORY;
 
-#ifdef _WIN32
-	std::string vShader = "../TransformVertexShader.vertexshader";
-	std::string fShader = "../TextureFragmentShader.fragmentshader";
-	std::string uvtemplate = "../uvtemplate.DDS";
-	std::string modelFile = "../cube.obj";
-#else
-	std::string vShader = assets_path+"shaders/basic130.vert";
-	std::string fShader = assets_path+"shaders/basic130.frag";
-	std::string uvtemplate = assets_path+"obj/uvtemplate.DDS";
-	std::string modelFile = assets_path+"obj/cube.obj";
-#endif
+std::string vShader = assets_path+"shaders/basic130.vert";
+std::string fShader = assets_path+"shaders/basic130.frag";
+std::string uvtemplate = assets_path+"obj/cube.png";
+std::string modelFile = assets_path+"obj/cube.obj";
 
 static void error_callback(int error, const char* description)
 {

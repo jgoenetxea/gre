@@ -126,15 +126,18 @@ int main( void )
     // Generate scene
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
-    m_scene.addChild(m_obj);
-    //m_scene.addChild(&m_trans);
-    //m_trans.addChild(m_obj);
+    m_scene.addChild(&m_trans);
+    m_trans.addChild(m_obj);
+
+    m_trans.setTranslation(glm::vec3(5, 0, 0));
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
     float translateValue = 0.f;
+    float rotationAngle = 0.f;
     int rotSpeed = 180 * GRAD2RAD;
+    int orbitationSpeed = 80 * GRAD2RAD;
     int transSpeed = 5;
     while(!glfwWindowShouldClose(window))
     {
@@ -147,10 +150,13 @@ int main( void )
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         horizontalAngle += deltaTime * rotSpeed;
+        rotationAngle += deltaTime * orbitationSpeed;
         translateValue += deltaTime * transSpeed;
 
         m_obj->setRotation(horizontalAngle, glm::vec3(0, 1, 0));
-        m_obj->setTranslation(glm::vec3(cos(translateValue)*2, 0, 0));
+
+        m_trans.setRotation(rotationAngle, glm::vec3(0, 0, 1));
+        //m_obj->setTranslation(glm::vec3(cos(translateValue)*2, 0, 0));
 
         //glm::mat4 ModelMatrix = glm::mat4(1.0);
         //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
