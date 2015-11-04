@@ -83,14 +83,14 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Configuration quads algorithm
-    m_maxNumberOfRectangles = 10;
+    m_maxNumberOfRectangles = 2;
     m_lowWidth = 1;
     m_highWidth = 7;
     m_lowHeight = 2;
     m_highHeight = 7;
     m_roomSize = 3;
     m_centerSquares = Point2D(0.0f, 0.0f);
-    m_radiusSquares = 5.0f;
+    m_radiusSquares = 2.0f;
     m_initialZoom = 15.0f;
     LOGI("Scene configured!");
 
@@ -188,7 +188,7 @@ bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
     return true;
 }
 
-bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuando haya solapamiento no parar hasta separarlo
+bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy costoso, probar otra estrategia, cuando haya solapamiento no parar hasta separarlo
 {
 	LOGI("Separating node quads...");
 
@@ -203,7 +203,7 @@ bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuan
 		{
 			// Get quads overlap except itself
 			std::vector<Square2D*> overlapList = quadOverlapWith((*it));
-			LOGD("Overlaps: %d", overlapList.size());
+			LOGD("Overlaps with: %d", overlapList.size());
 			if(overlapList.size() > 0)
 			{
 				// Will end if no overlap for each one
@@ -219,25 +219,28 @@ bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuan
 					const float deltaWidth = width1 - width2;
 					if(deltaWidth - deltaCenterX >= 0)
 					{
-						centerPoint1.x -= 1;
+						centerPoint1.x -= 5;
 						(*it)->setOrigin(centerPoint1);
 					}
 					else
 					{
-						centerPoint1.x += 1;
+						centerPoint1.x += 5;
 						(*it)->setOrigin(centerPoint1);
+					}
+					if(renderEach)
+					{
+						updateNodeQuads();
+						// Pre-render
+						//createNodeQuads();
+						render();
+						//destroyNodeQuads();
+						usleep(delayMs*1000);
 					}
 				}
 			}
 
-			updateNodeQuads();
-			// Pre-render
-			//createNodeQuads();
-			render();
-			//destroyNodeQuads();
-			usleep(1000*1000);
+
 		}
-		usleep(1);
 	}
 
 	LOGI("Node quads separated!");
@@ -275,7 +278,7 @@ std::vector<Square2D*> RectGenerator::quadOverlapWith(Square2D* square)
 		if((*it) == square)
 		{
 			//LOGD("Avoid me :D");
-			continue;
+			break;
 		}
 		else
 		{

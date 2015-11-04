@@ -31,7 +31,7 @@ public:
 
     // Quads
     bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);		///< Algorithm Step 1, generate abstract quads
-    bool separateQuads();
+    bool separateQuads(bool renderEach = false, unsigned int delayMs = 1000);
     bool createHallways();
     bool selectRooms();			///< Algorithm Step 3, according a threshold, consider some quads rooms, rest are simple cells
     bool createRoomGraph();		///< Algorithm Step 4, create a graph using the rooms center using Delaunay Triangulation

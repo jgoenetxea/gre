@@ -55,7 +55,7 @@ int main( void )
     rg.generateQuads(false, 1000);
     rg.printQuadsInfo();
     rg.createNodeQuads();
-    //rg.separateQuads();
+    rg.separateQuads(true, 500);
     rg.selectRooms();
     rg.createRoomGraph();
     rg.createConnections();
