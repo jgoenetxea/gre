@@ -51,9 +51,15 @@ public:
     void draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective );
     void setTexture( unsigned int textureFileRef );
     void setTexture( string &textureFileName );
-    void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode );
+
+    void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode, const std::vector<std::string>& extraValues );
+
+    void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::vector<std::string>& extraValues );
     void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path="" );
+    void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path, const std::vector<std::string>& extraValues );
+
     void updateFragmentShader( const string& fragmentShaderCode );
+    void updateFragmentShader( const string& fragmentShaderCode, const std::vector<std::string>& extraValues );
 
     void getInnerData( std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& uvs, std::vector<glm::vec3>& normals  );
     void setInnerData( const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, const std::vector<glm::vec3>& normals  );
@@ -64,6 +70,9 @@ public:
     std::string& getCurrentFragmentShaderCode(){ return m_currentFragmentShaderCode; }
     std::string& getCurrentVertexShaderCode(){ return m_currentVertexShaderCode; }
     std::string& getCurrentGeometryShaderCode(){ return m_currentGeometryShaderCode; }
+
+    void setExtraValues( const std::vector<std::vector<float> >& extraElementValues );
+
 
 protected:
 	unsigned int m_vertexBuffer, m_uvBuffer, m_normalBuffer;
@@ -85,7 +94,14 @@ protected:
     string m_currentFragmentShaderCode;
     string m_currentGeometryShaderCode;
 
+    bool m_extraValuesDefined;
+    std::vector<std::string> m_extraValueNames;
+    std::vector<unsigned int> m_extraUniforms;
+    std::vector<std::vector<float> > m_extraUniformValues;
+
 	void buildObject();
+
+    void applyExtraValues( const unsigned int& program, const std::vector<unsigned int>& extraElementIds, const std::vector<std::vector<float> >& extraElementValues );
 };
 
 }
