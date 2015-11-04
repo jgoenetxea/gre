@@ -21,7 +21,7 @@
 		static char buff[100];
 		static struct tm *sTm;
 		static time_t now;
-#		define PRINT_TIME {now = time(0); sTm = localtime(&now); strftime(buff, sizeof(buff), "[%Y-%m-%d %H:%M:%M]", sTm); fprintf(stderr, "%s ", buff); }
+#		define PRINT_TIME {now = time(0); sTm = localtime(&now); strftime(buff, sizeof(buff), "[%Y-%m-%d %H:%M:%S]", sTm); fprintf(stderr, "%s ", buff); }
 #		define LOGV(...) {PRINT_TIME fprintf(stderr, "[V][%s] ", LOG_TAG); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n");}
 #		define LOGD(...) {PRINT_TIME fprintf(stderr, "[D][%s] ", LOG_TAG); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n");}
 #		define LOGI(...) {PRINT_TIME fprintf(stderr, "[I][%s] ", LOG_TAG); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n");}

@@ -51,6 +51,11 @@ int main( void )
 	// Implementation based on https://www.reddit.com/r/gamedev/comments/1dlwc4/procedural_dungeon_generation_algorithm_explained/
     rg.init("Quad generator", 800, 800, key_callback, error_callback);
 
+    // Use random seed or not
+    srand (time(NULL));	// Random
+    srand (1);	// No random
+
+    // Go!
     rg.initScene();
     rg.generateQuads(false, 1000);
     rg.printQuadsInfo();

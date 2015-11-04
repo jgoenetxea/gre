@@ -218,41 +218,40 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 					Point2D originPoint2 = (*it2)->getOrigin();
 					float width1 = (*it)->getWidth();
 					float width2 = (*it2)->getWidth();
-/*
-					const float deltaCenterX = abs(centerPoint1.x - centerPoint2.x);
-					const float deltaWidth = width2 - width1;
-					if(deltaWidth - deltaCenterX < 0)
-					{
-						centerPoint1.x -= 1;
-                        (*it)->setOrigin(centerPoint1); // (goe): Error de compilación
-					}
-					else if(deltaWidth - deltaCenterX > 0)
-					{
-						centerPoint1.x += 1;
-                        (*it)->setOrigin(centerPoint1); // (goe): Error de compilación
-					}
-					else
-					{
-						LOGD("Aw right");
-					}
-					*/
+					float height1 = (*it)->getHeight();
+					float height2 = (*it2)->getHeight();
+
 					const float deltaCenterX = centerPoint2.x - centerPoint1.x;
-					const float limit = width2 + width1;
-					LOGD("Data deltaCenterX: %f, limit: %f", deltaCenterX, limit);
-					if(deltaCenterX < limit)
+					const float limitWidth = width2 + width1;
+					const float deltaCenterY = centerPoint2.y - centerPoint1.y;
+					const float limitHeight = height2 + height1;
+
+					if(deltaCenterX < limitWidth)
 					{
 						originPoint1.x -= 1;
-						(*it)->setOrigin(originPoint1);
 					}
-					else if(deltaCenterX > limit)
+					else if(deltaCenterX > limitWidth)
 					{
 						originPoint1.x += 1;
-						(*it)->setOrigin(originPoint1);
 					}
 					else
 					{
-						LOGD("Done!");
+						LOGW("No overlap in X detected");
 					}
+					if(deltaCenterY < limitHeight)
+					{
+						originPoint1.y -= 1;
+					}
+					else if(deltaCenterX > limitWidth)
+					{
+						originPoint1.y += 1;
+					}
+					else
+					{
+						LOGW("No overlap in Y detected");
+					}
+					(*it)->setOrigin(originPoint1);
+
 					if(renderEach)
 					{
 						updateNodeQuads();
@@ -264,8 +263,6 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 					}
 				}
 			}
-
-
 		}
 	}
 
@@ -282,19 +279,18 @@ bool RectGenerator::createHallways()
 
 bool RectGenerator::quadOverlap(Square2D* square1, Square2D* square2)
 {
-	const float deltaCenterX = square1->getCenter().x - square2->getCenter().x ;
+	const float deltaCenterX = square1->getCenter().x - square2->getCenter().x;
 	const float deltaWidth = square2->getWidth() + square1->getWidth();
+	const float deltaCenterY = square1->getCenter().y - square2->getCenter().y;
+	const float deltaHeight = square2->getHeight() + square1->getHeight();
 
-	LOGD("quadOverlap: %f, %f", deltaCenterX, deltaWidth);
-	if(deltaCenterX > deltaWidth)
+	if((deltaCenterX < deltaWidth) && (deltaCenterY < deltaHeight) )
 	{
-		LOGD("FALSE");
-		return false;
+		return true;
 	}
 	else
 	{
-		LOGD("TRUE");
-		return true;
+		return false;
 	}
 }
 
