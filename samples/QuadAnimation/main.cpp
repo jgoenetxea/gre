@@ -61,7 +61,7 @@ int main( void )
     rg.generateQuads(false, 1000);		// Step 1 Random
     rg.printQuadsInfo();
     rg.createNodeQuads();
-    rg.separateQuads(true, 500);			// Step 2
+    rg.separateQuads(true, 50);			// Step 2
     //rg.selectRooms();						// Step 3
     //rg.createRoomGraph();					// Step 4
     //rg.createConnections();					// Step 5

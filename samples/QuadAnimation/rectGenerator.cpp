@@ -83,11 +83,11 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Configuration quads algorithm
-    m_maxNumberOfRectangles = 3;
-    m_lowWidth = 7;
+    m_maxNumberOfRectangles = 7;
+    m_lowWidth = 3;
     m_highWidth = 7;
-    m_lowHeight = 7;
-    m_highHeight = 7;
+    m_lowHeight = 4;
+    m_highHeight = 8;
     m_roomSize = 3;
     m_centerSquares = Point2D(0.0f, 0.0f);
     m_radiusSquares = 5.0f;
@@ -159,17 +159,23 @@ bool RectGenerator::generateHardcodeQuads(bool renderEach, unsigned int delayMs)
 		usleep(delayMs*1000);
 	}
 
-	float width = 7;
+	float width = 5;
 	float height = 7;
 
-	Point2D origin = Point2D(0,0);
-	Point2D origin2 = Point2D(-10,-1);
+	Point2D origin = Point2D(-5,-5);
+	Point2D origin2 = Point2D(-5,5);
+	Point2D origin3 = Point2D(-1,0);
+	Point2D origin4 = Point2D(-2,0);
 
 	// Create abstract squares
 	Square2D* square = new Square2D(origin, width, height);
 	Square2D* square2 = new Square2D(origin2, width, height);
+	Square2D* square3 = new Square2D(origin3, width, height);
+	Square2D* square4 = new Square2D(origin4, width, height);
 	m_rectangles.push_back(square);
 	m_rectangles.push_back(square2);
+	m_rectangles.push_back(square3);
+	m_rectangles.push_back(square4);
 
 	if(renderEach)
 	{
@@ -247,8 +253,28 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 			{
 				// Will end if no overlap for each one
 				existOverlap = true;
+
+				// Ordenar de más lejos a más cerca?
+				//void BubbleSort(WSortView& A)
+
+				for (size_t i = 0; i < overlapList.size()-1; ++i)
+				{
+					for (size_t j = 0; j < overlapList.size()-1 - i; ++j)
+					{
+						const float distance1 = overlapList.at(j)->getDistanceFromOrigin(Point2D(0, 0));
+						const float distance2 = overlapList.at(j+1)->getDistanceFromOrigin(Point2D(0, 0));
+						//LOGD("Is %f < %f ?", distance1, distance2);
+						if ( distance1 < distance2)
+						{
+							std::iter_swap(overlapList.begin()+j, overlapList.begin()+j+1);
+						}
+					}
+				}
+
 				for(std::vector<Square2D*>::const_iterator it2 = overlapList.begin(); it2 != overlapList.end(); it2++)
 				{
+					// Option 1 just move away, fail
+					/*
 					Point2D centerPoint1 = (*it)->getCenter();
 					Point2D centerPoint2 = (*it2)->getCenter();
 					Point2D originPoint1 = (*it)->getOrigin();
@@ -295,15 +321,55 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 						LOGW("No overlap in Y detected");
 					}
 					(*it)->setOrigin(originPoint1);
-
-					if(renderEach)
+*/
+					// While overlap (it)?
+					Point2D originPoint = (*it2)->getOrigin();
+					//while(quadOverlap((*it), (*it2)))
 					{
-						updateNodeQuads();
-						// Pre-render
-						//createNodeQuads();
-						render();
-						//destroyNodeQuads();
-						usleep(delayMs*1000);
+						// Option 2 away from origin
+						if(originPoint.x >= 0)
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.x++;
+							}
+						}
+						else
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.x--;
+							}
+						}
+						if(originPoint.y >= 0)
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								//originPoint.y++;
+							}
+						}
+						else
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								//originPoint.y--;
+							}
+						}
+						(*it2)->setOrigin(originPoint);
+
+						if(renderEach)
+						{
+							updateNodeQuads();
+							// Pre-render
+							//createNodeQuads();
+							render();
+							//destroyNodeQuads();
+							usleep(delayMs*1000);
+						}
 					}
 				}
 			}
