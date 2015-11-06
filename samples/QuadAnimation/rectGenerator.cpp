@@ -83,7 +83,7 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Configuration quads algorithm
-    m_maxNumberOfRectangles = 2;
+    m_maxNumberOfRectangles = 3;
     m_lowWidth = 7;
     m_highWidth = 7;
     m_lowHeight = 7;
@@ -144,6 +144,43 @@ void RectGenerator::printQuadsInfo()
 		LOGD("Data: %s", data.c_str());
 	}
 	return;
+}
+
+bool RectGenerator::generateHardcodeQuads(bool renderEach, unsigned int delayMs)
+{
+	LOGI("Generating HARDCODE quads...");
+
+	if(renderEach)
+	{
+		// Pre-render
+		createNodeQuads();
+		render();
+		destroyNodeQuads();
+		usleep(delayMs*1000);
+	}
+
+	float width = 7;
+	float height = 7;
+
+	Point2D origin = Point2D(0,0);
+	Point2D origin2 = Point2D(-10,-1);
+
+	// Create abstract squares
+	Square2D* square = new Square2D(origin, width, height);
+	Square2D* square2 = new Square2D(origin2, width, height);
+	m_rectangles.push_back(square);
+	m_rectangles.push_back(square2);
+
+	if(renderEach)
+	{
+		createNodeQuads();
+		render();
+		destroyNodeQuads();
+		usleep(delayMs*1000);
+	}
+	m_quadsGenerated = true;
+	LOGI("Quads generated!");
+	return true;
 }
 
 bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
@@ -226,25 +263,32 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 					const float deltaCenterY = centerPoint2.y - centerPoint1.y;
 					const float limitHeight = height2 + height1;
 
-					if(deltaCenterX < limitWidth)
+					//LOGD("deltaX %f, limitWidth %f", deltaCenterX, limitWidth);
+					if(abs(deltaCenterX) < limitWidth)
 					{
-						originPoint1.x -= 1;
-					}
-					else if(deltaCenterX > limitWidth)
-					{
-						originPoint1.x += 1;
+						if(deltaCenterX <= 0)
+						{
+							originPoint1.x += 1;
+						}
+						else
+						{
+							originPoint1.x -= 1;
+						}
 					}
 					else
 					{
 						LOGW("No overlap in X detected");
 					}
-					if(deltaCenterY < limitHeight)
+					if(abs(deltaCenterY) < limitHeight)
 					{
-						originPoint1.y -= 1;
-					}
-					else if(deltaCenterX > limitWidth)
-					{
-						originPoint1.y += 1;
+						if(deltaCenterY <= 0)
+						{
+							originPoint1.y -= 1;
+						}
+						else
+						{
+							originPoint1.y += 1;
+						}
 					}
 					else
 					{
@@ -284,7 +328,7 @@ bool RectGenerator::quadOverlap(Square2D* square1, Square2D* square2)
 	const float deltaCenterY = square1->getCenter().y - square2->getCenter().y;
 	const float deltaHeight = square2->getHeight() + square1->getHeight();
 
-	if((deltaCenterX < deltaWidth) && (deltaCenterY < deltaHeight) )
+	if((abs(deltaCenterX) < deltaWidth) && (abs(deltaCenterY) < deltaHeight) )
 	{
 		return true;
 	}
@@ -393,18 +437,6 @@ void RectGenerator::createNodeQuads()
 	LOGI("Node quads generated!");
 }
 
-float RectGenerator::getRandomNumberBetween0and1()
-{
-    static bool isInit = false;
-    if(!isInit)
-    {
-        srand(time(NULL));
-        isInit = true;
-    }
-
-    return ((float) rand() / (RAND_MAX));
-}
-
 gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, float width, float height, float z)
 {
     gre::Obj* quad = gre::ShapeDispatcher::getShapes()->getQuad();
@@ -414,9 +446,9 @@ gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, fl
     std::vector<std::vector<float> > extraShaderUniformValues;
     extraShaderUniforms.push_back("iColour");
     std::vector<float> color(3);
-    color[0] = getRandomNumberBetween0and1();  // red
-    color[1] = getRandomNumberBetween0and1();  // green
-    color[2] = getRandomNumberBetween0and1();  // blue
+    color[0] = math2d::randomValueBetween(0, 1);  // red
+    color[1] = math2d::randomValueBetween(0, 1);  // green
+    color[2] = math2d::randomValueBetween(0, 1);  // blue
     LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
     extraShaderUniformValues.push_back(color);
 

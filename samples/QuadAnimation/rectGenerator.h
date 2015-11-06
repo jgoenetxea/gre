@@ -30,7 +30,8 @@ public:
     void close();
 
     // Quads
-    bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);		///< Algorithm Step 1, generate abstract quads
+    bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);			///< Algorithm Step 1, generate abstract quads
+    bool generateHardcodeQuads(bool renderEach = false, unsigned int delayMs = 1000);	///< Algorithm Step 1 with no random
     bool separateQuads(bool renderEach = false, unsigned int delayMs = 1000);
     bool createHallways();
     bool selectRooms();			///< Algorithm Step 3, according a threshold, consider some quads rooms, rest are simple cells
@@ -100,6 +101,5 @@ protected:
     bool m_nodeQuadsGenerated;
 
 private:
-    float getRandomNumberBetween0and1();
 
 };

@@ -57,15 +57,16 @@ int main( void )
 
     // Go!
     rg.initScene();
-    rg.generateQuads(false, 1000);
+    //rg.generateHardcodeQuads(false, 1000);	// Step 1 Hardcode
+    rg.generateQuads(false, 1000);		// Step 1 Random
     rg.printQuadsInfo();
     rg.createNodeQuads();
-    rg.separateQuads(true, 500);
-    rg.selectRooms();
-    rg.createRoomGraph();
-    rg.createConnections();
-    rg.addLoops();
-    rg.createCorridors();
+    rg.separateQuads(true, 500);			// Step 2
+    //rg.selectRooms();						// Step 3
+    //rg.createRoomGraph();					// Step 4
+    //rg.createConnections();					// Step 5
+    //rg.addLoops();
+    //rg.createCorridors();
     //rg.createBackgroundQuad();// Test propertly, quasibien
     //rg.updateNodeQuads(); 	// works
     //rg.destroyNodeQuads();	// works
