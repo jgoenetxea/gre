@@ -83,11 +83,11 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Configuration quads algorithm
-    m_maxNumberOfRectangles = 7;
-    m_lowWidth = 3;
-    m_highWidth = 7;
-    m_lowHeight = 4;
-    m_highHeight = 8;
+    m_maxNumberOfRectangles = 17;
+    m_lowWidth = 2;
+    m_highWidth = 8;
+    m_lowHeight = 2;
+    m_highHeight = 5;
     m_roomSize = 3;
     m_centerSquares = Point2D(0.0f, 0.0f);
     m_radiusSquares = 5.0f;
@@ -185,6 +185,10 @@ bool RectGenerator::generateHardcodeQuads(bool renderEach, unsigned int delayMs)
 		usleep(delayMs*1000);
 	}
 	m_quadsGenerated = true;
+
+	// From center to farthest, move away
+	sortFarthestToNearest(m_rectangles);
+
 	LOGI("Quads generated!");
 	return true;
 }
@@ -229,8 +233,29 @@ bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
         }
     }
     m_quadsGenerated = true;
+
+	// From center to farthest, move away
+	sortFarthestToNearest(m_rectangles);
+
     LOGI("Quads generated!");
     return true;
+}
+
+void RectGenerator::sortFarthestToNearest(std::vector<Square2D*>& list)
+{
+	for (size_t i = 0; i < list.size()-1; ++i)
+	{
+		for (size_t j = 0; j < list.size()-1 - i; ++j)
+		{
+			const float distance1 = list.at(j)->getDistanceFromOrigin(Point2D(0, 0));
+			const float distance2 = list.at(j+1)->getDistanceFromOrigin(Point2D(0, 0));
+			//LOGD("Is %f < %f ?", distance1, distance2);
+			if ( distance1 < distance2)
+			{
+				std::iter_swap(list.begin()+j, list.begin()+j+1);
+			}
+		}
+	}
 }
 
 bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy costoso, probar otra estrategia, cuando haya solapamiento no parar hasta separarlo
@@ -244,34 +269,21 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 		// Assume no overlap
 		existOverlap = false;
 
-		for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+		//sortFarthestToNearest(m_rectangles); // change colors, update assume order no change
+		for(auto it = m_rectangles.rbegin(); it != m_rectangles.rend(); it++)
 		{
 			// Get quads overlap except itself
 			std::vector<Square2D*> overlapList = quadOverlapWith((*it));
-			LOGD("Overlaps with: %d", overlapList.size());
+			//LOGD("Overlaps with: %d", overlapList.size());
 			if(overlapList.size() > 0)
 			{
 				// Will end if no overlap for each one
 				existOverlap = true;
 
-				// Ordenar de más lejos a más cerca?
-				//void BubbleSort(WSortView& A)
+				sortFarthestToNearest(overlapList);
 
-				for (size_t i = 0; i < overlapList.size()-1; ++i)
-				{
-					for (size_t j = 0; j < overlapList.size()-1 - i; ++j)
-					{
-						const float distance1 = overlapList.at(j)->getDistanceFromOrigin(Point2D(0, 0));
-						const float distance2 = overlapList.at(j+1)->getDistanceFromOrigin(Point2D(0, 0));
-						//LOGD("Is %f < %f ?", distance1, distance2);
-						if ( distance1 < distance2)
-						{
-							std::iter_swap(overlapList.begin()+j, overlapList.begin()+j+1);
-						}
-					}
-				}
-
-				for(std::vector<Square2D*>::const_iterator it2 = overlapList.begin(); it2 != overlapList.end(); it2++)
+				// First move farthest, then closers each time
+				for(auto it2 = overlapList.rbegin(); it2 != overlapList.rend(); it2++)
 				{
 					// Option 1 just move away, fail
 					/*
@@ -323,8 +335,8 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 					(*it)->setOrigin(originPoint1);
 */
 					// While overlap (it)?
-					Point2D originPoint = (*it2)->getOrigin();
-					//while(quadOverlap((*it), (*it2)))
+					Point2D originPoint = (*it)->getOrigin();
+					while(quadOverlap((*it), (*it2)))
 					{
 						// Option 2 away from origin
 						if(originPoint.x >= 0)
@@ -348,7 +360,7 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 							// Move random
 							if(math2d::randomNumberInterval(0,1))
 							{
-								//originPoint.y++;
+								originPoint.y++;
 							}
 						}
 						else
@@ -356,10 +368,10 @@ bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy 
 							// Move random
 							if(math2d::randomNumberInterval(0,1))
 							{
-								//originPoint.y--;
+								originPoint.y--;
 							}
 						}
-						(*it2)->setOrigin(originPoint);
+						(*it)->setOrigin(originPoint);
 
 						if(renderEach)
 						{
@@ -515,16 +527,15 @@ gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, fl
     color[0] = math2d::randomValueBetween(0, 1);  // red
     color[1] = math2d::randomValueBetween(0, 1);  // green
     color[2] = math2d::randomValueBetween(0, 1);  // blue
-    LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
-    extraShaderUniformValues.push_back(color);
 
+    LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
+
+    extraShaderUniformValues.push_back(color);
     quad->setName(name);
     quad->setShadersFromFiles( m_vShader, m_fColourShader, extraShaderUniforms );
     quad->setExtraValues(extraShaderUniformValues);
-
     quad->setTranslation(glm::vec3(x0, y0, z));
     quad->setScale(glm::vec3(width, height, 1.0f));
-
     return quad;
 }
 
@@ -535,6 +546,11 @@ void RectGenerator::updateNodeQuads()
 		LOGE("First generate node quads");
 		return;
 	}
+	// Hardcode
+	//destroyNodeQuads();
+	//createNodeQuads();
+
+	// Update assumming no change order (it do!)
     std::vector<gre::Obj*>::const_iterator it2 = m_objs.begin();
 	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
 	{

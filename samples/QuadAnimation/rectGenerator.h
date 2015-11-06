@@ -101,5 +101,9 @@ protected:
     bool m_nodeQuadsGenerated;
 
 private:
+    /**
+     * 	 BubbleSort
+     */
+    void sortFarthestToNearest(std::vector<Square2D*>& list);	///< Sort m_rectangles, last place the closest to (0,0)
 
 };
