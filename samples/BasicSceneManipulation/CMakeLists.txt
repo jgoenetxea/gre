@@ -25,6 +25,7 @@ SET( TESTING_BASE_APP basic/main.cpp )
 SET( TESTING_BASE_64k_APP basic_64k/main.cpp )
 SET( TESTING_BASE_ORTHO_APP basicOrtho/main.cpp )
 SET( TESTING_ORTHO_PANEL_APP orthoPanel/main.cpp )
+SET( TESTING_GEOMETRY_SHADER_APP geometryShader/main.cpp )
 SET( MULTY_SCENE_APP sceneSwitcher/main.cpp )
 SET( EXPLOSION_SCENE_APP explosionScene/main.cpp )
 
@@ -50,8 +51,12 @@ TARGET_LINK_LIBRARIES( sample_basicOrtho gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_
 ADD_EXECUTABLE( sample_basicOrthoPanel ${TESTING_ORTHO_PANEL_APP} )
 TARGET_LINK_LIBRARIES( sample_basicOrthoPanel gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${${PROJ_MAIN_NAME}_GUCPP_LIBS} )
 
+ADD_EXECUTABLE( sample_geometryShader ${TESTING_GEOMETRY_SHADER_APP} )
+TARGET_LINK_LIBRARIES( sample_geometryShader gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
 ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
 TARGET_LINK_LIBRARIES( sample_multyScene gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
 
 
 # Install

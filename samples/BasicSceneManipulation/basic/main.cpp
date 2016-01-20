@@ -105,9 +105,11 @@ int main( void )
     gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
     m_obj->setShadersFromFiles( vShader, fShader );
     m_obj->setTexture( uvtemplate );
+    m_obj->setName("Cube");
 
     // Generate translation node
     gre::Transformation m_trans;
+    m_trans.setName("Translation");
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 500 );
@@ -128,8 +130,10 @@ int main( void )
     m_scene.addCamera(m_camera);
     m_scene.addChild(&m_trans);
     m_trans.addChild(m_obj);
+    //m_scene.addChild(m_obj);
 
     m_trans.setTranslation(glm::vec3(5, 0, 0));
+    //m_obj->setTranslation(glm::vec3(5, 0, 0));
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
@@ -156,15 +160,7 @@ int main( void )
         m_obj->setRotation(horizontalAngle, glm::vec3(0, 1, 0));
 
         m_trans.setRotation(rotationAngle, glm::vec3(0, 0, 1));
-        //m_obj->setTranslation(glm::vec3(cos(translateValue)*2, 0, 0));
 
-        //glm::mat4 ModelMatrix = glm::mat4(1.0);
-        //ModelMatrix = glm::rotate(ModelMatrix, horizontalAngle, glm::vec3(0, 1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        //ModelMatrix = glm::translate(ModelMatrix, glm::vec3(cos(translateValue), sin(translateValue), 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
-
-        //m_trans.setLocalTranslation(ModelMatrix);
-
-        //scene.draw();
         m_renderer->renderScene(&m_scene);
 
         // Swap buffers

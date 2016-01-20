@@ -149,7 +149,7 @@ void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::s
         return ;
     }
 
-    // Read the Fragment Shader code from the file
+    // Read the Geometry Shader code from the file
     std::string geometryShaderCode = "";
     if(static_cast<int>(geometry_file_path.size()) > 0)
     {

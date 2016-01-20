@@ -29,7 +29,7 @@ public:
     void scale(glm::vec3 scale);
 
 private:
-    void computeLocalMatrix();
+    //void computeLocalMatrix();
 };
 
 }

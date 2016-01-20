@@ -20,19 +20,19 @@ void Renderer::renderScene( Scene* scene )
 {
     m_perspectiveMatrix = scene->getCurrentCamera()->getProjectionMatrix();
     m_viewMatrix = scene->getCurrentCamera()->getViewMatrix();
-    glm::mat4 currentGlobalMatrix = scene->getLocalTranslation();
+    glm::mat4 currentGlobalMatrix = scene->getGlobalMatrix();
     renderNode(scene, currentGlobalMatrix);
 }
 
 void Renderer::renderNode( Node* node, glm::mat4 currentGlobalMatrix )
 {
     std::vector<Node*>& childrenList = node->getChildren();
-    currentGlobalMatrix = currentGlobalMatrix * node->getLocalTranslation();
-    //currentGlobalMatrix = node->getLocalTranslation() * currentGlobalMatrix;
     node->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
     for(std::vector<Node*>::iterator it=childrenList.begin() ; it!=childrenList.end() ; ++it)
     {
         //LOGD("Rendering: %s", n->getName().c_str());
-        renderNode((*it), currentGlobalMatrix);
+        std::cout << (*it)->getName() << "::G=" << (*it)->getGlobalMatrix()[3][0] << "::L=" << (*it)->getLocalMatrix()[3][0] << std::endl;
+        renderNode((*it), (*it)->getGlobalMatrix());
     }
 }
+
