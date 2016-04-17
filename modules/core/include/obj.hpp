@@ -52,6 +52,13 @@ public:
     void setTexture( unsigned int textureFileRef );
     void setTexture( string &textureFileName );
 
+    /**
+     * A function to set and compile the shaders for this program.
+     * @param vertexShaderCode The code to define the vertex shader.
+     * @param fragmentShaderCode The code to define the fragment shader.
+     * @param geometryShaderCode The code to define the geometry shader.
+     * @param extraValues A list of uniform names to be defined and updated during the render process.
+     */
     void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode, const std::vector<std::string>& extraValues );
 
     void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::vector<std::string>& extraValues );
@@ -71,6 +78,11 @@ public:
     std::string& getCurrentVertexShaderCode(){ return m_currentVertexShaderCode; }
     std::string& getCurrentGeometryShaderCode(){ return m_currentGeometryShaderCode; }
 
+    /**
+     * A function to define the values of the extra tracked uniforms.
+     * This list has a set of vectors (with different sizes) used to be parsed to the program when the render process is called.
+     * @param extraElementValues A list with vectors of values to be parsed to the extra tracked uniforms. The order of sending is the same as the list defined in "setShader" funcion.
+     */
     void setExtraValues( const std::vector<std::vector<float> >& extraElementValues );
 
 

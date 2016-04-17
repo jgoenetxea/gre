@@ -83,11 +83,11 @@ bool RectGenerator::initScene()
     LOGI("Scene initialized!");
 
     // Configuration quads algorithm
-    m_maxNumberOfRectangles = 10;
-    m_lowWidth = 1;
-    m_highWidth = 7;
+    m_maxNumberOfRectangles = 17;
+    m_lowWidth = 2;
+    m_highWidth = 8;
     m_lowHeight = 2;
-    m_highHeight = 7;
+    m_highHeight = 5;
     m_roomSize = 3;
     m_centerSquares = Point2D(0.0f, 0.0f);
     m_radiusSquares = 5.0f;
@@ -146,6 +146,53 @@ void RectGenerator::printQuadsInfo()
 	return;
 }
 
+bool RectGenerator::generateHardcodeQuads(bool renderEach, unsigned int delayMs)
+{
+	LOGI("Generating HARDCODE quads...");
+
+	if(renderEach)
+	{
+		// Pre-render
+		createNodeQuads();
+		render();
+		destroyNodeQuads();
+		usleep(delayMs*1000);
+	}
+
+	float width = 5;
+	float height = 7;
+
+	Point2D origin = Point2D(-5,-5);
+	Point2D origin2 = Point2D(-5,5);
+	Point2D origin3 = Point2D(-1,0);
+	Point2D origin4 = Point2D(-2,0);
+
+	// Create abstract squares
+	Square2D* square = new Square2D(origin, width, height);
+	Square2D* square2 = new Square2D(origin2, width, height);
+	Square2D* square3 = new Square2D(origin3, width, height);
+	Square2D* square4 = new Square2D(origin4, width, height);
+	m_rectangles.push_back(square);
+	m_rectangles.push_back(square2);
+	m_rectangles.push_back(square3);
+	m_rectangles.push_back(square4);
+
+	if(renderEach)
+	{
+		createNodeQuads();
+		render();
+		destroyNodeQuads();
+		usleep(delayMs*1000);
+	}
+	m_quadsGenerated = true;
+
+	// From center to farthest, move away
+	sortFarthestToNearest(m_rectangles);
+
+	LOGI("Quads generated!");
+	return true;
+}
+
 bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
 {
     LOGI("Generating quads...");
@@ -166,6 +213,8 @@ bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
         float width = (float)math2d::randomNumberInterval(m_lowWidth, m_highWidth);
         float height = (float)math2d::randomNumberInterval(m_lowHeight, m_highHeight);
 
+        LOGD("Quad with size: %fx%f", width, height);
+
         // Generate int origin points
         Point2D origin = math2d::calculateRandomPoint2DInACircle(m_centerSquares, m_radiusSquares);
         origin.x = (int)origin.x;
@@ -184,11 +233,32 @@ bool RectGenerator::generateQuads(bool renderEach, unsigned int delayMs)
         }
     }
     m_quadsGenerated = true;
+
+	// From center to farthest, move away
+	sortFarthestToNearest(m_rectangles);
+
     LOGI("Quads generated!");
     return true;
 }
 
-bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuando haya solapamiento no parar hasta separarlo
+void RectGenerator::sortFarthestToNearest(std::vector<Square2D*>& list)
+{
+	for (size_t i = 0; i < list.size()-1; ++i)
+	{
+		for (size_t j = 0; j < list.size()-1 - i; ++j)
+		{
+			const float distance1 = list.at(j)->getDistanceFromOrigin(Point2D(0, 0));
+			const float distance2 = list.at(j+1)->getDistanceFromOrigin(Point2D(0, 0));
+			//LOGD("Is %f < %f ?", distance1, distance2);
+			if ( distance1 < distance2)
+			{
+				std::iter_swap(list.begin()+j, list.begin()+j+1);
+			}
+		}
+	}
+}
+
+bool RectGenerator::separateQuads(bool renderEach, unsigned int delayMs)	// Muy costoso, probar otra estrategia, cuando haya solapamiento no parar hasta separarlo
 {
 	LOGI("Separating node quads...");
 
@@ -199,45 +269,123 @@ bool RectGenerator::separateQuads()	// Muy costoso, probar otra estrategia, cuan
 		// Assume no overlap
 		existOverlap = false;
 
-		for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
+		//sortFarthestToNearest(m_rectangles); // change colors, update assume order no change
+		for(auto it = m_rectangles.rbegin(); it != m_rectangles.rend(); it++)
 		{
 			// Get quads overlap except itself
 			std::vector<Square2D*> overlapList = quadOverlapWith((*it));
-			LOGD("Overlaps: %d", overlapList.size());
+			//LOGD("Overlaps with: %d", overlapList.size());
 			if(overlapList.size() > 0)
 			{
 				// Will end if no overlap for each one
 				existOverlap = true;
-				for(std::vector<Square2D*>::const_iterator it2 = overlapList.begin(); it2 != overlapList.end(); it2++)
+
+				sortFarthestToNearest(overlapList);
+
+				// First move farthest, then closers each time
+				for(auto it2 = overlapList.rbegin(); it2 != overlapList.rend(); it2++)
 				{
-					Point2D centerPoint1 = (*it)->getOrigin();
-					Point2D centerPoint2 = (*it2)->getOrigin();
+					// Option 1 just move away, fail
+					/*
+					Point2D centerPoint1 = (*it)->getCenter();
+					Point2D centerPoint2 = (*it2)->getCenter();
+					Point2D originPoint1 = (*it)->getOrigin();
+					Point2D originPoint2 = (*it2)->getOrigin();
 					float width1 = (*it)->getWidth();
 					float width2 = (*it2)->getWidth();
+					float height1 = (*it)->getHeight();
+					float height2 = (*it2)->getHeight();
 
-					const float deltaCenterX = centerPoint1.x - centerPoint2.x;
-					const float deltaWidth = width1 - width2;
-					if(deltaWidth - deltaCenterX >= 0)
+					const float deltaCenterX = centerPoint2.x - centerPoint1.x;
+					const float limitWidth = width2 + width1;
+					const float deltaCenterY = centerPoint2.y - centerPoint1.y;
+					const float limitHeight = height2 + height1;
+
+					//LOGD("deltaX %f, limitWidth %f", deltaCenterX, limitWidth);
+					if(abs(deltaCenterX) < limitWidth)
 					{
-						centerPoint1.x -= 1;
-                        //(*it)->setOrigin(centerPoint1); // (goe): Error de compilación
+						if(deltaCenterX <= 0)
+						{
+							originPoint1.x += 1;
+						}
+						else
+						{
+							originPoint1.x -= 1;
+						}
 					}
 					else
 					{
-						centerPoint1.x += 1;
-                        //(*it)->setOrigin(centerPoint1); // (goe): Error de compilación
+						LOGW("No overlap in X detected");
+					}
+					if(abs(deltaCenterY) < limitHeight)
+					{
+						if(deltaCenterY <= 0)
+						{
+							originPoint1.y -= 1;
+						}
+						else
+						{
+							originPoint1.y += 1;
+						}
+					}
+					else
+					{
+						LOGW("No overlap in Y detected");
+					}
+					(*it)->setOrigin(originPoint1);
+*/
+					// While overlap (it)?
+					Point2D originPoint = (*it)->getOrigin();
+					while(quadOverlap((*it), (*it2)))
+					{
+						// Option 2 away from origin
+						if(originPoint.x >= 0)
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.x++;
+							}
+						}
+						else
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.x--;
+							}
+						}
+						if(originPoint.y >= 0)
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.y++;
+							}
+						}
+						else
+						{
+							// Move random
+							if(math2d::randomNumberInterval(0,1))
+							{
+								originPoint.y--;
+							}
+						}
+						(*it)->setOrigin(originPoint);
+
+						if(renderEach)
+						{
+							updateNodeQuads();
+							// Pre-render
+							//createNodeQuads();
+							render();
+							//destroyNodeQuads();
+							usleep(delayMs*1000);
+						}
 					}
 				}
 			}
-
-			updateNodeQuads();
-			// Pre-render
-			//createNodeQuads();
-			render();
-			//destroyNodeQuads();
-			usleep(1000*1000);
 		}
-		usleep(1);
 	}
 
 	LOGI("Node quads separated!");
@@ -253,16 +401,18 @@ bool RectGenerator::createHallways()
 
 bool RectGenerator::quadOverlap(Square2D* square1, Square2D* square2)
 {
-	const float deltaCenterX = square1->getOrigin().x - square2->getOrigin().x;
-	const float deltaWidth = abs(square1->getWidth() - square2->getWidth());
+	const float deltaCenterX = square1->getCenter().x - square2->getCenter().x;
+	const float deltaWidth = square2->getWidth() + square1->getWidth();
+	const float deltaCenterY = square1->getCenter().y - square2->getCenter().y;
+	const float deltaHeight = square2->getHeight() + square1->getHeight();
 
-	if(deltaCenterX > deltaWidth)
+	if((abs(deltaCenterX) < deltaWidth) && (abs(deltaCenterY) < deltaHeight) )
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
 
@@ -275,7 +425,7 @@ std::vector<Square2D*> RectGenerator::quadOverlapWith(Square2D* square)
 		if((*it) == square)
 		{
 			//LOGD("Avoid me :D");
-			continue;
+			break;
 		}
 		else
 		{
@@ -365,18 +515,6 @@ void RectGenerator::createNodeQuads()
 	LOGI("Node quads generated!");
 }
 
-float RectGenerator::getRandomNumberBetween0and1()
-{
-    static bool isInit = false;
-    if(!isInit)
-    {
-        srand(time(NULL));
-        isInit = true;
-    }
-
-    return ((float) rand() / (RAND_MAX));
-}
-
 gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, float width, float height, float z)
 {
     gre::Obj* quad = gre::ShapeDispatcher::getShapes()->getQuad();
@@ -386,19 +524,18 @@ gre::Obj* RectGenerator::createNodeQuad(std::string name, float x0, float y0, fl
     std::vector<std::vector<float> > extraShaderUniformValues;
     extraShaderUniforms.push_back("iColour");
     std::vector<float> color(3);
-    color[0] = getRandomNumberBetween0and1();  // red
-    color[1] = getRandomNumberBetween0and1();  // green
-    color[2] = getRandomNumberBetween0and1();  // blue
-    LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
-    extraShaderUniformValues.push_back(color);
+    color[0] = math2d::randomValueBetween(0, 1);  // red
+    color[1] = math2d::randomValueBetween(0, 1);  // green
+    color[2] = math2d::randomValueBetween(0, 1);  // blue
 
+    LOGI("Generated colour [%f,%f,%f]\n", color[0], color[1], color[2]);
+
+    extraShaderUniformValues.push_back(color);
     quad->setName(name);
     quad->setShadersFromFiles( m_vShader, m_fColourShader, extraShaderUniforms );
     quad->setExtraValues(extraShaderUniformValues);
-
     quad->setTranslation(glm::vec3(x0, y0, z));
     quad->setScale(glm::vec3(width, height, 1.0f));
-
     return quad;
 }
 
@@ -409,6 +546,11 @@ void RectGenerator::updateNodeQuads()
 		LOGE("First generate node quads");
 		return;
 	}
+	// Hardcode
+	//destroyNodeQuads();
+	//createNodeQuads();
+
+	// Update assumming no change order (it do!)
     std::vector<gre::Obj*>::const_iterator it2 = m_objs.begin();
 	for(std::vector<Square2D*>::const_iterator it = m_rectangles.begin(); it != m_rectangles.end(); it++)
 	{

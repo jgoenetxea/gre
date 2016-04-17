@@ -30,8 +30,9 @@ public:
     void close();
 
     // Quads
-    bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);		///< Algorithm Step 1, generate abstract quads
-    bool separateQuads();
+    bool generateQuads(bool renderEach = false, unsigned int delayMs = 1000);			///< Algorithm Step 1, generate abstract quads
+    bool generateHardcodeQuads(bool renderEach = false, unsigned int delayMs = 1000);	///< Algorithm Step 1 with no random
+    bool separateQuads(bool renderEach = false, unsigned int delayMs = 1000);
     bool createHallways();
     bool selectRooms();			///< Algorithm Step 3, according a threshold, consider some quads rooms, rest are simple cells
     bool createRoomGraph();		///< Algorithm Step 4, create a graph using the rooms center using Delaunay Triangulation
@@ -100,6 +101,9 @@ protected:
     bool m_nodeQuadsGenerated;
 
 private:
-    float getRandomNumberBetween0and1();
+    /**
+     * 	 BubbleSort
+     */
+    void sortFarthestToNearest(std::vector<Square2D*>& list);	///< Sort m_rectangles, last place the closest to (0,0)
 
 };
