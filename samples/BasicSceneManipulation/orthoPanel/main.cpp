@@ -28,8 +28,8 @@ using namespace glm;
 #include "projectiveCamera.hpp"
 #include "orthoCamera.hpp"
 
-#include "square2D.h"
-#include "math2D.h"
+//#include "square2D.h"
+//#include "math2D.h"
 using namespace threemonkeybits;
 
 #include "logger.h"

@@ -12,6 +12,7 @@ using namespace std;
 namespace gre
 {
 
+
 class Node
 {
 public:

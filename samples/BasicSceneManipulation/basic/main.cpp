@@ -33,6 +33,8 @@ string vShader = assets_path+"shaders/basic130.vert";
 string fShader = assets_path+"shaders/basic130.frag";
 string uvtemplate = assets_path+"obj/cube.png";
 string modelFile = assets_path+"obj/cube.obj";
+string uvAxesFile = assets_path+"obj/axes.png";
+string axesFile = assets_path+"obj/axes.obj";
 
 static void error_callback(int error, const char* description)
 {
@@ -105,7 +107,12 @@ int main( void )
     gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
     m_obj->setShadersFromFiles( vShader, fShader );
     m_obj->setTexture( uvtemplate );
-    m_obj->setName("Cube");
+    m_obj->setName("CompanyCube");
+
+    gre::Obj* m_objTest = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
+    m_objTest->setShadersFromFiles( vShader, fShader );
+    m_objTest->setTexture( uvAxesFile );
+    m_objTest->setName("TestCube");
 
     // Generate translation node
     gre::Transformation m_trans;
@@ -130,10 +137,15 @@ int main( void )
     m_scene.addCamera(m_camera);
     m_scene.addChild(&m_trans);
     m_trans.addChild(m_obj);
+    m_trans.addChild(m_objTest);
     //m_scene.addChild(m_obj);
 
-    m_trans.setTranslation(glm::vec3(5, 0, 0));
-    //m_obj->setTranslation(glm::vec3(5, 0, 0));
+    //m_trans.setTranslation(glm::vec3(5, 0, 0));
+    m_obj->setTranslation(glm::vec3(5, 0, 0));
+
+    m_trans.setRotation(0.8f, glm::vec3(0, 0, 1));
+
+    m_objTest->setScale(glm::vec3(0.5f,0.5f,0.5f));
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
@@ -159,7 +171,7 @@ int main( void )
 
         m_obj->setRotation(horizontalAngle, glm::vec3(0, 1, 0));
 
-        m_trans.setRotation(rotationAngle, glm::vec3(0, 0, 1));
+        //m_trans.setRotation(rotationAngle, glm::vec3(0, 0, 1));
 
         m_renderer->renderScene(&m_scene);
 

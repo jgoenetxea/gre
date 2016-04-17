@@ -34,7 +34,11 @@ Node::~Node()
 {
     for(std::vector<Node*>::iterator it=m_children.begin() ; it!=m_children.end() ; ++it)
     {
-        delete (*it);
+        if(*it != NULL)
+        {
+            delete (*it);
+            *it = NULL;
+        }
     }
 }
 
