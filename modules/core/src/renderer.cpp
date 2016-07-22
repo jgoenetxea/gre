@@ -51,9 +51,9 @@ void Renderer::renderNodeActive( Node* node, glm::mat4 previousGlobalMatrix )
     glm::mat4 localTranslation = node->getLocalTranslation();
     glm::mat4 localScale = node->getLocalScale();
     // Compute inverse matrix for previous global matrix
-    glm::mat4 previousGlobalMatrixInverse = glm::inverse(previousGlobalMatrix);
+    //glm::mat4 previousGlobalMatrixInverse = glm::inverse(previousGlobalMatrix);
     // Compute current matrix
-    glm::mat4 currentGlobalMatrix = previousGlobalMatrix * localScale * localTranslation * localRotation * previousGlobalMatrixInverse;
+    glm::mat4 currentGlobalMatrix = previousGlobalMatrix * localTranslation * localScale * localRotation;
     // Draw
     node->draw(currentGlobalMatrix, m_viewMatrix, m_perspectiveMatrix);
     // Call children

@@ -35,6 +35,8 @@ string uvtemplate = assets_path+"obj/cube.png";
 string modelFile = assets_path+"obj/cube.obj";
 string uvAxesFile = assets_path+"obj/axes.png";
 string axesFile = assets_path+"obj/axes.obj";
+string earthFile = assets_path+"obj/Realistic_earth.obj";
+string uvEarthFile = assets_path+"obj/Realistic_earth.DDS";
 
 static void error_callback(int error, const char* description)
 {
@@ -104,19 +106,36 @@ int main( void )
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    gre::Obj* m_obj = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    m_obj->setShadersFromFiles( vShader, fShader );
-    m_obj->setTexture( uvtemplate );
-    m_obj->setName("CompanyCube");
+    gre::Obj* m_planet = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_planet->setShadersFromFiles( vShader, fShader );
+    m_planet->setTexture( uvtemplate );
+    m_planet->setName("Planet");
+    m_planet->setTranslation(glm::vec3(3, 0, 0)); // Set radio
 
-    gre::Obj* m_objTest = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
-    m_objTest->setShadersFromFiles( vShader, fShader );
-    m_objTest->setTexture( uvAxesFile );
-    m_objTest->setName("TestCube");
+    gre::Obj* m_moon = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_moon->setShadersFromFiles( vShader, fShader );
+    m_moon->setTexture( uvtemplate );
+    m_moon->setName("Moon");
+    m_moon->setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+    m_moon->setTranslation(glm::vec3(2, 0, 0)); // Set radio
+
+    //gre::Obj* m_mainOrbital = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
+    //m_mainOrbital->setShadersFromFiles( vShader, fShader );
+    //m_mainOrbital->setTexture( uvAxesFile );
+    //m_mainOrbital->setName("MainOrbital");
+
+    //gre::Obj* m_planetOrbital = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
+    //m_planetOrbital->setShadersFromFiles( vShader, fShader );
+    //m_planetOrbital->setTexture( uvAxesFile );
+    //m_planetOrbital->setName("PlanetOrbital");
 
     // Generate translation node
-    gre::Transformation m_trans;
-    m_trans.setName("Translation");
+    gre::Transformation m_mainOrbital;
+    m_mainOrbital.setName("MainOrbital");
+
+    gre::Transformation m_planetOrbital;
+    m_planetOrbital.setName("PlanetOrbital");
+    m_planetOrbital.setTranslation(glm::vec3(3, 0, 0));
 
     // Generate camera instance
     glm::vec3 position = glm::vec3( 0, 0, 500 );
@@ -135,17 +154,14 @@ int main( void )
     // Generate scene
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(m_obj);
-    m_trans.addChild(m_objTest);
-    //m_scene.addChild(m_obj);
 
-    //m_trans.setTranslation(glm::vec3(5, 0, 0));
-    m_obj->setTranslation(glm::vec3(5, 0, 0));
+    m_scene.addChild(&m_mainOrbital);
+    m_mainOrbital.addChild(&m_planetOrbital);
 
-    m_trans.setRotation(0.8f, glm::vec3(0, 0, 1));
+    m_mainOrbital.addChild(m_planet);
+    m_planetOrbital.addChild(m_moon);
 
-    m_objTest->setScale(glm::vec3(0.5f,0.5f,0.5f));
+    m_mainOrbital.setRotation(0.8f, glm::vec3(0, 0, 1));
 
     // Initial position : on +Z
     double lastTime = glfwGetTime();
@@ -169,9 +185,13 @@ int main( void )
         rotationAngle += deltaTime * orbitationSpeed;
         translateValue += deltaTime * transSpeed;
 
-        m_obj->setRotation(horizontalAngle, glm::vec3(0, 1, 0));
+        m_moon->setRotation(-horizontalAngle/2, glm::vec3(0, 1, 0));
 
-        //m_trans.setRotation(rotationAngle, glm::vec3(0, 0, 1));
+        m_planetOrbital.setRotation(horizontalAngle, glm::vec3(0, 1, 0));
+
+        m_planet->setRotation(horizontalAngle, glm::vec3(0, 1, 1));
+
+        m_mainOrbital.setRotation(rotationAngle, glm::vec3(0, 0, 1));
 
         m_renderer->renderScene(&m_scene);
 
