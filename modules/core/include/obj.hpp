@@ -49,8 +49,10 @@ public:
     std::vector<Mesh*> m_meshList;
 
     void draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& perspective );
-    void setTexture( unsigned int textureFileRef );
-    void setTexture( string &textureFileName );
+    void setTexture( const unsigned int textureFileRef );
+    void setTexture( const std::string &textureFileName );
+
+    const unsigned int& getTextureId(){ return m_texture; }
 
     /**
      * A function to set and compile the shaders for this program.
@@ -59,14 +61,14 @@ public:
      * @param geometryShaderCode The code to define the geometry shader.
      * @param extraValues A list of uniform names to be defined and updated during the render process.
      */
-    void setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode, const std::vector<std::string>& extraValues );
+    void setShaders( const std::string& vertexShaderCode, const std::string& fragmentShaderCode, const std::string& geometryShaderCode, const std::vector<std::string>& extraValues );
 
     void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::vector<std::string>& extraValues );
     void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path="" );
     void setShadersFromFiles( const std::string& vertex_file_path, const std::string& fragment_file_path, const std::string& geometry_file_path, const std::vector<std::string>& extraValues );
 
-    void updateFragmentShader( const string& fragmentShaderCode );
-    void updateFragmentShader( const string& fragmentShaderCode, const std::vector<std::string>& extraValues );
+    void updateFragmentShader( const std::string& fragmentShaderCode );
+    void updateFragmentShader( const std::string& fragmentShaderCode, const std::vector<std::string>& extraValues );
 
     void getInnerData( std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& uvs, std::vector<glm::vec3>& normals  );
     void setInnerData( const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, const std::vector<glm::vec3>& normals  );
@@ -102,9 +104,9 @@ protected:
     Timer* m_timer;
     int m_viewport[4];
 
-    string m_currentVertexShaderCode;
-    string m_currentFragmentShaderCode;
-    string m_currentGeometryShaderCode;
+    std::string m_currentVertexShaderCode;
+    std::string m_currentFragmentShaderCode;
+    std::string m_currentGeometryShaderCode;
 
     bool m_extraValuesDefined;
     std::vector<std::string> m_extraValueNames;

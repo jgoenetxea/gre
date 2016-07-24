@@ -14,7 +14,72 @@
 namespace gre
 {
 
-GLuint loadBMP_custom(const char * imagepath){
+GLuint Texture::setTexture( const unsigned char* data, const unsigned int width, const unsigned int height, const unsigned int channels )
+{
+    GLuint texture = 0;
+
+    // Generate the OpenGL texture object
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    int colorType = GL_RGB;
+
+    if(channels == 1)
+    {
+        colorType = GL_LUMINANCE;
+    }
+    else if(channels == 4)
+    {
+        colorType = GL_RGBA;
+    }
+
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_width, temp_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, channels, width,
+                     height, 0, colorType, GL_UNSIGNED_BYTE,
+                     data);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    return texture;
+}
+
+void Texture::updateTexture( const GLuint& textureId, const unsigned char* data, const unsigned int width,
+                             const unsigned int height, const unsigned int channels, const bool completeUpdate )
+{
+    // Generate the OpenGL texture object
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    int colorType = GL_RGB;
+
+    if(channels == 1)
+    {
+        colorType = GL_LUMINANCE;
+    }
+    else if(channels == 4)
+    {
+        colorType = GL_RGBA;
+    }
+
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_width, temp_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
+    if(completeUpdate)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, channels, width,
+                      height, 0, colorType, GL_UNSIGNED_BYTE,
+                      data);
+    }
+    else
+    {
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0 , width,
+                         height, colorType, GL_UNSIGNED_BYTE,
+                         data);
+    }
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
+GLuint Texture::loadBMP_custom(const char * imagepath){
 
 	printf("Reading image %s\n", imagepath);
     GLuint textureID = -1;
@@ -93,7 +158,7 @@ GLuint loadBMP_custom(const char * imagepath){
 	return textureID;
 }
 
-//GLuint loadTGA_glfw(const char * imagepath){
+//GLuint Texture::loadTGA_glfw(const char * imagepath){
 
 //	// Create one OpenGL texture
 //	GLuint textureID;
@@ -122,7 +187,7 @@ GLuint loadBMP_custom(const char * imagepath){
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 
-GLuint loadDDS(const char * imagepath){
+GLuint Texture::loadDDS(const char * imagepath){
 
 	unsigned char header[124];
     GLuint textureID = -1;
@@ -209,7 +274,7 @@ GLuint loadDDS(const char * imagepath){
 }
 
 
-GLuint loadPNG(const char * file_name)
+GLuint Texture::loadPNG(const char * file_name)
 {
     GLuint texture = 0;
 #ifdef USE_PNG
@@ -335,16 +400,7 @@ GLuint loadPNG(const char * file_name)
     png_read_image(png_ptr, row_pointers);
 
     // Generate the OpenGL texture object
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_width, temp_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
-    glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, temp_width,
-                     temp_height, 0, hasAlpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE,
-                     image_data);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    texture = setTexture( image_data, temp_width, temp_height, hasAlpha ? 4 : 3 );
 
     // clean up
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);

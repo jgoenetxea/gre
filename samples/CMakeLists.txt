@@ -1,4 +1,5 @@
 # GUCpp
+#-----------------------------------------------------------------------#
 OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP     "Dependency sample" 				                      OFF )
 IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
   MESSAGE("Adding GUCPP")
@@ -19,8 +20,20 @@ IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
   MESSAGE("---------------- GUCpp libs: ${${PROJ_MAIN_NAME}_GUCPP_LIBS}")
 ENDIF()
 
-ADD_SUBDIRECTORY(shaderLab)
+OPTION(${PROJ_MAIN_NAME}_DEPENDENCY_QT5     "Qt dependency" 				                      OFF )
+
+
+# Add referenced samples
+#-----------------------------------------------------------------------#
 ADD_SUBDIRECTORY(BasicSceneManipulation)
+
+IF(${PROJ_MAIN_NAME}_BUILD_VIDEO_PANEL_GRE)
+  ADD_SUBDIRECTORY(VideoPanelSample)
+ENDIF(${PROJ_MAIN_NAME}_BUILD_VIDEO_PANEL_GRE)
+
+IF(${PROJ_MAIN_NAME}_DEPENDENCY_QT5)
+  ADD_SUBDIRECTORY(shaderLab)
+ENDIF(${PROJ_MAIN_NAME}_DEPENDENCY_QT5)
 
 IF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
 ADD_SUBDIRECTORY(QuadAnimation)

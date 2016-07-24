@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.6.3)
 
 # Project name & Configuration & Version
 # ------------------------------------------------------------------------------------------------------
-SET(PROJ_MAIN_NAME "Labirinth")
+SET(PROJ_MAIN_NAME "GRE")
 PROJECT(${PROJ_MAIN_NAME})
 
 SET( ${PROJ_MAIN_NAME}_MAJOR_VERSION 0 CACHE STRING "Major version" FORCE)
@@ -125,8 +125,8 @@ IF(NOT TARGET_PLATFORM STREQUAL TARGET_NONE)
   ENDIF()
 
   IF(${PROJ_MAIN_NAME}_BUILD_TEST)
-    MESSAGE(" Test, TODO")
-    #ADD_SUBDIRECTORY(test)
+    MESSAGE(" Included test generation.")
+    ADD_SUBDIRECTORY(test)
   ENDIF()
 
 ELSE()

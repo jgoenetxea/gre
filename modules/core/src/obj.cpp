@@ -45,12 +45,12 @@ Obj::~Obj()
 	}
 }
 
-void Obj::setTexture( unsigned int textureFileRef )
+void Obj::setTexture( const unsigned int textureFileRef )
 {
 	m_texture = textureFileRef;
 }
 
-void Obj::setTexture( std::string& textureFileName )
+void Obj::setTexture( const std::string& textureFileName )
 {
     int dotPos = textureFileName.rfind('.');
     if(dotPos != std::string::npos)
@@ -65,16 +65,16 @@ void Obj::setTexture( std::string& textureFileName )
 
         if(extension == "png")
         {
-            m_texture = loadPNG(textureFileName.c_str());
+            m_texture = Texture::loadPNG(textureFileName.c_str());
         }
         else if(extension == "dds")
         {
-            m_texture = loadDDS(textureFileName.c_str());
+            m_texture = Texture::loadDDS(textureFileName.c_str());
         }
     }
 }
 
-void Obj::setShaders( const string& vertexShaderCode, const string& fragmentShaderCode, const string& geometryShaderCode, const std::vector<std::string>& extraValues )
+void Obj::setShaders( const std::string& vertexShaderCode, const std::string& fragmentShaderCode, const std::string& geometryShaderCode, const std::vector<std::string>& extraValues )
 {
     m_currentVertexShaderCode = vertexShaderCode;
     m_currentFragmentShaderCode = fragmentShaderCode;
@@ -170,13 +170,13 @@ void Obj::setShadersFromFiles( const std::string& vertex_file_path, const std::s
     return setShaders(vertexShaderCode, fragmentShaderCode, geometryShaderCode, extraValues);
 }
 
-void Obj::updateFragmentShader( const string& fragmentShaderCode )
+void Obj::updateFragmentShader( const std::string& fragmentShaderCode )
 {
     glDeleteProgram( m_program );
     setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode, m_extraValueNames );
 }
 
-void Obj::updateFragmentShader( const string& fragmentShaderCode, const std::vector<std::string>& extraValues )
+void Obj::updateFragmentShader( const std::string& fragmentShaderCode, const std::vector<std::string>& extraValues )
 {
     glDeleteProgram( m_program );
     setShaders( m_currentVertexShaderCode, fragmentShaderCode, m_currentGeometryShaderCode, extraValues );
