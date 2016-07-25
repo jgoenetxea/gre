@@ -20,17 +20,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "objloader.hpp"
-#include "shapes.hpp"
-
-#include "scene.hpp"
-#include "transformation.hpp"
-
-#include "renderer.hpp"
-#include "projectiveCamera.hpp"
-#include "orthoCamera.hpp"
-
-#include "videoPanel.hpp"
+#include "videoBackgroundHandler.h"
 
 
 static void error_callback(int error, const char* description)
@@ -61,7 +51,7 @@ int main( void )
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 	// Open a window and create its OpenGL context
-    window = glfwCreateWindow( 1024, 768, "Test window", NULL, NULL );
+    window = glfwCreateWindow( /*1024*/768, 768, "Test window", NULL, NULL );
     if( window == NULL )
 	{
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
@@ -88,47 +78,7 @@ int main( void )
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-    // get renderer instance
-    gre::Renderer* m_renderer = gre::Renderer::getInstance();
-
-    // Generate the main model
-    gre::VideoPanel m_vp;
-
-    // Generate translation node
-    gre::Transformation m_trans;
-
-    // Generate camera instance
-    glm::vec3 position = glm::vec3( 0, 0, 500 );
-    glm::vec3 up = glm::vec3( 0,1,0 );
-    float fov = 60.0;
-
-    gre::ProjectiveCamera m_camera;
-    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 1000.0f);
-    // View matrix
-    m_camera.setLocation( position,         // Camera is here
-                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-                          up                // Head is up (set to 0,-1,0 to look upside-down)
-                          );
-
-//    // Generate camera instance
-//    glm::vec3 position = glm::vec3( 0, 0, 5 );
-//    glm::vec3 up = glm::vec3( 0,1,0 );
-
-//    gre::OrthoCamera m_camera;
-//    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-//    m_camera.setConfiguration(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.0f);
-//    // View matrix
-//    m_camera.setLocation( position,           // Camera is here
-//                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
-//                          up                  // Head is up (set to 0,-1,0 to look upside-down)
-//                          );
-
-    // Generate scene
-    gre::Scene m_scene;
-    m_scene.addCamera(m_camera);
-    m_scene.addChild(&m_trans);
-    m_trans.addChild(&m_vp);
+    gre::VideoBackgroundHandler* vbh = gre::VideoBackgroundHandler::getInstance();
 
     // Init camera capture
     bool flipImageVert = false;
@@ -193,11 +143,6 @@ int main( void )
     }
 
     // Initial position : on +Z
-    double lastTime = glfwGetTime();
-    float horizontalAngle = 0.f;
-    float translateValue = 0.f;
-    int rotSpeed = 80 * GRAD2RAD;
-    int transSpeed = 200;
     cv::Mat frame;
     while(!glfwWindowShouldClose(window))
     {
@@ -207,25 +152,13 @@ int main( void )
         cv::cvtColor(frame, frame, CV_BGR2RGB);
         if( flipImageVert ) cv::flip( frame, frame, 0 );
         if( flipImageHori ) cv::flip( frame, frame, 1 );
-        m_vp.setFrame( frame.data, frame.cols, frame.rows, frame.channels() );
 //        cv::imshow("frame", frame);
-//        cv::waitKey(5);
-
-        // time control
-        double currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime);
-        lastTime = currentTime;
+//        cv::waitKey(5)
 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        horizontalAngle += deltaTime * rotSpeed;
-        translateValue = cos(deltaTime) * transSpeed;
-
-        m_trans.setRotation(horizontalAngle, glm::vec3(0, 1, 1));
-        m_trans.setTranslation(glm::vec3(0, 0, translateValue));
-
-        m_renderer->renderScene(&m_scene);
+        vbh->setFrame( frame.data, frame.cols, frame.rows, frame.channels() );
 
         // Swap buffers
         glfwSwapBuffers(window);

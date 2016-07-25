@@ -1,6 +1,6 @@
 # Header
 #-----------------------------------------------------------------------#
-SET(PROJ_NAME VideoPanelSample)
+SET(PROJ_NAME VideoBackgroundHandlerSample)
 PROJECT(${PROJ_NAME})
 MESSAGE(" + Adding module ${PROJ_NAME} ")				# In info
 

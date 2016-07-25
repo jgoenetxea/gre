@@ -4,7 +4,7 @@
 #define GL_GLEXT_PROTOTYPES
 #include<GL/gl.h>
 
-#include "video_panel.hpp"
+#include "videoPanel.hpp"
 
 #include "shapes.hpp"
 

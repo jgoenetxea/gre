@@ -22,13 +22,12 @@ private:
 
     void initialize();
 
-    //gre::Scene m_scene;
-    //gre::Renderer* m_renderer;
     gre::Obj* m_obj;
 
     unsigned int m_width;
     unsigned int m_height;
 };
+
 
 }
 #endif  // GRE_SCREEN_PANEL_H
