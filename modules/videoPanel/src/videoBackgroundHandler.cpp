@@ -28,8 +28,13 @@ VideoBackgroundHandler::~VideoBackgroundHandler()
 void VideoBackgroundHandler::setFrame( const unsigned char* data, const unsigned int width, const unsigned int height, const unsigned int channels )
 {
     m_vp.setFrame( data, width, height, channels );
+}
+
+void VideoBackgroundHandler::show()
+{
     m_renderer->renderScene(&m_scene);
 }
+
 
 void VideoBackgroundHandler::initialize()
 {
@@ -68,6 +73,24 @@ void VideoBackgroundHandler::initialize()
     m_scene.addChild(&m_vp);
 
     m_vp.setName("BackgroundVideoPanel");
+}
+
+void VideoBackgroundHandler::fromScreenToImageCoordinates(float& x, float& y)
+{
+    // Generate the projection matrix
+    m_perspectiveMatrix = m_scene.getCurrentCamera()->getProjectionMatrix();
+    m_viewMatrix = m_scene.getCurrentCamera()->getViewMatrix();
+    m_modelMatrix = m_vp.getGlobalMatrix();
+
+    glm::mat4 projectionMatrix = m_perspectiveMatrix * m_viewMatrix * m_modelMatrix;
+    glm::mat4 projectionMatrixInverse = glm::inverse(projectionMatrix);
+
+    // Apply the projection matrix
+    glm::vec4 screenPoint(x,y,0,1);
+    glm::vec4 modelPoint = projectionMatrixInverse * screenPoint;
+
+    x = modelPoint.x;
+    y = modelPoint.y;
 }
 
 }

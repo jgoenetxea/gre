@@ -28,7 +28,11 @@ public:
     static VideoBackgroundHandler* getInstance();
     ~VideoBackgroundHandler();
 
+    void show();
+
     void setFrame( const unsigned char* data, const unsigned int width, const unsigned int height, const unsigned int channels );
+
+    void fromScreenToImageCoordinates(float& x, float& y);
 
 private:
 
@@ -39,6 +43,10 @@ private:
     gre::Scene m_scene;
     gre::Renderer* m_renderer;
     gre::VideoPanel m_vp;
+
+    glm::mat4 m_perspectiveMatrix;
+    glm::mat4 m_viewMatrix;
+    glm::mat4 m_modelMatrix;
 
 #ifndef ORTHO_CAMERA
     gre::ProjectiveCamera m_camera;
