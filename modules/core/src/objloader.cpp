@@ -3,6 +3,12 @@
 #include <stdio.h>
 #include <string.h>
 
+// #define EXPORT_LOADED_DATA
+
+#if defined(EXPORT_LOADED_DATA)
+#include <fstream>
+#endif
+
 using namespace std;
 using namespace gre;
 
@@ -301,44 +307,57 @@ Obj* ObjFactory::loadOBJ( string filename )
 		}
 	}
 
-//	std::cout << "Loaded file with " << outObj->m_meshList.size() << " meshes" << std::endl;
-//	std::cout << "\tvertices: " << outObj->m_vertices.size() << std::endl;
-//	std::cout << "\tuvs     : " << outObj->m_uvs.size() << std::endl;
-//	std::cout << "\tnormals : " << outObj->m_normals.size() << std::endl;
-//
-//
-//	{
-//		ofstream ofile("loadedData.txt");
-//		ofile << "Object has " << outObj->m_vertices.size() << " vertices, " << outObj->m_uvs.size() << " uvs and " << outObj->m_normals.size() << " normals" << endl;
-//		for( int iMesh=0,nMesh=outObj->m_meshList.size() ; iMesh<nMesh ; ++iMesh )
-//		{
-//			ofile << "Mesh #" << iMesh+1 << endl;
-//			ofile << "\tIndices: " << outObj->m_meshList[iMesh]->m_vertexIndex.size() << endl;
-//			ofile << "Indexed vertices:" << endl;
-//			int ci=0;
-//			for( int i=0,n=outObj->m_meshList[iMesh]->m_vertexIndex.size() ; i<n ; ++i )
-//			{
-//				ci = outObj->m_meshList[iMesh]->m_vertexIndex[i];
-//				ofile << "\t" << outObj->m_vertices[ci].x << " " << outObj->m_vertices[ci].y << " " << outObj->m_vertices[ci].z << endl;
-//			}
-//		}
-//		ofile << "//************************************************************************//" << endl;
-//		ofile << "Vertices:" << endl;
-//		for( int ivert=0,nvert=outObj->m_vertices.size() ; ivert<nvert ; ++ivert )
-//		{
-//			ofile << outObj->m_vertices[ivert].x << " " << outObj->m_vertices[ivert].y << " " << outObj->m_vertices[ivert].z << endl;
-//		}
-//		ofile << "Indices:" << endl;
-//		for( int iMesh=0,nMesh=outObj->m_meshList.size() ; iMesh<nMesh ; ++iMesh )
-//		{
-//			ofile << "Mesh #" << iMesh+1 << endl;
-//			for( int i=0,nIndex=outObj->m_meshList[iMesh]->m_vertexIndex.size() ; i<nIndex ; ++i )
-//			{
-//				ofile << outObj->m_meshList[iMesh]->m_vertexIndex[i] << endl;
-//			}
-//		}
-//		ofile.close();
-//	}
+#if defined(EXPORT_LOADED_DATA)
+    std::cout << "Loaded file with " << outObj->m_meshList.size() << " meshes" << std::endl;
+    std::cout << "\tvertices: " << outObj->m_vertices.size() << std::endl;
+    std::cout << "\tuvs     : " << outObj->m_uvs.size() << std::endl;
+    std::cout << "\tnormals : " << outObj->m_normals.size() << std::endl;
+
+
+    {
+        ofstream ofile;
+        ofile.open("loadedData.txt");
+        ofile << "Object has " << outObj->m_vertices.size() << " vertices, " << outObj->m_uvs.size() << " uvs and " << outObj->m_normals.size() << " normals" << endl;
+        for( int iMesh=0,nMesh=outObj->m_meshList.size() ; iMesh<nMesh ; ++iMesh )
+        {
+            ofile << "Mesh #" << iMesh+1 << endl;
+            ofile << "\tIndices: " << outObj->m_meshList[iMesh]->m_vertexIndex.size() << endl;
+            ofile << "Indexed vertices:" << endl;
+            int ci=0;
+            for( int i=0,n=outObj->m_meshList[iMesh]->m_vertexIndex.size() ; i<n ; ++i )
+            {
+                ci = outObj->m_meshList[iMesh]->m_vertexIndex[i];
+                ofile << "\t" << outObj->m_vertices[ci].x << " " << outObj->m_vertices[ci].y << " " << outObj->m_vertices[ci].z << endl;
+            }
+        }
+        ofile << "//************************************************************************//" << endl;
+        ofile << "Vertices:" << endl;
+        for( int ivert=0,nvert=outObj->m_vertices.size() ; ivert<nvert ; ++ivert )
+        {
+            ofile << outObj->m_vertices[ivert].x << " " << outObj->m_vertices[ivert].y << " " << outObj->m_vertices[ivert].z << endl;
+        }
+        ofile << "UVs:" << endl;
+        for( int iuv=0,nuv=outObj->m_uvs.size() ; iuv<nuv ; ++iuv )
+        {
+            ofile << outObj->m_uvs[iuv].x << " " << outObj->m_uvs[iuv].y << endl;
+        }
+        ofile << "Normals:" << endl;
+        for( int inorm=0,nnorm=outObj->m_normals.size() ; inorm<nnorm ; ++inorm )
+        {
+            ofile << outObj->m_normals[inorm].x << " " << outObj->m_normals[inorm].y << " " << outObj->m_normals[inorm].z << endl;
+        }
+        ofile << "Indices:" << endl;
+        for( int iMesh=0,nMesh=outObj->m_meshList.size() ; iMesh<nMesh ; ++iMesh )
+        {
+            ofile << "Mesh #" << iMesh+1 << endl;
+            for( int i=0,nIndex=outObj->m_meshList[iMesh]->m_vertexIndex.size() ; i<nIndex ; ++i )
+            {
+                ofile << outObj->m_meshList[iMesh]->m_vertexIndex[i] << endl;
+            }
+        }
+        ofile.close();
+    }
+#endif
 
 	return outObj;
 }

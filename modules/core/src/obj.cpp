@@ -10,6 +10,8 @@
 #include<GL/gl.h>
 //#include<GLES2/gl2.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "shaderProgram.hpp"
 #include "texture.hpp"
 
@@ -243,6 +245,17 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
     // Compute model view perspective matrix
     m_mvp = perspective * view * model;
 
+//    {
+//        std::cout << "MVP: " << std::endl;
+//        const float *pSource = (const float*)glm::value_ptr(m_mvp);
+//        for (int i = 0; i < 4; ++i) {
+//            for (int j = 0; j < 4; ++j) {
+//                std::cout << pSource[i*4+j] << ", ";
+//            }
+//            std::cout << std::endl;
+//        }
+//    }
+
     // Compute elapsed time
     if( m_timer == NULL )
     {
@@ -275,18 +288,47 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 		glGenBuffers(1, &m_vertexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 		glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(glm::vec3), &m_vertices[0], GL_STATIC_DRAW);
+
+//        std::cout << "Loaded Vertices" << std::endl;
+//        int size = m_vertices.size();
+//        for (size_t i = 0 ; i < size ; ++i) {
+//            std::cout << m_vertices[i].x << ", ";
+//            std::cout << m_vertices[i].y << ", ";
+//            std::cout << m_vertices[i].z << ", ";
+//            std::cout << std::endl;
+//        }
+//        std::cout << std::endl;
 	}
 	if( m_uvBuffer == 0 )
 	{
 		glGenBuffers(1, &m_uvBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_uvBuffer);
 		glBufferData(GL_ARRAY_BUFFER, m_uvs.size() * sizeof(glm::vec2), &m_uvs[0], GL_STATIC_DRAW);
+
+//        std::cout << "Loaded UVs" << std::endl;
+//        int size = m_uvs.size();
+//        for (size_t i = 0 ; i < size ; ++i) {
+//            std::cout << m_uvs[i].x << ", ";
+//            std::cout << m_uvs[i].y << ", ";
+//            std::cout << std::endl;
+//        }
+//        std::cout << std::endl;
 	}
 	if( m_normalBuffer == 0 )
 	{
 		glGenBuffers(1, &m_normalBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
 		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(glm::vec3), &m_normals[0], GL_STATIC_DRAW);
+
+//        std::cout << "Loaded Normals" << std::endl;
+//        int size = m_normals.size();
+//        for (size_t i = 0 ; i < size ; ++i) {
+//            std::cout << m_normals[i].x << ", ";
+//            std::cout << m_normals[i].y << ", ";
+//            std::cout << m_normals[i].z << ", ";
+//            std::cout << std::endl;
+//        }
+//        std::cout << std::endl;
 	}
 
 	// Store attribute values in their buffers
@@ -341,7 +383,7 @@ void Obj::draw( const glm::mat4& model, const glm::mat4& view, const glm::mat4& 
 
 	glDisableVertexAttribArray(0);
 	if( m_uvBuffer != 0 ) 	 glDisableVertexAttribArray(1);
-	if( m_normalBuffer != 0 ) glDisableVertexAttribArray(2);
+    if( m_normalBuffer != 0 ) glDisableVertexAttribArray(2);
 }
 
 void Obj::buildObject()
@@ -395,7 +437,7 @@ void Mesh::draw()
 	if( m_indexBuffer == 0 )
 	{
 		// Generate a buffer for the indices
-    glGenBuffers(1, &m_indexBuffer);
+        glGenBuffers(1, &m_indexBuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_vertexIndex.size() * sizeof(unsigned short), &m_vertexIndex[0], GL_STATIC_DRAW);
 	}

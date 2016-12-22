@@ -12,12 +12,10 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
 
-
 // Include GLM
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 using namespace glm;
 
 #include "objloader.hpp"
@@ -27,7 +25,7 @@ using namespace glm;
 #include "transformation.hpp"
 
 #include "renderer.hpp"
-#include "povCamera.hpp"
+#include "projectiveCamera.hpp"
 
 string assets_path = ASSET_DIRECTORY;
 
@@ -40,46 +38,19 @@ string axesFile = assets_path+"obj/axes.obj";
 string earthFile = assets_path+"obj/Realistic_earth.obj";
 string uvEarthFile = assets_path+"obj/Realistic_earth.DDS";
 
-static float userPosX = 0.f;
-static float userPosY = 0.f;
-static float userPosZ = 1.f;
-static float stepSize = 0.1f;
-
 static void error_callback(int error, const char* description)
 {
     fputs(description, stderr);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
-    else if (key == GLFW_KEY_W && action == GLFW_PRESS)
-        userPosZ -= stepSize;
-    else if (key == GLFW_KEY_S && action == GLFW_PRESS)
-        userPosZ += stepSize;
-    else if (key == GLFW_KEY_A && action == GLFW_PRESS)
-        userPosX -= stepSize;
-    else if (key == GLFW_KEY_D && action == GLFW_PRESS)
-        userPosX += stepSize;
-    else if (key == GLFW_KEY_R && action == GLFW_PRESS)
-        userPosY += stepSize;
-    else if (key == GLFW_KEY_F && action == GLFW_PRESS)
-        userPosY -= stepSize;
 }
 
 int main( void )
 {
-    glm::mat3 cameraProjectionMatrix;
-    float cameraDistortionMatrix[5];
-    float imageHeight = 640.f;
-    float imageWidth  = 480.f;
-    float fovy = 45.f;
-    float near = 2.f;
-    float far  = 100.f;
-    float asp = imageHeight / imageWidth;
-
     GLFWwindow* window;
 
     glfwSetErrorCallback(error_callback);
@@ -110,6 +81,12 @@ int main( void )
 
     glfwSetKeyCallback(window, key_callback);
 
+    //SceneControl* sceneControl;
+    //sceneControl = SceneControl::getInstance();
+    //sceneControl->setControlType( INTER_MOUSENONE_KEYROTATE );
+    //sceneControl->setControlType( INTER_MOUSELOOK_KEYROTATE );
+    //sceneControl->setControlType( INTER_MOUSELOOK_KEYTRANSLATE );
+
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -129,38 +106,71 @@ int main( void )
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
     // Generate the main model
-    gre::Obj* m_cube = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    m_cube->setShadersFromFiles( vShader, fShader );
-    m_cube->setTexture( uvtemplate );
-    m_cube->setName("Planet");
-    m_cube->setTranslation(glm::vec3(0, 0, -5));
+    gre::Obj* m_planet = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_planet->setShadersFromFiles( vShader, fShader );
+    m_planet->setTexture( uvtemplate );
+    m_planet->setName("Planet");
+    m_planet->setTranslation(glm::vec3(3, 0, 0)); // Set radio
 
-    glm::mat4 tMat = m_cube->getLocalTranslation();
-//    {
-//        std::cout << "Local Tranlation Matrix: " << std::endl;
-//        const float *pSource = (const float*)glm::value_ptr((tMat));
-//        for (int i = 0; i < 4; ++i) {
-//            for (int j = 0; j < 4; ++j) {
-//                std::cout << pSource[i*4+j] << ", ";
-//            }
-//            std::cout << std::endl;
-//        }
-//    }
+    gre::Obj* m_moon = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_moon->setShadersFromFiles( vShader, fShader );
+    m_moon->setTexture( uvtemplate );
+    m_moon->setName("Moon");
+    m_moon->setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+    m_moon->setTranslation(glm::vec3(2, 0, 0)); // Set radio
 
-    gre::POVCamera m_camera;
+    //gre::Obj* m_mainOrbital = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
+    //m_mainOrbital->setShadersFromFiles( vShader, fShader );
+    //m_mainOrbital->setTexture( uvAxesFile );
+    //m_mainOrbital->setName("MainOrbital");
+
+    //gre::Obj* m_planetOrbital = gre::ObjFactory::getInstance()->loadOBJ( axesFile );
+    //m_planetOrbital->setShadersFromFiles( vShader, fShader );
+    //m_planetOrbital->setTexture( uvAxesFile );
+    //m_planetOrbital->setName("PlanetOrbital");
+
+    // Generate translation node
+    gre::Transformation m_mainOrbital;
+    m_mainOrbital.setName("MainOrbital");
+
+    gre::Transformation m_planetOrbital;
+    m_planetOrbital.setName("PlanetOrbital");
+    m_planetOrbital.setTranslation(glm::vec3(3, 0, 0));
+
+    // Generate camera instance
+    glm::vec3 position = glm::vec3( 0, 0, 7 );
+    glm::vec3 up = glm::vec3( 0,1,0 );
+    float fov = 60.0;
+
+    gre::ProjectiveCamera m_camera;
     // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    //m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 1000.0f);
-    m_camera.setConfiguration(0.f, 0.f, 1, 4.f, 4.f / 3.f);
+    m_camera.setConfiguration(fov*GRAD2RAD, 4.0f / 3.0f, 0.1f, 1000.0f);
+    // View matrix
+    m_camera.setLocation( position,         // Camera is here
+                          glm::vec3(0,0,0), // and looks here : at the same position, plus "direction"
+                          up                // Head is up (set to 0,-1,0 to look upside-down)
+                          );
 
     // Generate scene
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
 
-    m_scene.addChild(m_cube);
+    m_scene.addChild(&m_mainOrbital);
+    m_mainOrbital.addChild(&m_planetOrbital);
+
+    m_mainOrbital.addChild(m_planet);
+    m_planetOrbital.addChild(m_moon);
+
+    m_mainOrbital.setRotation(0.8f, glm::vec3(0, 0, 1));
+
     // Initial position : on +Z
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
+    float translateValue = 0.f;
+    float rotationAngle = 0.f;
     int rotSpeed = 180 * GRAD2RAD;
+    int orbitationSpeed = 80 * GRAD2RAD;
+    int transSpeed = 5;
     while(!glfwWindowShouldClose(window))
     {
         // time control
@@ -172,12 +182,18 @@ int main( void )
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         horizontalAngle += deltaTime * rotSpeed;
+        rotationAngle += deltaTime * orbitationSpeed;
+        translateValue += deltaTime * transSpeed;
 
-        // m_cube->setRotation(-horizontalAngle/2, glm::vec3(0, 1, 0));
+        m_moon->setRotation(-horizontalAngle/2, glm::vec3(0, 1, 0));
+
+        m_planetOrbital.setRotation(horizontalAngle, glm::vec3(0, 1, 0));
+
+        m_planet->setRotation(horizontalAngle, glm::vec3(0, 1, 1));
+
+        m_mainOrbital.setRotation(rotationAngle, glm::vec3(0, 0, 1));
 
         m_renderer->renderScene(&m_scene);
-
-        m_camera.setConfiguration(userPosX, userPosY, userPosZ, 4.f, 4.f / 3.f);
 
         // Swap buffers
         glfwSwapBuffers(window);
@@ -186,11 +202,15 @@ int main( void )
     } // Check if the ESC key was pressed or the window was closed
 
 	// Cleanup VBO and shader
+	//glDeleteProgram(programID);
+	//glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
 	glfwTerminate();
+
+    //SceneControl::deleteInstance();
 
 	return 0;
 }

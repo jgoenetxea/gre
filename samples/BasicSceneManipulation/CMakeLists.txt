@@ -22,6 +22,7 @@ LINK_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} )
 # Locate the main files of each sample.
 #-----------------------------------------------------------------------#
 SET( TESTING_BASE_APP basic/main.cpp )
+SET( TESTING_BASE_CUBES_APP basicCubesMoving/main.cpp )
 SET( TESTING_BASE_64k_APP basic_64k/main.cpp )
 SET( TESTING_BASE_ORTHO_APP basicOrtho/main.cpp )
 SET( TESTING_ORTHO_PANEL_APP orthoPanel/main.cpp )
@@ -36,7 +37,10 @@ SET( GLFW_SAMPLE glfw_sample/main.cpp )
 #-----------------------------------------------------------------------#
 ADD_DEFINITIONS(-DASSET_DIRECTORY="${CMAKE_SOURCE_DIR}/samples/BasicSceneManipulation/assets/" )
 
-ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_APP} )
+ADD_EXECUTABLE( sample_basic ${TESTING_BASE_APP} )
+TARGET_LINK_LIBRARIES( sample_basic gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
+ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_CUBES_APP} )
 TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_glfw ${GLFW_SAMPLE} )
@@ -50,8 +54,8 @@ ADD_EXECUTABLE( sample_basicOrtho ${TESTING_ORTHO_PANEL_APP} )
 TARGET_LINK_LIBRARIES( sample_basicOrtho gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${${PROJ_MAIN_NAME}_GUCPP_LIBS} )
 ENDIF(${PROJ_MAIN_NAME}_DEPENDENCY_GUCPP)
 
-ADD_EXECUTABLE( sample_geometryShader ${TESTING_GEOMETRY_SHADER_APP} )
-TARGET_LINK_LIBRARIES( sample_geometryShader gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+# ADD_EXECUTABLE( sample_geometryShader ${TESTING_GEOMETRY_SHADER_APP} )
+# TARGET_LINK_LIBRARIES( sample_geometryShader gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_multyScene ${MULTY_SCENE_APP} )
 TARGET_LINK_LIBRARIES( sample_multyScene gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )

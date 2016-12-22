@@ -14,6 +14,11 @@ ProjectiveCamera::~ProjectiveCamera()
 
 }
 
+void ProjectiveCamera::setConfiguration(const glm::mat4 &projMat)
+{
+    m_projectionMatrix = projMat;
+}
+
 void ProjectiveCamera::setConfiguration(float fov, float asp, float near, float far)
 {
     m_projectionMatrix = glm::perspective(fov, asp, near, far);
