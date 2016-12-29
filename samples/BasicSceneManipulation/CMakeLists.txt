@@ -22,6 +22,7 @@ LINK_DIRECTORIES( ${${PROJ_MAIN_NAME}_GUCPP_LIBS_PATH} )
 # Locate the main files of each sample.
 #-----------------------------------------------------------------------#
 SET( TESTING_BASE_APP basic/main.cpp )
+SET( TESTING_BASE_POVC_APP basicPOVCamera/main.cpp )
 SET( TESTING_BASE_CUBES_APP basicCubesMoving/main.cpp )
 SET( TESTING_BASE_64k_APP basic_64k/main.cpp )
 SET( TESTING_BASE_ORTHO_APP basicOrtho/main.cpp )
@@ -39,6 +40,9 @@ ADD_DEFINITIONS(-DASSET_DIRECTORY="${CMAKE_SOURCE_DIR}/samples/BasicSceneManipul
 
 ADD_EXECUTABLE( sample_basic ${TESTING_BASE_APP} )
 TARGET_LINK_LIBRARIES( sample_basic gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
+
+ADD_EXECUTABLE( sample_basic_pov ${TESTING_BASE_POVC_APP} )
+TARGET_LINK_LIBRARIES( sample_basic_pov gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
 
 ADD_EXECUTABLE( sample_basicCubeMoving ${TESTING_BASE_CUBES_APP} )
 TARGET_LINK_LIBRARIES( sample_basicCubeMoving gre_core ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} )
