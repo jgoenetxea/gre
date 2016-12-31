@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 
 #include <iostream>
+#include <GL/gl.h>
 #include "logger.h"
 #define LOG_TAG "Renderer"
 
@@ -18,6 +19,8 @@ Renderer::~Renderer()
 
 void Renderer::renderScene( Scene* scene, RenderType type )
 {
+    glm::vec4 viewport = scene->getCurrentCamera()->getViewport();
+    glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
     m_perspectiveMatrix = scene->getCurrentCamera()->getProjectionMatrix();
     m_viewMatrix = scene->getCurrentCamera()->getViewMatrix();
     glm::mat4 currentGlobalMatrix = scene->getGlobalMatrix();

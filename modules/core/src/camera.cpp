@@ -18,3 +18,8 @@ void Camera::setUp( const glm::vec3& up )
 {
     m_up = up;
 }
+
+void Camera::setViewport(const int x, const int y,
+                         const int width, const int height) {
+    m_viewport = glm::vec4(x, y, width, height);
+}

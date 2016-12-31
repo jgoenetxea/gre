@@ -16,6 +16,11 @@ public:
 
     virtual void setUp( const glm::vec3& up );
 
+    virtual void setViewport(const int x, const int y,
+                             const int width, const int height);
+
+    glm::vec4 getViewport(){ return m_viewport; }
+
     glm::mat4& getProjectionMatrix(){ return m_projectionMatrix; }
     glm::mat4& getViewMatrix(){ return m_viewMatrix; }
 
@@ -32,6 +37,8 @@ protected:
     glm::vec3 m_up;
     glm::vec3 m_location;
     glm::vec3 m_target;
+
+    glm::vec4 m_viewport;
 };
 
 }

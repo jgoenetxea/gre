@@ -38,7 +38,9 @@ string assets_path = ASSET_DIRECTORY;
 string vShader = assets_path+"shaders/basic130.vert";
 string fShader = assets_path+"shaders/basic130.frag";
 string uvtemplate = assets_path+"obj/cube.png";
-string modelFile = assets_path+"obj/cube.obj";
+string modelFile = assets_path+"obj/cube_small.obj";
+string skyModelTxt = assets_path+"obj/room_texture.png";
+string skyModelFile = assets_path+"obj/open_box.obj";
 string uvAxesFile = assets_path+"obj/axes.png";
 string axesFile = assets_path+"obj/axes.obj";
 string earthFile = assets_path+"obj/Realistic_earth.obj";
@@ -85,8 +87,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 int main( void )
 {
-    float screenHeight = 29.2f;
-    float screenWidth  = 52.f;
+    float screenHeight = 2.92f;
+    float screenWidth  = 5.2f;
     float near = .1f;
     float far  = 100.f;
 
@@ -126,8 +128,8 @@ int main( void )
 
     glfwSetKeyCallback(window, key_callback);
 
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    // Dark blue background
+    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -144,13 +146,7 @@ int main( void )
     // get renderer instance
     gre::Renderer* m_renderer = gre::Renderer::getInstance();
 
-    // Generate the main model
-    gre::Obj* m_cube = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
-    m_cube->setShadersFromFiles( vShader, fShader );
-    m_cube->setTexture( uvtemplate );
-    m_cube->setName("Cube");
-    m_cube->setTranslation(glm::vec3(0, 0, -1));
-
+    // Configure camera
     glm::vec3 position = glm::vec3( 0, 0, 0 );
     glm::vec3 target = glm::vec3( 0, 0, -1 );
     glm::vec3 up = glm::vec3( 0,1,0 );
@@ -165,12 +161,50 @@ int main( void )
                           target,           // and looks here : at the same position, plus "direction"
                           up                // Head is up (set to 0,-1,0 to look upside-down)
                           );
+    m_camera.setViewport(0, 0, 1920, 1080);
+
 
     // Generate scene
     gre::Scene m_scene;
     m_scene.addCamera(m_camera);
 
+    // Generate the main model
+    gre::Obj* m_cube = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_cube->setShadersFromFiles( vShader, fShader );
+    m_cube->setTexture( uvtemplate );
+    m_cube->setName("Cube");
+    m_cube->setTranslation(glm::vec3(0, -1.2, -3));
+    m_cube->setScale(glm::vec3(5.f, 5.f, 5.f));
     m_scene.addChild(m_cube);
+
+    gre::Obj* m_cube2 = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_cube2->setShadersFromFiles( vShader, fShader );
+    m_cube2->setTexture( uvtemplate );
+    m_cube2->setName("Cube2");
+    m_cube2->setRotation(0.9f, glm::vec3(0.f, 1.f, 0.f));
+    m_cube2->setTranslation(glm::vec3(0.6f, -1.2, -4));
+    m_cube2->setScale(glm::vec3(5.f, 5.f, 5.f));
+    m_scene.addChild(m_cube2);
+
+    gre::Obj* m_cube3 = gre::ObjFactory::getInstance()->loadOBJ( modelFile );
+    m_cube3->setShadersFromFiles( vShader, fShader );
+    m_cube3->setTexture( uvtemplate );
+    m_cube3->setName("Cube3");
+    m_cube3->setRotation(-0.3f, glm::vec3(0.f, 1.f, 0.f));
+    m_cube3->setTranslation(glm::vec3(-0.7, -1.2, -4));
+    m_cube3->setScale(glm::vec3(5.f, 5.f, 5.f));
+    m_scene.addChild(m_cube3);
+
+    // Generate skybox
+    gre::Obj* m_sky = gre::ObjFactory::getInstance()->loadOBJ(skyModelFile);
+    m_sky->setShadersFromFiles(vShader, fShader);
+    m_sky->setTexture(skyModelTxt);
+    m_sky->setName("Sky");
+    m_sky->setTranslation(glm::vec3(0, 0, 0));
+    m_sky->setScale(glm::vec3(screenWidth, screenHeight, screenWidth*2));
+    m_scene.addChild(m_sky);
+
+
     // Initial position : on +Z
     double lastTime = glfwGetTime();
     float horizontalAngle = 0.f;
